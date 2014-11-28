@@ -8,7 +8,7 @@ import inclinometer_manager, output_manager
 from Phidgets import PhidgetException
 
 try:
-    im = inclinometer_manager.InclinometerManager(5, 0.004, 0.5)
+    im = inclinometer_manager.InclinometerManager(5, 0.005, 0.5)
 except RuntimeError as e:
     print("Error %i while creating the Phidget object: %s" % (e.code, e.details), file=sys.stderr)
     print("Exiting ...")
@@ -29,8 +29,9 @@ while continueLoop:
     if(action != "m"):
         continueLoop = False
     else:
-        acc_data, ang_data = im.getMeasurements()
-        om.saveData(acc_data, ang_data)
+        acc_data, ang_data = im.getStandardMeasurements()
+        mag_data = im.getMagneticMeasurements()
+        om.saveData(acc_data, ang_data, mag_data)
 
 
 om.closeOutputFiles()

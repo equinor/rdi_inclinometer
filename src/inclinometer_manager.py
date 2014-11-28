@@ -2,8 +2,7 @@
 Created on 26. nov. 2014
 @author: PPAR
 '''
-import sys, time, datetime
-
+import sys, time
 from ctypes import *
 
 #Phidget specific imports
@@ -16,11 +15,15 @@ class InclinometerManager(object):
     
     def __init__(self, connection_timeout_in_secs, sampling_period_in_secs, sampling_duration_in_secs):
         self.connection_timeout_in_secs = connection_timeout_in_secs
+        
         self.sampling_period_in_secs = sampling_period_in_secs
+        self.min_sampling_period_in_secs_magnetic = 0.01 # Max sampling rate for the compass is 125HZ (min sampling period is 0.008 sec)
+        
         self.sampling_duration_in_secs = sampling_duration_in_secs
+        
         self.accelerometer_data = {}
         self.angular_data = {}
-
+        self.magnetic_data = {}
 
     def displayDeviceInfo(self):
         print("|------------|----------------------------------|--------------|------------|")
@@ -58,13 +61,11 @@ class InclinometerManager(object):
         else:
             self.displayDeviceInfo()
     
-    def getMeasurements(self):
+    def getStandardMeasurements(self):
         #Clean data
         self.accelerometer_data.clear()
         self.angular_data.clear()
         print("Cleared acceleration_data(%s) & angular_data(%s)" % (str(self.accelerometer_data), str(self.angular_data)))
-        t0 = time.clock()
-        time_delta = 0
         
         timestamp_str = time.strftime("%c")
         
@@ -77,7 +78,10 @@ class InclinometerManager(object):
         self.angular_data["ang_X"] = []
         self.angular_data["ang_Y"] = []
         self.angular_data["ang_Z"] = []
-        
+       
+        t0 = time.clock()
+        time_delta = 0 
+        is_time_sample_magnetic_data = 0.0
         
         while(time_delta < self.sampling_duration_in_secs):
             
@@ -88,12 +92,54 @@ class InclinometerManager(object):
             self.angular_data["ang_X"].append(self.spatial.getAngularRate(0))
             self.angular_data["ang_Y"].append(self.spatial.getAngularRate(1))
             self.angular_data["ang_Z"].append(self.spatial.getAngularRate(2))
-            
+                        
             time.sleep(self.sampling_period_in_secs)
             time_delta = time.clock() - t0   
         
         print(">>> Get measurement - time_delta: %.4f" % (time_delta))
-        return self.accelerometer_data, self.angular_data       
+        return self.accelerometer_data, self.angular_data
+    
+    def getMagneticMeasurements(self):
+        #Clean data
+        self.magnetic_data.clear()
+        print("Cleared magnetic_data(%s)" % (str(self.magnetic_data)))
+        
+        sampling_period = self.min_sampling_period_in_secs_magnetic
+        if(self.sampling_period_in_secs > self.min_sampling_period_in_secs_magnetic):
+            sampling_period = self.sampling_period_in_secs
+            
+        timestamp_str = time.strftime("%c")
+        
+        self.magnetic_data["timestamp"] = timestamp_str
+        self.magnetic_data["X"] = []
+        self.magnetic_data["Y"] = []
+        self.magnetic_data["Z"] = []
+       
+        t0 = time.clock()
+        time_delta = 0 
+        
+        while(time_delta < self.sampling_duration_in_secs):
+            mag_x = mag_y = mag_z = "N/A"
+            try:
+                mag_x = self.spatial.getMagneticField(0)
+                mag_y = self.spatial.getMagneticField(1)
+                mag_z = self.spatial.getMagneticField(2)
+                
+                self.magnetic_data["X"].append(mag_x)
+                self.magnetic_data["Y"].append(mag_y)
+                self.magnetic_data["Z"].append(mag_z)
+            
+            except Exception as e:
+                print("mag_x: %r, mag_y= %r, mag_z= %r" %(mag_x, mag_y, mag_z))
+                print("%r - PhidgetException %i when trying to close the phidget: %s" % (time_delta, e.code, e.details), file=sys.stderr)    
+                
+            
+              
+            time.sleep(sampling_period)
+            time_delta = time.clock() - t0   
+        
+        print(">>> Get measurement - time_delta: %.4f" % (time_delta))
+        return self.magnetic_data       
     
 
     def closeDownInclinometer(self):
