@@ -39,7 +39,6 @@ while continueLoop:
         acc_data, ang_data, mag_data = im.getMeasurements()
         om.saveData(acc_data, ang_data, mag_data, readable_data_type)
 
-om.closeOutputFiles()
 
 try:
     im.closeDownInclinometer()
