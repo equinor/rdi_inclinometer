@@ -25,13 +25,19 @@ om = output_manager.OutputManager()
 
 continueLoop = True
 while continueLoop:
-    action = input("(m) - measure; otherwise quit> ")
-    if(action != "m"):
-        continueLoop = False
-    else:
+    data_type = input("(h) - horizon, (m) - measurement, (q) quit> ")
+    
+    if(data_type == "q"):
+        break
+    
+    if(data_type == "h" or data_type == "m"):
+        
+        readable_data_type = "measurement"
+        if(data_type == "h"):
+            readable_data_type = "horizon"
+            
         acc_data, ang_data, mag_data = im.getMeasurements()
-        om.saveData(acc_data, ang_data, mag_data)
-
+        om.saveData(acc_data, ang_data, mag_data, readable_data_type)
 
 om.closeOutputFiles()
 
