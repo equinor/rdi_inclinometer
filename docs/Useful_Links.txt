@@ -1,0 +1,19 @@
+Sensors Info & links to other docs
+http://www.phidgets.com/products.php?product_id=1044
+
+Python Excel Library
+https://openpyxl.readthedocs.org/en/latest/tutorial.html
+
+Raspberry Pi GPIO Interrupts
+http://raspi.tv/2013/how-to-use-interrupts-with-python-on-the-raspberry-pi-and-rpi-gpio
+http://raspi.tv/2013/how-to-use-interrupts-with-python-on-the-raspberry-pi-and-rpi-gpio-part-2
+
+GPIO Diagram
+https://learn.adafruit.com/introducing-the-raspberry-pi-model-b-plus-plus-differences-vs-model-b/gpio-port
+
+GPIO Library (Python)
+http://sourceforge.net/p/raspberry-gpio-python/wiki/BasicUsage/
+http://sourceforge.net/p/raspberry-gpio-python/wiki/Inputs/
+
+Pull-Ups Resistor (Explained)
+https://learn.sparkfun.com/tutorials/pull-up-resistors
