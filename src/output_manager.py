@@ -33,7 +33,8 @@ class OutputManager(object):
 
         for key in data.keys():
             if key != "timestamp":
-                result[str(key)] = {"mean": statistics.mean(data[str(key)]), "median": statistics.median(data[str(key)]), "stdev": statistics.stdev(data[str(key)])}
+                #result[str(key)] = {"mean": statistics.mean(data[str(key)]), "median": statistics.median(data[str(key)]), "stdev": statistics.stdev(data[str(key)])}
+                result[key] = {"mean": statistics.mean(data[key]), "median": statistics.median(data[key]), "stdev": statistics.stdev(data[key])}
         return result
 
     def saveData(self, acc_data, ang_data, mag_data, data_type):
