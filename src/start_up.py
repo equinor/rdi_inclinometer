@@ -3,11 +3,12 @@ Created on 26. nov. 2014
 @author: PPAR
 '''
 
-import inclinometer_manager, output_manager
+import inclinometer_manager, output_manager, gps_manager
 from Phidgets import PhidgetException
 
 try:
     im = inclinometer_manager.InclinometerManager(5, 0.005, 0.5)
+    gps = gps_manager.GPSManager(5, 0.005, 0.5)
 except RuntimeError as e:
     print("Error (%i) while creating the Phidget object: %s" % (e.code, e.details))
     print("Exiting ...")
@@ -16,8 +17,10 @@ except RuntimeError as e:
 try:
     im.startUpInclinometer()
     print("Inclinometer STARTED-UP.....")
+    #gps.startUpGPS()
+    print("GPS STARTED-UP.....")
 except PhidgetException as e:
-    print("Phidget Exception (%i) when trying to STARTUP the inclinometer: %s" % (e.code, e.details))
+    print("Phidget Exception (%i) when trying to STARTUP the Phidget: %s" % (e.code, e.details))
     exit(1)
 
 om = output_manager.OutputManager()
@@ -42,6 +45,8 @@ while continueLoop:
 try:
     im.closeDownInclinometer()
     print("Inclinometer CLOSED-DOWN.....")
+    #gps.closeDownGPS()
+    print("GPS CLOSED-DOWN.....")
 except PhidgetException as e:
     print("Phidget Exception (%i) when trying to CLOSEDOWN the inclinometer: %s" % (e.code, e.details))
     exit(1)
