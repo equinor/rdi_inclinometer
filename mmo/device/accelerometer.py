@@ -9,6 +9,7 @@ class AccelerometerFix:
         self.a2 = a2
         self.dip = self.dip_angle()
         self.dist = self.distance()
+        self.height = config.height
 
     def __str__(self):
         return "a0={}, a1={}, a2={}, dip={}".format(self.a0, self.a1, self.a2, self.dip_angle())

@@ -19,7 +19,7 @@ class Binoculars:
                  gps,
                  spatial,
                  storage):
-        self.store = storage
+        self.storage = storage
         self.gyro = Gyro()
         self.button = button
         button.key_pressed = self.key_pressed
@@ -51,7 +51,7 @@ class Binoculars:
         gps_fix = GpsFix.read_from(self.gps)
         accelerometer_fix = AccelerometerFix.read_from(self.spatial)
         compass_fix = CompassFix.from_spatial(self.spatial)
-        self.store.store(gps_fix, self.gyro, accelerometer_fix, compass_fix, typ="Short_press")
+        self.storage.store(gps_fix, self.gyro, accelerometer_fix, compass_fix, typ="Short_press")
 
     def key_pressed_long(self):
         print "Long press detected - zeroing things"
@@ -61,7 +61,7 @@ class Binoculars:
         accelerometer_fix = AccelerometerFix.read_from(self.spatial)
         gps_fix = GpsFix.read_from(self.gps)
         compass_fix = CompassFix.from_spatial(self.spatial)
-        self.store.store(gps_fix, self.gyro, accelerometer_fix, compass_fix, typ="Long_press")
+        self.storage.store(gps_fix, self.gyro, accelerometer_fix, compass_fix, typ="Long_press")
 
     def on_spatial_data_handler(self, event):
         self.gyro.update_from(self.spatial)

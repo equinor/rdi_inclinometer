@@ -5,7 +5,6 @@ class CompassFix:
     """
     Convenience for reading and presenting compass fixes
     """
-
     def __init__(self, c0, c1, c2):
         self.compass0 = c0
         self.compass1 = c1

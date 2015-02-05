@@ -16,6 +16,12 @@ class CsvStorage(Storage):
         with open(self.file_path, "r") as f:
             return f.read()
 
+    def dump_list(self):
+        with open(self.file_path, "r") as f:
+            reader = csv.DictReader(f)
+            return [row for row in reader]
+
+
     def store(self, gps_fix, gyro, accelerometer_fix, compass_fix, typ):
         """
         :type compass_fix: CompassFix
