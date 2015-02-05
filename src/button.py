@@ -1,7 +1,8 @@
 import time
 from Phidgets.Devices.InterfaceKit import InterfaceKit
 from Phidgets.PhidgetException import PhidgetException
-
+import thread
+from threading import Thread
 
 class Button:
     """
@@ -18,6 +19,20 @@ class Button:
 
     def key_pressed(self, param):
         pass
+
+    @staticmethod
+    def get_for_system():
+        """
+        Returns a phidget button if possible, otherwise it will be a keyboard button
+        """
+        try:
+            return PhidgetButton()
+        except Exception:
+            print "No phidget button detected -- using keyboard button."
+            kb = KeyboardButton()
+            kb.start_input_thread()
+            return kb
+
 
 
 class PhidgetButton(Button):
@@ -55,8 +70,14 @@ class KeyboardButton(Button):
         while True:
             key = raw_input()
             if key == "q":
+                print "Q was pressed. Namaste!"
                 break
             elif key == "a":
                 self.key_pressed(0.2)
             elif key == "s":
                 self.key_pressed(1.0)
+        thread.interrupt_main()
+
+    def start_input_thread(self):
+        t = Thread(target=self.read_input)
+        t.start()

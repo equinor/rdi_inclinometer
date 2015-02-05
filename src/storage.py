@@ -18,13 +18,6 @@ class CsvStorage(Storage):
         self.print_to_console = print_to_console
         self.file_path = file_path
 
-        file_already_exists = exists(file_path)
-
-        self.file_handle = open(file_path, "a")
-
-        if not file_already_exists:
-            self.file_handle.write(self.csv_headers() + "\n")
-
     @staticmethod
     def csv_headers():
         return "{};{};{}{}{}{}".format("Button_type",
@@ -42,7 +35,6 @@ class CsvStorage(Storage):
         :type gyro: Gyro
         :type gps_fix: GpsFix
         """
-        # self.file_handle.write
         date = datetime.datetime.now()
         csv_line = "{};{};{}{}{}{}".format(typ,
                                            date,
@@ -52,4 +44,9 @@ class CsvStorage(Storage):
                                            compass_fix.to_csv())
         if self.print_to_console:
             print csv_line
-        self.file_handle.write(csv_line + "\n")
+
+        file_already_exists = exists(self.file_path)
+        with open(self.file_path, "a") as file_handle:
+            if not file_already_exists:
+                file_handle.write(self.csv_headers() + "\n")
+            file_handle.write(csv_line + "\n")
