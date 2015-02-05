@@ -3,8 +3,12 @@ Created on 26. nov. 2014
 @author: PPAR
 '''
 
-import inclinometer_manager, output_manager, gps_manager
 from Phidgets import PhidgetException
+
+import inclinometer_manager
+import gps_manager
+from src.old import output_manager
+
 
 try:
     im = inclinometer_manager.InclinometerManager(5, 0.005, 0.5)

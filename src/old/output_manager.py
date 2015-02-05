@@ -2,10 +2,15 @@
 Created on 26. nov. 2014
 @author: PPAR
 '''
-import time, statistics, os
+import time
+import os
 import errno
-import excel_manager
 import tempfile
+
+import statistics
+
+from src.old import excel_manager
+
 
 class OutputManager(object):
     def __init__(self, working_folder=tempfile.gettempdir() + "/inclinometer/",
