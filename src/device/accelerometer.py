@@ -1,7 +1,6 @@
+from config import config
 from collections import OrderedDict
 from math import acos, pi, radians, tan
-from config import height
-
 
 class AccelerometerFix:
     def __init__(self, a0, a1, a2):
@@ -22,7 +21,7 @@ class AccelerometerFix:
         return dip1
 
     def distance(self):
-        return height * tan(radians(90 - self.dip))
+        return config.height * tan(radians(90 - self.dip))
 
     @staticmethod
     def read_from(spatial):
@@ -40,5 +39,5 @@ class AccelerometerFix:
             ('a2', self.a2),
             ('dip_angle', self.dip),
             ('distance', self.dist),
-            ('height', height)
+            ('height', config.height)
         ))

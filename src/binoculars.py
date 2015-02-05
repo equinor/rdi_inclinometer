@@ -1,11 +1,11 @@
 from Phidgets.PhidgetException import PhidgetException
-from Phidgets.Devices.GPS import GPS
-from Phidgets.Devices.Spatial import Spatial
-from gps import GpsFix
-from gyro import Gyro
-from accelerometer import AccelerometerFix
-from storage import CsvStorage
-from compass import CompassFix
+
+from config import config
+from device.gps import GpsFix
+from device.gyro import Gyro
+from device.accelerometer import AccelerometerFix
+from device.compass import CompassFix
+
 
 class Binoculars:
     """
@@ -16,11 +16,10 @@ class Binoculars:
     """
     def __init__(self,
                  button,
-                 gps=GPS(),
-                 spatial=Spatial(),
-                 store=CsvStorage("foo.csv"),
-                 sampling_rate=8):
-        self.store = store
+                 gps,
+                 spatial,
+                 storage):
+        self.store = storage
         self.gyro = Gyro()
         self.button = button
         button.key_pressed = self.key_pressed
@@ -31,7 +30,7 @@ class Binoculars:
             try:
                 gps.openPhidget()
                 gps.waitForAttach(1000)
-            except PhidgetException as p:
+            except PhidgetException:
                 print "Could not connect to GPS"
                 raise
 
@@ -40,7 +39,7 @@ class Binoculars:
             spatial.setOnAttachHandler(self.attach_handler)
             spatial.openPhidget()
             spatial.waitForAttach(1000)
-            spatial.setDataRate(sampling_rate)
+            spatial.setDataRate(config.sampling_rate)
 
     def key_pressed(self, length):
         if length < 1.0:

@@ -1,12 +1,10 @@
 from collections import OrderedDict
 import datetime
 from os.path import exists
-from accelerometer import AccelerometerFix
-from compass import CompassFix
-from gyro import Gyro
-from gps import GpsFix
 import csv
 import sqlite3
+
+from device.compass import CompassFix
 
 
 class Storage:
@@ -32,6 +30,10 @@ class CsvStorage(Storage):
     def __init__(self, file_path, print_to_console=True):
         self.print_to_console = print_to_console
         self.file_path = file_path
+
+    def dump_csv(self):
+        with open(self.file_path, "r") as f:
+            return f.read()
 
     def store(self, gps_fix, gyro, accelerometer_fix, compass_fix, typ):
         """

@@ -1,3 +1,3 @@
 #!/bin/bash
 
-cd src && python web_server.py
+cd src && python start_actual.py
