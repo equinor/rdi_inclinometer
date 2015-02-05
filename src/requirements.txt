@@ -1,3 +1,4 @@
+Phidgets==2.1.8
 Flask==0.10.1
 docutils==0.12
 jdcal==1.0
