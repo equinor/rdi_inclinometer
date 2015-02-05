@@ -1,5 +1,5 @@
-from math import sqrt, acos, pi
-
+from math import sqrt, acos, pi, radians, tan
+from config import height
 
 class AccelerometerFix:
     def __init__(self, a0, a1, a2):
@@ -18,17 +18,9 @@ class AccelerometerFix:
 
         dip1 = 90 - (r1 * 180 / pi)
         return dip1
-        #TODO calculate distance based on some smart formula
-        # print "d1={}".format(dip1)
-        #
-        # k = 0.0002419
-        # j = 0.7349
-        #
-        # dip_r = dip1 * pi / 180
-        #
-        # h = 20
-        # distance = sqrt((tan(dip_r) / k) ** 2 - h / j) - tan(dip_r) / k
-        # print "distance={}".format(distance)
+
+    def distance(self):
+        height * tan(radians(90 - self.dip_angle()))
 
     @staticmethod
     def read_from(spatial):
@@ -41,8 +33,8 @@ class AccelerometerFix:
                                 spatial.getAcceleration(2))
 
     def to_csv(self):
-        return "{};{};{};{};".format(self.a0, self.a1, self.a2, self.dip_angle())
+        return "{};{};{};{};{};{};".format(self.a0, self.a1, self.a2, self.dip_angle(), self.distance(), height)
 
     @staticmethod
     def csv_headers():
-        return "Accelerometer_0;Accelerometer_1;Accelerometer_2;"
+        return "Accelerometer_0;Accelerometer_1;Accelerometer_2;Dip_angle;Distance;Height"
