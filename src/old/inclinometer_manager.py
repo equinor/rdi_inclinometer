@@ -41,7 +41,7 @@ class InclinometerManager(object):
         try:
             self.spatial = Spatial()
         except RuntimeError as e:
-            print("RuntimeError (%i) while creating the Phidget (Spatial) object: %s" % (e.code, e.details), file=sys.stderr)
+            print("RuntimeError (%i) while creating the Phidget (Spatial) object: %s" % (e.code, e.details))
             raise e
         
         #connect & open the phidget
@@ -49,12 +49,12 @@ class InclinometerManager(object):
             self.spatial.openPhidget()
             self.spatial.waitForAttach(self.connection_timeout_in_secs * 1000)
         except  PhidgetException as e:
-            print("PhidgetException (%i) when attaching & opening the phidget: %s" % (e.code, e.details), file=sys.stderr)
+            print("PhidgetException (%i) when attaching & opening the phidget: %s" % (e.code, e.details))
             
             try:
                 self.spatial.closePhidget()
             except PhidgetException as e:
-                print("PhidgetException (%i) when trying to close the phidget: %s" % (e.code, e.details), file=sys.stderr)
+                print("PhidgetException (%i) when trying to close the phidget: %s" % (e.code, e.details))
             
             raise e
         
@@ -110,8 +110,8 @@ class InclinometerManager(object):
             
             except Exception as e:
                 #print("mag_x: %r, mag_y= %r, mag_z= %r" %(mag_x, mag_y, mag_z))
-                print("%r sec - PhidgetException (%i) when trying to close the phidget: %s" % (time_delta, e.code, e.details), file=sys.stderr)
-                print("Please note that max sampling frequency for Magnetic data is 125Hz (8 msec) - the current sampling period is %r msec." % (self.sampling_period_in_secs * 1000), file=sys.stderr)
+                print("%r sec - PhidgetException (%i) when trying to close the phidget: %s" % (time_delta, e.code, e.details))
+                print("Please note that max sampling frequency for Magnetic data is 125Hz (8 msec) - the current sampling period is %r msec." % (self.sampling_period_in_secs * 1000))
                         
             time.sleep(self.sampling_period_in_secs)
             time_delta = time.clock() - t0   
@@ -123,6 +123,6 @@ class InclinometerManager(object):
         try:
             self.spatial.closePhidget()
         except PhidgetException as e:
-            print("PhidgetException %i when trying to close the phidget: %s" % (e.code, e.details), file=sys.stderr)
+            print("PhidgetException %i when trying to close the phidget: %s" % (e.code, e.details))
             raise e
     

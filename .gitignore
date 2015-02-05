@@ -1,3 +1,5 @@
 .project
 .pydevproject
 src/**/__pycache__
+.idea
+*.pyc
