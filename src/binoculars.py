@@ -3,15 +3,24 @@ from Phidgets.Devices.GPS import GPS
 from Phidgets.Devices.Spatial import Spatial
 from gps import GpsFix
 from gyro import Gyro
+from accelerometer import AccelerometerFix
+from storage import CsvStorage
+from compass import CompassFix
 
 class Binoculars:
     """
     Sews together all the sensors for the binocular
+
+    Sample rate cannot be shorter than 8ms, or the compass won't work
+
     """
     def __init__(self,
                  button,
                  gps=GPS(),
-                 spatial=Spatial()):
+                 spatial=Spatial(),
+                 store=CsvStorage("foo.csv"),
+                 sampling_rate=8):
+        self.store = store
         self.gyro = Gyro()
         self.button = button
         button.key_pressed = self.key_pressed
@@ -31,7 +40,7 @@ class Binoculars:
             spatial.setOnAttachHandler(self.attach_handler)
             spatial.openPhidget()
             spatial.waitForAttach(1000)
-            spatial.setDataRate(spatial.getDataRateMax())
+            spatial.setDataRate(sampling_rate)
 
     def key_pressed(self, length):
         if length < 1.0:
@@ -41,14 +50,19 @@ class Binoculars:
 
     def key_pressed_short(self):
         gps_fix = GpsFix.read_from(self.gps)
-        print "GPS: " + str(gps_fix)
-        print "Gyro: " + str(self.gyro)
+        accelerometer_fix = AccelerometerFix.read_from(self.spatial)
+        compass_fix = CompassFix.from_spatial(self.spatial)
+        self.store.store(gps_fix, self.gyro, accelerometer_fix, compass_fix, typ="Short_press")
 
     def key_pressed_long(self):
         print "Long press detected - zeroing things"
         self.spatial.zeroGyro()
         self.spatial.setOnSpatialDataHandler(self.on_spatial_data_handler)
         self.gyro.reset()
+        accelerometer_fix = AccelerometerFix.read_from(self.spatial)
+        gps_fix = GpsFix.read_from(self.gps)
+        compass_fix = CompassFix.from_spatial(self.spatial)
+        self.store.store(gps_fix, self.gyro, accelerometer_fix, compass_fix, typ="Long_press")
 
     def on_spatial_data_handler(self, event):
         self.gyro.update_from(self.spatial)
