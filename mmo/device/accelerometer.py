@@ -1,4 +1,4 @@
-from config import config
+from mmo.config import config
 from collections import OrderedDict
 from math import acos, pi, radians, tan
 

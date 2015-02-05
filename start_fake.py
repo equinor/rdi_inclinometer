@@ -1,7 +1,8 @@
-from binoculars import Binoculars
-from device.button import KeyboardButton
-from device.fake import FakeGps, FakeSpatial
-from storage import CsvStorage
+#!/usr/bin/env python
+from mmo.binoculars import Binoculars
+from mmo.device.button import KeyboardButton
+from mmo.device.fake import FakeGps, FakeSpatial
+from mmo.storage import CsvStorage
 
 gps = FakeGps()
 spatial = FakeSpatial()
@@ -11,6 +12,6 @@ button = KeyboardButton()
 
 binoculars = Binoculars(button=button, gps=gps, spatial=spatial, storage=storage)
 
-import web_server
+from mmo import web_server
 web_server.start(binoculars)
 

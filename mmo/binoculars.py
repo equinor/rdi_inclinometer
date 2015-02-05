@@ -1,10 +1,10 @@
 from Phidgets.PhidgetException import PhidgetException
 
-from config import config
-from device.gps import GpsFix
-from device.gyro import Gyro
-from device.accelerometer import AccelerometerFix
-from device.compass import CompassFix
+from mmo.config import config
+from mmo.device import GpsFix
+from mmo.device import Gyro
+from mmo.device import AccelerometerFix
+from mmo.device import CompassFix
 
 
 class Binoculars:

@@ -1,9 +1,10 @@
+#!/usr/bin/env python
 from Phidgets.Devices.GPS import GPS
 from Phidgets.Devices.Spatial import Spatial
 
-from binoculars import Binoculars
-from device.button import Button
-from storage import CsvStorage
+from mmo.binoculars import Binoculars
+from mmo.device.button import Button
+from mmo.storage import CsvStorage
 
 
 gps = GPS()
@@ -13,5 +14,5 @@ button = Button.get_for_system()
 
 binoculars = Binoculars(button=button, gps=gps, spatial=spatial, storage=storage)
 
-import web_server
+from mmo import web_server
 web_server.start(binoculars)

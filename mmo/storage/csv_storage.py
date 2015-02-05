@@ -2,28 +2,9 @@ from collections import OrderedDict
 import datetime
 from os.path import exists
 import csv
-import sqlite3
 
-from device.compass import CompassFix
-
-
-class Storage:
-    """
-    Handles storing measurements from sensors
-    """
-
-    def store(self, gps_fix, gyro, accelerometer_fix, compass_fix, typ):
-        pass
-
-
-class SqlStorage:
-    def __init__(self, file_path):
-        conn = sqlite3.connect(file_path)
-        conn.row_factory = sqlite3.Row
-
-
-    def store(self, gps_fix, gyro, accelerometer_fix, compass_fix, typ):
-        pass
+from mmo.device.compass import CompassFix
+from mmo.storage import Storage
 
 
 class CsvStorage(Storage):

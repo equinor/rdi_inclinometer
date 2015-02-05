@@ -24,7 +24,7 @@ class Button:
         Returns a phidget button if possible, otherwise it will be a keyboard button
         """
         try:
-            from device.button_phidget import PhidgetButton
+            from mmo.device.button_phidget import PhidgetButton
             return PhidgetButton()
         except Exception:
             print "No phidget button detected -- using keyboard button."

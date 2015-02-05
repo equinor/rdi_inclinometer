@@ -1,6 +1,6 @@
 from Phidgets.PhidgetException import PhidgetException
 
-from device.button import Button
+from mmo.device.button import Button
 
 
 class PhidgetButton(Button):

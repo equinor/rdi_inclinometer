@@ -1,9 +1,9 @@
 from flask import Flask, make_response
 
+
 class Registry:
     def __init__(self):
         self.binoculars = None
-
 
 registry = Registry()
 
