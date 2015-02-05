@@ -1,5 +1,8 @@
 # Whale Watch
 
+## Python prerequisites
+* apt-get install python python-dev python-pip
+
 
 ## Getting started
 
