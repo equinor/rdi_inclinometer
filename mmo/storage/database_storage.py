@@ -1,3 +1,4 @@
+from collections import OrderedDict
 import datetime
 from sqlalchemy import create_engine, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
@@ -9,6 +10,7 @@ Base = declarative_base()
 
 engine = create_engine('sqlite:///database.db', echo=False)
 Session = sessionmaker(bind=engine)
+
 
 class Fix(Base):
     __tablename__ = 'fix'
@@ -33,6 +35,12 @@ class Fix(Base):
     altitude = Column(Float)
     heading = Column(Float)
     velocity = Column(Float)
+
+    def _asdict(self):
+        result = OrderedDict()
+        for key in self.__mapper__.c.keys():
+            result[key] = getattr(self, key)
+        return result
 
 
 class Comment(Base):
@@ -63,7 +71,6 @@ class DatabaseStorage(Storage):
         fix.accelerometer_dist = accelerometer_fix.dist
         fix.height = accelerometer_fix.height
 
-
         fix.gps_time = gps_fix.timestamp
         fix.latitude = gps_fix.latitude
         fix.longitude = gps_fix.longitude
@@ -75,27 +82,14 @@ class DatabaseStorage(Storage):
         fix.compass1 = compass_fix.compass1
         fix.compass2 = compass_fix.compass2
 
-        fix.gyro0=gyro.gyro0
-        fix.gyro1=gyro.gyro1
-        fix.gyro2=gyro.gyro2
+        fix.gyro0 = gyro.gyro0
+        fix.gyro1 = gyro.gyro1
+        fix.gyro2 = gyro.gyro2
 
         session = Session()
         session.add(fix)
         session.commit()
         session.close()
-
-    def dump_csv(self):
-        import csv
-        import io
-        output = io.BytesIO()
-
-        l=self.dump_list()
-        keys = l[0].keys()
-        keys.sort()
-        writer = csv.DictWriter(output, fieldnames=keys)
-        writer.writeheader()
-        writer.writerows(l)
-        return output.getvalue()
 
     def dump_list(self):
         session = Session()

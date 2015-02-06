@@ -1,8 +1,11 @@
+from abc import abstractmethod
+
+
 class Storage:
     """
     Handles storing measurements from sensors
     """
-
+    @abstractmethod
     def store(self, gps_fix, gyro, accelerometer_fix, compass_fix, typ):
         """
         :type compass_fix: mmo.device.CompassFix
@@ -12,14 +15,23 @@ class Storage:
         """
         pass
 
+    @abstractmethod
     def dump_list(self):
         pass
 
     def dump_csv(self):
-        """
-        :rtype : str
-        """
-        pass
+        import csv
+        import io
+
+        output = io.BytesIO()
+
+        l = self.dump_list()
+        keys = l[0].keys()
+        keys.sort()
+        writer = csv.DictWriter(output, fieldnames=keys)
+        writer.writeheader()
+        writer.writerows(l)
+        return output.getvalue()
 
     def dump_table(self):
         l = self.dump_list()
@@ -41,3 +53,4 @@ class Storage:
 
 from csv_storage import CsvStorage
 from database_storage import DatabaseStorage
+from combination_storage import CombinationStorage

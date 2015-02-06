@@ -1,6 +1,6 @@
 from flask import Flask, make_response
 from flask import send_file
-
+from json_dumper import dump_as_json
 
 class Registry:
     def __init__(self):
@@ -22,6 +22,16 @@ def dump_table():
     text = registry.binoculars.storage.dump_table()
     response = make_response(text, 200)
     response.headers['Content-type'] = "text/html"
+    return response
+
+@app.route('/data.json')
+def dump_json():
+    data_list = registry.binoculars.storage.dump_list()
+
+    text = dump_as_json(data_list)
+    print text
+    response = make_response(text, 200)
+    response.headers['Content-type'] = "application/json"
     return response
 
 @app.route('/')

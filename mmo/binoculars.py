@@ -1,6 +1,6 @@
 from Phidgets.PhidgetException import PhidgetException
 
-from mmo.config import config
+from mmo import config
 from mmo.device import GpsFix
 from mmo.device import Gyro
 from mmo.device import AccelerometerFix
