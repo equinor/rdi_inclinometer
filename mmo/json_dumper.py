@@ -9,5 +9,5 @@ def json_serial(obj):
         return serial
 
 
-def dump_as_json(a_dict):
-    return simplejson.dumps(a_dict, default=json_serial)
+def dump_as_json(list_of_dicts):
+    return simplejson.dumps(list_of_dicts, default=json_serial)
