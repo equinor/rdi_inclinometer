@@ -27,7 +27,7 @@ class PhidgetButton(Button):
             else:
                 self.key_up()
 
-    def beep(self):
+    def beep(self, seconds):
         self.interface_kit.setOutputState(0, True)
-        sleep(2)
+        sleep(seconds)
         self.interface_kit.setOutputState(0, False)

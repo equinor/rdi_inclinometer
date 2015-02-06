@@ -18,7 +18,7 @@ class Button:
     def key_pressed(self, param):
         pass
 
-    def beep(self):
+    def beep(self, seconds):
         pass
 
     @staticmethod
