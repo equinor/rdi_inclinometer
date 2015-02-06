@@ -1,3 +1,4 @@
+from time import sleep
 from Phidgets.PhidgetException import PhidgetException
 
 from mmo.device.button import Button
@@ -25,3 +26,8 @@ class PhidgetButton(Button):
                 self.key_down()
             else:
                 self.key_up()
+
+    def beep(self):
+        self.interface_kit.setOutputState(0, True)
+        sleep(2)
+        self.interface_kit.setOutputState(0, False)

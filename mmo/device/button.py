@@ -18,6 +18,9 @@ class Button:
     def key_pressed(self, param):
         pass
 
+    def beep(self):
+        pass
+
     @staticmethod
     def get_for_system():
         """

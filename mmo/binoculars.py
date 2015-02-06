@@ -62,6 +62,7 @@ class Binoculars:
         gps_fix = GpsFix.read_from(self.gps)
         compass_fix = CompassFix.from_spatial(self.spatial)
         self.storage.store(gps_fix, self.gyro, accelerometer_fix, compass_fix, typ="Long_press")
+        self.button.beep()
 
     def on_spatial_data_handler(self, event):
         self.gyro.update_from(self.spatial)
