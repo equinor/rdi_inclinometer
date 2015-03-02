@@ -10,7 +10,7 @@ class Registry:
 
 registry = Registry()
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='')
 
 @app.route('/data.csv')
 def dump_csv():
@@ -46,7 +46,7 @@ def dump_json():
 
 @app.route('/')
 def index():
-    return send_file('html/index.html')
+    return app.send_static_file('index.html')
 
 
 
