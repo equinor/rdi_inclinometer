@@ -1,5 +1,0 @@
-Flask==0.10.1
-docutils==0.12
-jdcal==1.0
-openpyxl==2.1.4
-statistics==1.0.3.5
