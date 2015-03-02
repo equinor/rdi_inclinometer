@@ -5,7 +5,17 @@ from mmo.device import GpsFix
 from mmo.device import Gyro
 from mmo.device import AccelerometerFix
 from mmo.device import CompassFix
+from socket import gethostname
 
+from enum import Enum
+
+
+class ButtonType(Enum):
+    short = 1
+    long = 2
+
+    def __str__(self):
+        return self.name
 
 class Binoculars:
     """
@@ -41,32 +51,45 @@ class Binoculars:
             spatial.waitForAttach(1000)
             spatial.setDataRate(config.sampling_rate)
 
+    # Inspection disabled due to IDEA interpreting enum as int
+    # noinspection PyTypeChecker
     def key_pressed(self, length):
         if length < 1.0:
-            self.key_pressed_short()
+            self.button_click(ButtonType.short)
         else:
-            self.key_pressed_long()
+            self.button_click(ButtonType.long)
 
-    def key_pressed_short(self):
+    def button_click(self, button_type):
+        """
+        :type button_type: ButtonType
+        """
+
         gps_fix = GpsFix.read_from(self.gps)
         accelerometer_fix = AccelerometerFix.read_from(self.spatial)
         compass_fix = CompassFix.from_spatial(self.spatial)
-        self.storage.store(gps_fix, self.gyro, accelerometer_fix, compass_fix, typ="Short_press")
-        self.button.beep(0.2)
+        self.storage.store(host_name=gethostname(),
+                           gps_fix=gps_fix,
+                           gyro=self.gyro,
+                           accelerometer_fix=accelerometer_fix,
+                           compass_fix=compass_fix,
+                           typ=str(button_type))
 
-    def key_pressed_long(self):
+        if button_type == ButtonType.long:
+            self.reset_gyro()
+            # The user should hold the binoculars still for two seconds
+            self.button.beep(2.0)
+        else:
+            self.button.beep(0.2)
+
+    # Updates the gyro integral
+    def on_spatial_data_handler(self, event):
+        self.gyro.update_from(self.spatial)
+
+    def reset_gyro(self):
         print "Long press detected - zeroing things"
         self.spatial.zeroGyro()
         self.spatial.setOnSpatialDataHandler(self.on_spatial_data_handler)
         self.gyro.reset()
-        accelerometer_fix = AccelerometerFix.read_from(self.spatial)
-        gps_fix = GpsFix.read_from(self.gps)
-        compass_fix = CompassFix.from_spatial(self.spatial)
-        self.storage.store(gps_fix, self.gyro, accelerometer_fix, compass_fix, typ="Long_press")
-        self.button.beep(2)
-
-    def on_spatial_data_handler(self, event):
-        self.gyro.update_from(self.spatial)
 
     @staticmethod
     def attach_handler(event):

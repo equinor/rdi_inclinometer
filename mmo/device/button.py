@@ -58,3 +58,6 @@ class KeyboardButton(Button):
     def start_input_thread(self):
         t = Thread(target=self.read_input)
         t.start()
+
+    def beep(self, seconds):
+        print("Beep: {}".format(seconds))
