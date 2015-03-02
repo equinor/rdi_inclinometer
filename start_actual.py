@@ -7,12 +7,10 @@ from mmo.device.button import Button
 from mmo.storage import CsvStorage, DatabaseStorage, CombinationStorage
 
 
-gps = GPS()
-spatial = Spatial()
-storage = CombinationStorage(CsvStorage('output_fake.csv'), DatabaseStorage())
+storage = CombinationStorage( DatabaseStorage(), CsvStorage('output_actual.csv'))
 button = Button.get_for_system()
 
-binoculars = Binoculars(button=button, gps=gps, spatial=spatial, storage=storage)
+binoculars = Binoculars(button=button, gps=GPS(), spatial=(Spatial()), storage=storage)
 
 from mmo import web_server
-web_server.start(binoculars)
+web_server.start(binoculars,  debug=True, use_reloader=False)

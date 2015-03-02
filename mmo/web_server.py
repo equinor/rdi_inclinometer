@@ -1,6 +1,8 @@
 from flask import Flask, make_response
 from flask import send_file
 from json_dumper import dump_as_json
+from export import excel
+
 
 class Registry:
     def __init__(self):
@@ -23,6 +25,14 @@ def dump_table():
     response = make_response(text, 200)
     response.headers['Content-type'] = "text/html"
     return response
+
+@app.route('/data.xlsx')
+def dump_excel():
+    filename = excel.export(registry.binoculars.storage.dump_list())
+    response = send_file(filename)
+    return response
+
+
 
 @app.route('/data.json')
 def dump_json():
