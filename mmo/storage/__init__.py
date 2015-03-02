@@ -1,23 +1,29 @@
 from abc import abstractmethod
 
 
-class Storage:
+class Storage(object):
     """
     Handles storing measurements from sensors
     """
+
+    def __init__(self):
+        pass
+
     @abstractmethod
-    def store(self, gps_fix, gyro, accelerometer_fix, compass_fix, typ):
+    def store(self, host_name, gps_fix, gyro, accelerometer_fix, compass_fix, typ):
         """
-        :type compass_fix: mmo.device.CompassFix
-        :type gps_fix: mmo.device.GpsFix
-        :type gyro: mmo.device.Gyro
-        :type accelerometer_fix: mmo.device.AccelerometerFix
+        :type host_name: str
+        :type compass_fix: CompassFix
+        :type typ: str
+        :type accelerometer_fix: AccelerometerFix
+        :type gyro: Gyro
+        :type gps_fix: GpsFix
         """
         pass
 
     @abstractmethod
     def dump_list(self):
-        pass
+        return []
 
     def dump_csv(self):
         import csv
@@ -35,7 +41,7 @@ class Storage:
 
     def dump_table(self):
         l = self.dump_list()
-        keys=l[0].keys()
+        keys = l[0].keys()
         keys.sort()
 
         ret = "<table><thead><tr>"
@@ -49,7 +55,6 @@ class Storage:
             ret += "</tr>"
         ret += "</tbody></table>"
         return ret
-
 
 from csv_storage import CsvStorage
 from database_storage import DatabaseStorage

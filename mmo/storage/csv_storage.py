@@ -3,12 +3,12 @@ import datetime
 from os.path import exists
 import csv
 
-from mmo.device.compass import CompassFix
 from mmo.storage import Storage
 
 
 class CsvStorage(Storage):
     def __init__(self, file_path, print_to_console=True):
+        super(self.__class__, self).__init__()
         self.print_to_console = print_to_console
         self.file_path = file_path
 
@@ -21,18 +21,11 @@ class CsvStorage(Storage):
             reader = csv.DictReader(f)
             return [row for row in reader]
 
-
-    def store(self, gps_fix, gyro, accelerometer_fix, compass_fix, typ):
-        """
-        :type compass_fix: CompassFix
-        :type typ: str
-        :type accelerometer_fix: AccelerometerFix
-        :type gyro: Gyro
-        :type gps_fix: GpsFix
-        """
+    def store(self, host_name, gps_fix, gyro, accelerometer_fix, compass_fix, typ):
         date = datetime.datetime.now()
 
         data_dict = OrderedDict()
+        data_dict["Host_name"] = host_name
         data_dict["Button_type"] = typ
         data_dict["System_time"] = date
         data_dict.update(gps_fix.as_dict())

@@ -1,10 +1,13 @@
 from collections import OrderedDict
 import datetime
-from sqlalchemy import create_engine, ForeignKey
+
+from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, Float, DateTime, Text
 from sqlalchemy.orm import sessionmaker
+
 from mmo.storage import Storage
+
 
 Base = declarative_base()
 
@@ -14,9 +17,10 @@ Session = sessionmaker(bind=engine)
 
 class Fix(Base):
     __tablename__ = 'fix'
+    hostname = Column(String)
     id = Column(Integer, primary_key=True, autoincrement=True)
-    button = Column(String)
     system_time = Column(DateTime)
+    button = Column(String)
     compass0 = Column(Float)
     compass1 = Column(Float)
     compass2 = Column(Float)
@@ -35,32 +39,26 @@ class Fix(Base):
     altitude = Column(Float)
     heading = Column(Float)
     velocity = Column(Float)
+    comments = Column(Text)
 
-    def _asdict(self):
+    def as_dict(self):
         result = OrderedDict()
         for key in self.__mapper__.c.keys():
             result[key] = getattr(self, key)
         return result
 
 
-class Comment(Base):
-    __tablename__ = 'comment'
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    fix_id = Column(Integer, ForeignKey("fix.id"))
-    text = Column(Text)
-
-
 def create_tables():
     Base.metadata.create_all(engine)
-
 
 create_tables()
 
 
 class DatabaseStorage(Storage):
-    def store(self, gps_fix, gyro, accelerometer_fix, compass_fix, typ):
+    def store(self, host_name, gps_fix, gyro, accelerometer_fix, compass_fix, typ):
         fix = Fix()
 
+        fix.hostname = host_name
         fix.button = typ
         fix.system_time = datetime.datetime.now()
 
@@ -94,4 +92,4 @@ class DatabaseStorage(Storage):
     def dump_list(self):
         session = Session()
         fixes = session.query(Fix)
-        return [x.__dict__ for x in fixes.all()]
+        return [x.as_dict() for x in fixes.all()]
