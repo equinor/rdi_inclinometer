@@ -1,16 +1,24 @@
-from flask import Flask, make_response
-from flask import send_file
+import socket, random, string
+
+from flask import Flask, make_response, request, render_template, send_file, redirect, flash
+
 from json_dumper import dump_as_json
+
 from export import excel
+from mmo.database import Database
 
 
 class Registry:
     def __init__(self):
         self.binoculars = None
 
+
 registry = Registry()
 
-app = Flask(__name__, static_url_path='')
+app = Flask(__name__, static_url_path='', template_folder='templates')
+app.secret_key = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(20))
+app.config['hostname'] = socket.gethostname()
+
 
 @app.route('/data.csv')
 def dump_csv():
@@ -19,12 +27,13 @@ def dump_csv():
     response.headers['Content-type'] = "text/csv"
     return response
 
+
 @app.route('/data.html')
 def dump_table():
-    text = registry.binoculars.storage.dump_table()
-    response = make_response(text, 200)
-    response.headers['Content-type'] = "text/html"
-    return response
+    rows = registry.binoculars.storage.dump_list()
+    return render_template('dataTable.html', rows=rows)
+    #return response
+
 
 @app.route('/data.xlsx')
 def dump_excel():
@@ -32,6 +41,23 @@ def dump_excel():
     response = send_file(filename)
     return response
 
+
+@app.route('/config.html', methods=['GET'])
+def get_config():
+    config = Database.get_config()
+    return render_template('config.html', axisOptions=['A', 'B'], **config)
+
+
+@app.route('/config.html', methods=['POST'])
+def set_config():
+    Database.set_config(request.form)
+    flash("Config was updated")
+    return redirect('/config.html')
+
+
+@app.route('/observations')
+def observations():
+    return "Hello there"
 
 
 @app.route('/data.json')
@@ -44,10 +70,10 @@ def dump_json():
     response.headers['Content-type'] = "application/json"
     return response
 
+
 @app.route('/')
 def index():
-    return app.send_static_file('index.html')
-
+    return render_template('index.html')
 
 
 def start(binoculars, **kwargs):
