@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+{% block body %}
+<div>
+    <form action="" method="POST" class="form-horizontal">
+        <h1>Configuration</h1>
+
+        <div class="form-group">
+            <label for="height" class="col-sm-2 control-label">Height over sea level</label>
+
+            <div class="col-sm-3 input-group">
+                <input type="text" id="height" name="height" value="{{height}}" class="form-control"/>
+                <div class="input-group-addon">m</div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Axis configuration</label>
+
+            <div class="col-sm-3">
+                {% for axisOption in axisOptions %}
+                <label>
+                    <input class="input-control" type="radio"
+                           name="selectedAxis"
+                           value="{{axisOption}}"
+                           {%if selectedAxis == axisOption %} checked="checked" {% endif %}
+                            />
+                    {{axisOption}}
+                </label><br/>
+                {% endfor %}
+            </div>
+        </div>
+        <button class="btn btn-default" type="submit">Save</button>
+
+    </form>
+
+</div>
+{% endblock %}

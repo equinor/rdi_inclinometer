@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block outer_body %}
+<div class="dataTable">
+<table class="table table-striped">
+    <thead>
+    <tr>
+        {% for key in rows[0] %}
+            <th>{{key}}</th>
+        {% endfor %}
+    </tr>
+    </thead>
+    <tbody>
+        {% for row in rows %}
+            <tr>
+                {% for key in row %}
+                    <td>{{row[key]}}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+</div>
