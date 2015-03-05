@@ -26,6 +26,20 @@ class Config(Base):
         return self.key, self.value
 
 
+class GpsTrack(Base):
+    __tablename__ = "gps_track"
+    gps_time = Column(DateTime)
+    lat = Column(Float)
+    lon = Column(Float)
+    alt = Column(Float)
+
+    def __init__(self, gps_time, lat, lon, alt):
+        self.gps_time = gps_time
+        self.lat = lat
+        self.lon = lon
+        self.alt = alt
+
+
 class Observation(Base):
     __tablename__ = 'observation'
     hostname = Column(String)
@@ -99,6 +113,14 @@ class Database(object):
 
         session = Session()
         session.add(obs)
+        session.commit()
+        session.close()
+
+    @staticmethod
+    def store_position(gps_time, latitude, longitude, altitude):
+        session = Session()
+        track = GpsTrack(gps_time, latitude, longitude, altitude)
+        session.add(track)
         session.commit()
         session.close()
 
