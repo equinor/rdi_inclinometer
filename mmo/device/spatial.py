@@ -2,11 +2,10 @@ from abc import abstractmethod
 
 from Phidgets.Devices.Spatial import Spatial as SpatialPhidget
 
-from mmo.device.device import Device
-
 import mmo
-
-from mmo.device import AccelerometerFix, CompassFix, Gyro
+from mmo.device.device import Device
+from mmo.device import Gyro
+from mmo.device.output import AccelerometerFix, CompassFix, RollPitchYaw
 
 
 class SpatialLike(Device):
@@ -26,6 +25,24 @@ class SpatialLike(Device):
     def get_gyro(self):
         pass
 
+    @abstractmethod
+    def get_gravity_raw(self):
+        """
+        :returns: (float, float, float)
+        """
+        pass
+
+    def get_gravity(self):
+        """
+        Gravity, rotated to account for rotated spatial device
+        :returns: (float, float, float)
+        """
+        return mmo.config.axis_translator.translate(*self.get_gravity_raw())
+
+    @abstractmethod
+    def get_compass_raw(self):
+        pass
+
 
 class Spatial(SpatialLike):
     """
@@ -40,15 +57,31 @@ class Spatial(SpatialLike):
         spatial.setOnDetachHandler(self.detach_handler)
         spatial.openPhidget()
 
+    def get_gravity_raw(self):
+        """
+        :returns: (float, float, float)
+        """
+        return (self.spatial.getAcceleration(0),
+                self.spatial.getAcceleration(1),
+                self.spatial.getAcceleration(2))
+
+    def get_compass_raw(self):
+        return (self.spatial.getMagneticField(0),
+                self.spatial.getMagneticField(1),
+                self.spatial.getMagneticField(2))
+
     def get_accelerometer_fix(self):
         if not self.spatial.isAttached():
             return AccelerometerFix()
-        return AccelerometerFix.read_from(self.spatial)
+        return AccelerometerFix(*self.get_gravity_raw())
+
+    def get_roll_pitch_yaw(self):
+        return RollPitchYaw.calculate_from(gravity=self.get_gravity(), magnetic_fields=self.get_compass_raw())
 
     def get_compass_fix(self):
         if not self.spatial.isAttached():
             return CompassFix()
-        return CompassFix.from_spatial(self.spatial)
+        return CompassFix(*self.get_compass_raw())
 
     def get_gyro(self):
         return self.gyro

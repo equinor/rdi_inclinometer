@@ -15,11 +15,12 @@ class CombinationStorage(Storage):
     def dump_list(self):
         return self.storages[0].dump_list()
 
-    def store(self, host_name, gps_fix, gyro, accelerometer_fix, compass_fix, typ):
+    def store(self, host_name, gps_fix, gyro, accelerometer_fix, compass_fix, roll_pitch_yaw, typ):
         for storage in self.storages:
             storage.store(host_name=host_name,
                           gps_fix=gps_fix,
                           gyro=gyro,
                           accelerometer_fix=accelerometer_fix,
                           compass_fix=compass_fix,
+                          roll_pitch_yaw=roll_pitch_yaw,
                           typ=typ)

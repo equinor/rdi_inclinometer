@@ -74,14 +74,14 @@ class KeyboardButton(Button):
     def read_input(self):
         print "Reading keyboard. Press 'a' for short, 's' for long, 'q' for stop"
         while True:
-            key = raw_input()
-            if key == "q":
-                print "Q was pressed. Namaste!"
-                break
-            elif key == "a":
-                self.key_pressed(0.2)
-            elif key == "s":
-                self.key_pressed(1.0)
+                key = raw_input()
+                if key == "q":
+                    print "Q was pressed. Namaste!"
+                    break
+                elif key == "a":
+                    self.key_pressed(0.2)
+                elif key == "s":
+                    self.key_pressed(1.0)
         thread.interrupt_main()
 
     def start_input_thread(self):

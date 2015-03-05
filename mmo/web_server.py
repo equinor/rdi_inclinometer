@@ -75,7 +75,7 @@ def dump_json():
 
 @app.route('/')
 def index():
-    return render_template('index.html', status = mmo.status)
+    return render_template('index.html', status=mmo.status)
 
 
 def start(binoculars, **kwargs):

@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 from mmo.axis_translator import *
 from mmo.database import Database
 
+
 class ConfigType(object):
     """
     :type axis_translator AxisTranslator
@@ -12,7 +13,6 @@ class ConfigType(object):
 
     def __init__(self):
         self.refresh()
-
 
     @staticmethod
     def get_sampling_rate():

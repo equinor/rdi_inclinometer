@@ -1,11 +1,13 @@
+# noinspection PyPep8Naming
+# because GPS is not really a constant after all
 from Phidgets.Devices.GPS import GPS as GpsPhidget
 from abc import abstractmethod
-from collections import OrderedDict
-import datetime
 
 from Phidgets.PhidgetException import PhidgetException
 
+
 from mmo.device.device import Device
+from mmo.device.output import GpsFix
 import mmo
 
 
@@ -16,8 +18,6 @@ class GpsLike(Device):
 
 
 class Gps(GpsLike):
-    lastPositionTime = datetime.datetime(1970, 1, 1)
-
     def __init__(self):
         gps = GpsPhidget()
         self.gps = gps
@@ -50,48 +50,9 @@ class Gps(GpsLike):
         mmo.status.gps_connected = False
         print "WARNING: GPS disconnected"
 
+    # noinspection PyUnusedLocal
+    # just to show that this parameter comes from the library anyway
     def position_change_handler(self, event):
         fix = GpsFix.from_phidget(self.gps)
         mmo.status.update_position(fix)
 
-
-class GpsFix(object):
-    """
-    Contains info from a GPS position
-    """
-
-    def __init__(self, timestamp=None, latitude=None, longitude=None, altitude=None, heading=None, velocity=None):
-        """
-        :type timestamp: datetime.datetime
-        """
-        self.timestamp = timestamp
-        self.latitude = latitude
-        self.longitude = longitude
-        self.altitude = altitude
-        self.heading = heading
-        self.velocity = velocity
-
-    def __str__(self):
-        return "t: {}, lat: {}, lon: {}, alt: {}, hdg: {}, vel: {}" \
-            .format(self.timestamp, self.latitude, self.longitude, self.altitude, self.heading, self.velocity)
-
-    def as_dict(self):
-        return OrderedDict((
-            ("gps_time", self.timestamp),
-            ("latitude", self.latitude),
-            ("longitude", self.longitude),
-            ("altitude", self.altitude),
-            ("heading", self.heading),
-            ("velocity", self.velocity)))
-
-    @staticmethod
-    def from_phidget(gps):
-        t = gps.getTime()
-        d = gps.getDate()
-        timestamp = datetime.datetime(d.year, d.month, d.day, t.hour, t.min, t.sec, t.ms * 1000)
-        return GpsFix(timestamp=timestamp,
-                      latitude=gps.getLatitude(),
-                      longitude=gps.getLongitude(),
-                      altitude=gps.getAltitude(),
-                      heading=gps.getHeading(),
-                      velocity=gps.getVelocity())

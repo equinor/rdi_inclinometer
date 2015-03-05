@@ -44,11 +44,13 @@ class Binoculars:
         accelerometer_fix = self.spatial.get_accelerometer_fix()
         compass_fix = self.spatial.get_compass_fix()
         gyro_fix = self.spatial.get_gyro()
+        roll_pitch_yaw = self.spatial.get_roll_pitch_yaw()
         self.storage.store(host_name=gethostname(),
                            gps_fix=gps_fix,
                            gyro=gyro_fix,
                            accelerometer_fix=accelerometer_fix,
                            compass_fix=compass_fix,
+                           roll_pitch_yaw=roll_pitch_yaw,
                            typ=str(button_type))
 
         if button_type == ButtonType.long:
