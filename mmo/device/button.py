@@ -1,13 +1,15 @@
 import time
 import thread
 from threading import Thread
+from Phidgets.PhidgetException import PhidgetException
 
-class Button:
+
+class Button(object):
     """
     Contains methods to encapsulate long/short press. key_pressed is the callback method to use
     """
-    def __init__(self):
-        self.down_time = None
+
+    down_time = None
 
     def key_down(self):
         self.down_time = time.clock()
@@ -27,11 +29,39 @@ class Button:
         Returns a phidget button if possible, otherwise it will be a keyboard button
         """
         try:
-            from mmo.device.button_phidget import PhidgetButton
             return PhidgetButton()
-        except Exception:
+        except PhidgetException:
             print "No phidget button detected -- using keyboard button."
             return KeyboardButton()
+
+
+class PhidgetButton(Button):
+    from Phidgets.Devices.InterfaceKit import InterfaceKit
+    """
+    Wraps a phidget button
+    """
+    def __init__(self, interface_kit=InterfaceKit()):
+        Button.__init__(self)
+        self.interface_kit = interface_kit
+        interface_kit.openPhidget()
+        interface_kit.setOnInputChangeHandler(self.input_change)
+        try:
+            interface_kit.waitForAttach(1000)
+        except PhidgetException:
+            print "Could not connect to button"
+            raise
+
+    def input_change(self, event):
+        if event.index == 0:
+            if event.state:
+                self.key_down()
+            else:
+                self.key_up()
+
+    def beep(self, seconds):
+        self.interface_kit.setOutputState(0, True)
+        time.sleep(seconds)
+        self.interface_kit.setOutputState(0, False)
 
 
 class KeyboardButton(Button):
@@ -39,7 +69,6 @@ class KeyboardButton(Button):
     Emulates a button using keyboard input (for use on PC)
     """
     def __init__(self):
-        Button.__init__(self)
         self.start_input_thread()
 
     def read_input(self):

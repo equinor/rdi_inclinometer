@@ -1,12 +1,13 @@
 from collections import OrderedDict
-from Phidgets.Devices.Spatial import Spatial
+
+from Phidgets.Devices.Spatial import Spatial as SpatialPhidget
 
 
 class Gyro:
-    def __init__(self):
-        self.gyro0 = 0.0
-        self.gyro1 = 0.0
-        self.gyro2 = 0.0
+    def __init__(self, gyro0=0.0, gyro1=0.0, gyro2=0.0):
+        self.gyro0 = gyro0
+        self.gyro1 = gyro1
+        self.gyro2 = gyro2
 
     _fields = ('gyro0', 'gyro1', 'gyro2')
 
@@ -32,7 +33,7 @@ class Gyro:
 
     def update_from(self, spatial):
         """
-        :type spatial: Spatial
+        :type spatial: SpatialPhidget
         """
         self.add(spatial.getAngularRate(0),
                  spatial.getAngularRate(1),

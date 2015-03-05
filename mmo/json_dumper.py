@@ -1,6 +1,7 @@
 import simplejson
 import datetime
 
+
 def json_serial(obj):
     """Default JSON serializer."""
 

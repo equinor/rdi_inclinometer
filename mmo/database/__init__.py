@@ -66,7 +66,7 @@ def create_tables():
 create_tables()
 
 
-class Database:
+class Database(object):
     @staticmethod
     def store_observation(host_name, gps_fix, gyro, accelerometer_fix, compass_fix, typ):
         obs = Observation()

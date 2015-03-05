@@ -1,9 +1,15 @@
+from Phidgets.PhidgetException import PhidgetException
 from mmo import config
 from collections import OrderedDict
 from math import acos, pi, radians, tan
 
+
 class AccelerometerFix:
-    def __init__(self, a0, a1, a2):
+    dip = None
+    dist = None
+    height = None
+
+    def __init__(self, a0=None, a1=None, a2=None):
         self.a0 = a0
         self.a1 = a1
         self.a2 = a2
@@ -15,6 +21,8 @@ class AccelerometerFix:
         return "a0={}, a1={}, a2={}, dip={}".format(self.a0, self.a1, self.a2, self.dip_angle())
 
     def dip_angle(self):
+        if self.a1 is None:
+            return None
         # l = sqrt(self.a0 * self.a0 + self.a1 * self.a1 + self.a2 * self.a2)
         r1 = acos(self.a1)
 
@@ -22,16 +30,22 @@ class AccelerometerFix:
         return dip1
 
     def distance(self):
+        if self.dip is None:
+            return None
         return config.height * tan(radians(90 - self.dip))
 
     @staticmethod
     def read_from(spatial):
         """
-        :type spatial: Spatial
+        :type spatial: Phidgets.Devices.Spatial.Spatial
         """
-        return AccelerometerFix(spatial.getAcceleration(0),
-                                spatial.getAcceleration(1),
-                                spatial.getAcceleration(2))
+        try:
+            return AccelerometerFix(spatial.getAcceleration(0),
+                                    spatial.getAcceleration(1),
+                                    spatial.getAcceleration(2))
+        except PhidgetException:
+            print "WARNING: Could not read accelerometer!"
+            return AccelerometerFix()
 
     def as_dict(self):
         return OrderedDict((

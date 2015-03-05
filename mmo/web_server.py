@@ -1,9 +1,10 @@
-import socket, random, string
+import socket
+import random
+import string
 
 from flask import Flask, make_response, request, render_template, send_file, redirect, flash
 
 from json_dumper import dump_as_json
-
 from export import excel
 from mmo.database import Database
 
@@ -32,7 +33,6 @@ def dump_csv():
 def dump_table():
     rows = registry.binoculars.storage.dump_list()
     return render_template('dataTable.html', rows=rows)
-    #return response
 
 
 @app.route('/data.xlsx')
