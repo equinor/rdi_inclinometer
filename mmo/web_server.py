@@ -4,6 +4,7 @@ import string
 
 from flask import Flask, make_response, request, render_template, send_file, redirect, flash
 
+import mmo
 from json_dumper import dump_as_json
 from export import excel
 from mmo.database import Database
@@ -52,6 +53,7 @@ def get_config():
 def set_config():
     Database.set_config(request.form)
     flash("Config was updated")
+    mmo.config.refresh()
     return redirect('/config.html')
 
 

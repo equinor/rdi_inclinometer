@@ -4,7 +4,7 @@ from Phidgets.Devices.Spatial import Spatial as SpatialPhidget
 
 from mmo.device.device import Device
 
-from mmo import config
+import mmo
 
 from mmo.device import AccelerometerFix, CompassFix, Gyro
 
@@ -65,12 +65,14 @@ class Spatial(SpatialLike):
 
     def attach_handler(self, event):
         super(Spatial, self).attach_handler(event)
-        self.spatial.setDataRate(config.sampling_rate)
+        mmo.status.spatial_connected = True
+        self.spatial.setDataRate(mmo.config.get_sampling_rate())
         self.reset_gyro()
         self.spatial.setOnSpatialDataHandler(self.on_spatial_data_handler)
 
     def detach_handler(self, event):
         super(Spatial, self).detach_handler(event)
+        mmo.status.spatial_connected = False
         print "WARNING: Spatial disconnected"
 
 

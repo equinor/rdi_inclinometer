@@ -3,10 +3,10 @@ from collections import OrderedDict
 import datetime
 
 from Phidgets.PhidgetException import PhidgetException
-
 import Phidgets.Devices.GPS
 
 from mmo.device.device import Device
+import mmo
 
 
 class GpsLike(Device):
@@ -47,8 +47,13 @@ class Gps(GpsLike):
                       heading=self.gps.getHeading(),
                       velocity=self.gps.getVelocity())
 
+    def attach_handler(self, event):
+        super(Gps, self).attach_handler(event)
+        mmo.status.gps_connected = True
+
     def detach_handler(self, event):
         super(Gps, self).detach_handler(event)
+        mmo.status.gps_connected = False
         print "WARNING: GPS disconnected"
 
 

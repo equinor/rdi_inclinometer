@@ -22,6 +22,10 @@ class Config(object):
         self.height = Database.get_config()['height']
 
 
+class Status(object):
+    spatial_connected = False
+    gps_connected = False
+
 config = Config()
 
-status = {}
+status = Status()
