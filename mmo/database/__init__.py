@@ -32,24 +32,24 @@ class Observation(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     system_time = Column(DateTime)
     button = Column(String)
-    compass0 = Column(Float)
-    compass1 = Column(Float)
-    compass2 = Column(Float)
-    gyro0 = Column(Float)
-    gyro1 = Column(Float)
-    gyro2 = Column(Float)
-    accelerometer0 = Column(Float)
-    accelerometer1 = Column(Float)
-    accelerometer2 = Column(Float)
-    accelerometer_dip = Column(Float)
-    accelerometer_dist = Column(Float)
+    c0 = Column(Float)
+    c1 = Column(Float)
+    c2 = Column(Float)
+    g0 = Column(Float)
+    g1 = Column(Float)
+    g2 = Column(Float)
+    a0 = Column(Float)
+    a1 = Column(Float)
+    a2 = Column(Float)
+    a_dip = Column(Float)
+    a_dist = Column(Float)
     height = Column(Float)
     gps_time = Column(DateTime)
-    latitude = Column(Float)
-    longitude = Column(Float)
-    altitude = Column(Float)
-    heading = Column(Float)
-    velocity = Column(Float)
+    lat = Column(Float)
+    lon = Column(Float)
+    alt = Column(Float)
+    hdg = Column(Float)
+    vel = Column(Float)
     comments = Column(Text)
 
     def as_dict(self):
@@ -75,27 +75,27 @@ class Database:
         obs.button = typ
         obs.system_time = datetime.datetime.now()
 
-        obs.accelerometer0 = accelerometer_fix.a0
-        obs.accelerometer1 = accelerometer_fix.a1
-        obs.accelerometer2 = accelerometer_fix.a2
-        obs.accelerometer_dip = accelerometer_fix.dip
-        obs.accelerometer_dist = accelerometer_fix.dist
+        obs.a0 = accelerometer_fix.a0
+        obs.a1 = accelerometer_fix.a1
+        obs.a2 = accelerometer_fix.a2
+        obs.a_dip = accelerometer_fix.dip
+        obs.a_dist = accelerometer_fix.dist
         obs.height = accelerometer_fix.height
 
         obs.gps_time = gps_fix.timestamp
-        obs.latitude = gps_fix.latitude
-        obs.longitude = gps_fix.longitude
-        obs.altitude = gps_fix.altitude
-        obs.heading = gps_fix.heading
-        obs.velocity = gps_fix.velocity
+        obs.lat = gps_fix.latitude
+        obs.lon = gps_fix.longitude
+        obs.alt = gps_fix.altitude
+        obs.hdg = gps_fix.heading
+        obs.vel = gps_fix.velocity
 
-        obs.compass0 = compass_fix.compass0
-        obs.compass1 = compass_fix.compass1
-        obs.compass2 = compass_fix.compass2
+        obs.c0 = compass_fix.compass0
+        obs.c1 = compass_fix.compass1
+        obs.c2 = compass_fix.compass2
 
-        obs.gyro0 = gyro.gyro0
-        obs.gyro1 = gyro.gyro1
-        obs.gyro2 = gyro.gyro2
+        obs.g0 = gyro.gyro0
+        obs.g1 = gyro.gyro1
+        obs.g2 = gyro.gyro2
 
         session = Session()
         session.add(obs)
