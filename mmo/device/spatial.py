@@ -68,3 +68,9 @@ class Spatial(SpatialLike):
         self.spatial.setDataRate(config.sampling_rate)
         self.reset_gyro()
         self.spatial.setOnSpatialDataHandler(self.on_spatial_data_handler)
+
+    def detach_handler(self, event):
+        super(Spatial, self).detach_handler(event)
+        print "WARNING: Spatial disconnected"
+
+

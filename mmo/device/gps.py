@@ -31,6 +31,7 @@ class Gps(GpsLike):
         if not self.gps.isAttached():
             print "WARNING: No GPS Attached"
             return GpsFix()
+
         if not self.gps.getPositionFixStatus():
             # No good GPS fix
             return GpsFix()
@@ -45,6 +46,10 @@ class Gps(GpsLike):
                       altitude=self.gps.getAltitude(),
                       heading=self.gps.getHeading(),
                       velocity=self.gps.getVelocity())
+
+    def detach_handler(self, event):
+        super(Gps, self).detach_handler(event)
+        print "WARNING: GPS disconnected"
 
 
 class GpsFix(object):
