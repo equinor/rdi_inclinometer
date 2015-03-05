@@ -22,7 +22,9 @@
                            name="selectedAxis"
                            value="{{axisOption}}"
                            {%if selectedAxis == axisOption %} checked="checked" {% endif %}
+
                             />
+                    <img src="{{url_for('static', filename='mmo/images/axis_{}.png'.format(axisOption))}}" alt="Axis setup {{axisOption}}" />
                     {{axisOption}}
                 </label><br/>
                 {% endfor %}
