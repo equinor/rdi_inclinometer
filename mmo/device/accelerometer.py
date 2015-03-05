@@ -18,13 +18,15 @@ class AccelerometerFix:
         self.height = config.height
 
     def __str__(self):
-        return "a0={}, a1={}, a2={}, dip={}".format(self.a0, self.a1, self.a2, self.dip_angle())
+        return "a0={}, a1={}, a2={}, dip={}".format(self.a0, self.a1, self.a2, self.dip)
 
     def dip_angle(self):
-        if self.a1 is None:
+        a0, a1, a2 = config.axis_translator.translate(self.a0, self.a1, self.a2)
+        print "{} {} {} becomes {} {} {}".format(self.a0, self.a1, self.a2, a0, a1, a2)
+        if a1 is None:
             return None
         # l = sqrt(self.a0 * self.a0 + self.a1 * self.a1 + self.a2 * self.a2)
-        r1 = acos(self.a1)
+        r1 = acos(max(-1, min(1, a1)))
 
         dip1 = 90 - (r1 * 180 / pi)
         return dip1

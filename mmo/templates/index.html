@@ -4,4 +4,26 @@
     <a href="/data.html">See data in table</a>
     <a href="/data.csv">See data in csv</a>
 </div>
+
+    <h2>Device status</h2>
+    <table class="table table-bordered">
+        <tbody>
+        <tr>
+            <th>GPS</th>
+            <td>{{ status.get_gps_status() }}</td>
+        </tr>
+        <tr>
+            <th>Spatial</th>
+            <td>{{ status.get_spatial_status() }}</td>
+        </tr>
+        <tr>
+            <th>System time</th>
+            <td>{{ status.get_system_time() }}</td>
+        </tr>
+        <tr>
+            <th>Last GPS Fix</th>
+            <td>{{ status.last_gps_fix }}</td>
+        </tr>
+        </tbody>
+    </table>
 {% endblock %}

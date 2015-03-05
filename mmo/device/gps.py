@@ -1,9 +1,9 @@
+from Phidgets.Devices.GPS import GPS as GpsPhidget
 from abc import abstractmethod
 from collections import OrderedDict
 import datetime
 
 from Phidgets.PhidgetException import PhidgetException
-import Phidgets.Devices.GPS
 
 from mmo.device.device import Device
 import mmo
@@ -16,11 +16,14 @@ class GpsLike(Device):
 
 
 class Gps(GpsLike):
+    lastPositionTime = datetime.datetime(1970, 1, 1)
+
     def __init__(self):
-        gps = Phidgets.Devices.GPS.GPS()
+        gps = GpsPhidget()
         self.gps = gps
         gps.setOnAttachHandler(self.attach_handler)
         gps.setOnDetachHandler(self.detach_handler)
+        gps.setOnPositionChangeHandler(self.position_change_handler)
         gps.openPhidget()
         try:
             gps.waitForAttach(1000)
@@ -36,16 +39,7 @@ class Gps(GpsLike):
             # No good GPS fix
             return GpsFix()
 
-        t = self.gps.getTime()
-        d = self.gps.getDate()
-        timestamp = datetime.datetime(d.year, d.month, d.day, t.hour, t.min, t.sec, t.ms * 1000)
-
-        return GpsFix(timestamp=timestamp,
-                      latitude=self.gps.getLatitude(),
-                      longitude=self.gps.getLongitude(),
-                      altitude=self.gps.getAltitude(),
-                      heading=self.gps.getHeading(),
-                      velocity=self.gps.getVelocity())
+        return GpsFix.from_phidget(self.gps)
 
     def attach_handler(self, event):
         super(Gps, self).attach_handler(event)
@@ -56,6 +50,10 @@ class Gps(GpsLike):
         mmo.status.gps_connected = False
         print "WARNING: GPS disconnected"
 
+    def position_change_handler(self, event):
+        fix = GpsFix.from_phidget(self.gps)
+        mmo.status.update_position(fix)
+
 
 class GpsFix(object):
     """
@@ -63,6 +61,9 @@ class GpsFix(object):
     """
 
     def __init__(self, timestamp=None, latitude=None, longitude=None, altitude=None, heading=None, velocity=None):
+        """
+        :type timestamp: datetime.datetime
+        """
         self.timestamp = timestamp
         self.latitude = latitude
         self.longitude = longitude
@@ -82,3 +83,15 @@ class GpsFix(object):
             ("altitude", self.altitude),
             ("heading", self.heading),
             ("velocity", self.velocity)))
+
+    @staticmethod
+    def from_phidget(gps):
+        t = gps.getTime()
+        d = gps.getDate()
+        timestamp = datetime.datetime(d.year, d.month, d.day, t.hour, t.min, t.sec, t.ms * 1000)
+        return GpsFix(timestamp=timestamp,
+                      latitude=gps.getLatitude(),
+                      longitude=gps.getLongitude(),
+                      altitude=gps.getAltitude(),
+                      heading=gps.getHeading(),
+                      velocity=gps.getVelocity())

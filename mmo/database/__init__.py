@@ -28,7 +28,7 @@ class Config(Base):
 
 class GpsTrack(Base):
     __tablename__ = "gps_track"
-    gps_time = Column(DateTime)
+    gps_time = Column(DateTime, primary_key=True)
     lat = Column(Float)
     lon = Column(Float)
     alt = Column(Float)
