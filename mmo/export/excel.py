@@ -21,7 +21,7 @@ def export(rows):
     date_time_format.set_num_format(DATE_FORMAT)
 
     worksheet = workbook.add_worksheet()
-    worksheet.freeze_panes(1,0)
+    worksheet.freeze_panes(1, 0)
 
     keys = rows[0].keys()
 
@@ -42,10 +42,8 @@ def export(rows):
     for row in rows:
         data.append([row[key] for key in keys])
 
-    worksheet.add_table(0,0,num_rows-1, num_cols-1, {
-        'columns' : columns,
-        'data': data}
-    )
+    worksheet.add_table(0, 0, num_rows - 1, num_cols - 1,
+                        {'columns': columns, 'data': data})
 
     workbook.close()
 

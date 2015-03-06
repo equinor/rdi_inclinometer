@@ -5,7 +5,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, Float, DateTime, Text
 from sqlalchemy.orm import sessionmaker
-
+import mmo
 
 Base = declarative_base()
 
@@ -26,6 +26,20 @@ class Config(Base):
         return self.key, self.value
 
 
+class GpsTrack(Base):
+    __tablename__ = "gps_track"
+    gps_time = Column(DateTime, primary_key=True)
+    lat = Column(Float)
+    lon = Column(Float)
+    alt = Column(Float)
+
+    def __init__(self, gps_time, lat, lon, alt):
+        self.gps_time = gps_time
+        self.lat = lat
+        self.lon = lon
+        self.alt = alt
+
+
 class Observation(Base):
     __tablename__ = 'observation'
     hostname = Column(String)
@@ -41,8 +55,7 @@ class Observation(Base):
     a0 = Column(Float)
     a1 = Column(Float)
     a2 = Column(Float)
-    a_dip = Column(Float)
-    a_dist = Column(Float)
+    axis = Column(String(length=1))
     height = Column(Float)
     gps_time = Column(DateTime)
     lat = Column(Float)
@@ -50,6 +63,9 @@ class Observation(Base):
     alt = Column(Float)
     hdg = Column(Float)
     vel = Column(Float)
+    roll = Column(Float)
+    pitch = Column(Float)
+    yaw = Column(Float)
     comments = Column(Text)
 
     def as_dict(self):
@@ -66,9 +82,9 @@ def create_tables():
 create_tables()
 
 
-class Database:
+class Database(object):
     @staticmethod
-    def store_observation(host_name, gps_fix, gyro, accelerometer_fix, compass_fix, typ):
+    def store_observation(host_name, gps_fix, gyro, accelerometer_fix, compass_fix, roll_pitch_yaw, typ):
         obs = Observation()
 
         obs.hostname = host_name
@@ -78,9 +94,8 @@ class Database:
         obs.a0 = accelerometer_fix.a0
         obs.a1 = accelerometer_fix.a1
         obs.a2 = accelerometer_fix.a2
-        obs.a_dip = accelerometer_fix.dip
-        obs.a_dist = accelerometer_fix.dist
-        obs.height = accelerometer_fix.height
+        obs.height = mmo.config.height
+        obs.axis = mmo.config.axis_translator.name
 
         obs.gps_time = gps_fix.timestamp
         obs.lat = gps_fix.latitude
@@ -93,12 +108,24 @@ class Database:
         obs.c1 = compass_fix.compass1
         obs.c2 = compass_fix.compass2
 
+        obs.roll = roll_pitch_yaw.roll
+        obs.pitch = roll_pitch_yaw.pitch
+        obs.yaw = roll_pitch_yaw.yaw
+
         obs.g0 = gyro.gyro0
         obs.g1 = gyro.gyro1
         obs.g2 = gyro.gyro2
 
         session = Session()
         session.add(obs)
+        session.commit()
+        session.close()
+
+    @staticmethod
+    def store_position(gps_time, latitude, longitude, altitude):
+        session = Session()
+        track = GpsTrack(gps_time, latitude, longitude, altitude)
+        session.add(track)
         session.commit()
         session.close()
 

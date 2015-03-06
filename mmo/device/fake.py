@@ -1,71 +1,36 @@
-class FakePhidget:
-    def setOnAttachHandler(self, attach_handler):
-        pass
-
-    def openPhidget(self, serial=-1):
-        pass
-
-    def waitForAttach(self, timeout):
-        pass
-
-class FakeGps(FakePhidget):
-    def getDate(self):
-        class FakeDate:
-            year=2014
-            month=1
-            day=1
-        return FakeDate()
-
-    def getTime(self):
-        class FakeTime:
-            hour=13
-            min=00
-            sec=30
-            ms=500
-        return FakeTime()
-
-    def getAltitude(self):
-        return 20.0
-
-    def getLatitude(self):
-        return 13.0
-
-    def getPositionFixStatus(self):
-        return True
-
-    def getVelocity(self):
-        return 1.0
-
-    def getLongitude(self):
-        return 37.0
-
-    def getHeading(self):
-        return 60.0
+from datetime import datetime
+from mmo.device import Gyro
+from mmo.device.output import CompassFix, AccelerometerFix
+from mmo.device.gps import GpsLike, GpsFix
+from mmo.device.spatial import SpatialLike
 
 
-class FakeSpatial(FakePhidget):
+class FakeGps(GpsLike):
+    def get_fix(self):
+        return GpsFix(timestamp=datetime.now(),
+                      latitude=13,
+                      longitude=37,
+                      altitude=20,
+                      heading=60,
+                      velocity=5)
 
 
-    def setOnAttachHandler(self, attachHandler):
-        pass
+class FakeSpatial(SpatialLike):
+    def get_gravity_raw(self):
+        return 0.0, 0.0, -1.0
 
-    def setDataRate(self, value):
-        pass
+    def get_compass_raw(self):
+        return 0.6, 0.6, 0.0
 
-    def getDataRate(self):
-        return 8
+    def reset_gyro(self):
+        print "Fakely resetting gyro"
 
-    def getAngularRate(self, index):
-        return 0.1
+    def get_compass_fix(self):
+        return CompassFix(*self.get_compass_raw())
 
-    def zeroGyro(self):
-        pass
+    def get_gyro(self):
+        return Gyro(0.0, 60.0, 0.0)
 
-    def getMagneticField(self, index):
-        return 0.2
+    def get_accelerometer_fix(self):
+        return AccelerometerFix(*self.get_gravity_raw())
 
-    def getAcceleration(self, index):
-        return 0.5
-
-    def setOnSpatialDataHandler(self, on_spatial_data_handler):
-        pass
