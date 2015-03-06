@@ -82,7 +82,6 @@ def gpx_track():
     return response
 
 
-
 @app.route('/')
 def index():
     return render_template('index.html', status=mmo.status)

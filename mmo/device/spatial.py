@@ -52,10 +52,11 @@ class Spatial(SpatialLike):
     Sample rate cannot be shorter than 8ms, or the compass won't work
     """
 
+    gyro = Gyro()
+    spatial = SpatialPhidget()
+
     def __init__(self):
-        spatial = SpatialPhidget()
-        self.spatial = spatial
-        self.gyro = Gyro()
+        spatial = self.spatial
         spatial.setOnAttachHandler(self.attach_handler)
         spatial.setOnDetachHandler(self.detach_handler)
         spatial.openPhidget()
@@ -94,7 +95,6 @@ class Spatial(SpatialLike):
         self.spatial.zeroGyro()
         self.gyro.reset()
 
-    i = 0
     # Updates the gyro integral
     # noinspection PyUnusedLocal
     def on_spatial_data_handler(self, event):
@@ -111,5 +111,3 @@ class Spatial(SpatialLike):
         super(Spatial, self).detach_handler(event)
         mmo.status.spatial_connected = False
         print "WARNING: Spatial disconnected"
-
-
