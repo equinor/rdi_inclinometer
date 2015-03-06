@@ -157,3 +157,10 @@ class Database(object):
             session.merge(Config(key, form[key]))
         session.commit()
         session.close()
+
+    @staticmethod
+    def store_comment(observation_id, comment):
+        session = Session()
+        obs = session.query(Observation).get(observation_id)
+        obs.comments = comment
+        session.commit()

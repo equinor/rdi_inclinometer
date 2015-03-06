@@ -87,6 +87,14 @@ def index():
     return render_template('index.html', status=mmo.status)
 
 
+@app.route('/comments', methods=['POST'])
+def save_comment():
+    observation_id = request.form['id']
+    comment = request.form['comment']
+    Database.store_comment(observation_id, comment)
+    return unicode("Stored comment for id {}: {}").format(observation_id, comment)
+
+
 def start(binoculars, **kwargs):
     registry.binoculars = binoculars
     app.run(host="0.0.0.0", **kwargs)
