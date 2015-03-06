@@ -39,6 +39,9 @@ class SpatialLike(Device):
         """
         return mmo.config.axis_translator.translate(*self.get_gravity_raw())
 
+    def get_compass(self):
+        return mmo.config.axis_translator.translate(*self.get_compass_raw())
+
     @abstractmethod
     def get_compass_raw(self):
         pass
@@ -76,7 +79,7 @@ class Spatial(SpatialLike):
         return AccelerometerFix(*self.get_gravity_raw())
 
     def get_roll_pitch_yaw(self):
-        return RollPitchYaw.calculate_from(gravity=self.get_gravity(), magnetic_fields=self.get_compass_raw())
+        return RollPitchYaw.calculate_from(gravity=self.get_gravity(), magnetic_fields=self.get_compass())
 
     def get_compass_fix(self):
         if not self.spatial.isAttached():
@@ -91,6 +94,7 @@ class Spatial(SpatialLike):
         self.spatial.zeroGyro()
         self.gyro.reset()
 
+    i = 0
     # Updates the gyro integral
     # noinspection PyUnusedLocal
     def on_spatial_data_handler(self, event):
