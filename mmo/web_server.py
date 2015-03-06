@@ -8,6 +8,7 @@ import mmo
 from json_dumper import dump_as_json
 from export import excel
 from mmo.database import Database
+from mmo.export.gpx import export_gpx
 
 
 class Registry:
@@ -71,6 +72,15 @@ def dump_json():
     response = make_response(text, 200)
     response.headers['Content-type'] = "application/json"
     return response
+
+
+@app.route('/track.gpx')
+def gpx_track():
+    gpx = export_gpx(Database.get_positions())
+    response = make_response(gpx, 200)
+    response.headers['Content-type'] = "application/gpx+xml"
+    return response
+
 
 
 @app.route('/')

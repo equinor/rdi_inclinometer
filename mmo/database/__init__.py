@@ -130,6 +130,11 @@ class Database(object):
         session.close()
 
     @staticmethod
+    def get_positions():
+        session = Session()
+        return session.query(GpsTrack).all()
+
+    @staticmethod
     def dump_observations():
         session = Session()
         fixes = session.query(Observation)
