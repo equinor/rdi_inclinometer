@@ -34,11 +34,11 @@ def dump_csv():
 
 @app.route('/data.html')
 def dump_table():
-    time_zone = 0
     fields = request.args.get('fields')
-    if request.args.get('tz'):
-        time_zone = int(request.args.get('tz'))
     rows = registry.binoculars.storage.dump_list()
+
+    if request.args.get('reverse') is not None:
+        rows.reverse()
 
     if fields is None:
         fields = rows[0].keys()
@@ -49,7 +49,11 @@ def dump_table():
         if type(data) is float:
             return round(data, 2)
         if type(data) is datetime:
-            return (data - timedelta(hours=time_zone)).strftime("%Y-%m-%d %H:%M:%S")
+            time_zone = 0
+            if request.args.get('tz'):
+                time_zone = float(request.args.get('tz'))
+            h, m = divmod(time_zone*60, 60)
+            return (data - timedelta(hours=h, minutes=m)).strftime("%Y-%m-%d %H:%M:%S")
         return data
 
     return render_template('dataTable.html', rows=rows, format_column=format_column, fields=fields)
