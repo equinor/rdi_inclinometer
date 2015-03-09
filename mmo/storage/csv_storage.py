@@ -22,7 +22,7 @@ class CsvStorage(Storage):
             return [row for row in reader]
 
     def store(self, host_name, gps_fix, gyro, accelerometer_fix, compass_fix, roll_pitch_yaw, typ):
-        date = datetime.datetime.now()
+        date = datetime.datetime.utcnow()
 
         data_dict = OrderedDict()
         data_dict["Host_name"] = host_name

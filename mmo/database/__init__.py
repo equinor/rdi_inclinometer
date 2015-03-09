@@ -89,7 +89,7 @@ class Database(object):
 
         obs.hostname = host_name
         obs.button = typ
-        obs.system_time = datetime.datetime.now()
+        obs.system_time = datetime.datetime.utcnow()
 
         obs.a0 = accelerometer_fix.a0
         obs.a1 = accelerometer_fix.a1

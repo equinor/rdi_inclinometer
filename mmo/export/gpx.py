@@ -9,7 +9,7 @@ def export_gpx(track_list):
     track_node = ElementTree.SubElement(gpx_root, 'trk')
     track_seg_node = ElementTree.SubElement(track_node, 'trkseg')
 
-    ElementTree.SubElement(track_node, 'name').text = "MMO Export from {} at {}".format(gethostname(), datetime.now())
+    ElementTree.SubElement(track_node, 'name').text = "MMO Export from {} at {}".format(gethostname(), datetime.utcnow())
 
     for p in track_list:
         pt = ElementTree.SubElement(track_seg_node, 'trkpt', lat=str(p.lat), lon=str(p.lon))

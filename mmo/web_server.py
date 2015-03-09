@@ -46,6 +46,8 @@ def dump_table():
         fields = fields.split(',')
 
     def format_column(data):
+        if data is None:
+            return '-'
         if type(data) is float:
             return round(data, 2)
         if type(data) is datetime:

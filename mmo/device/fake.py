@@ -7,7 +7,7 @@ from mmo.device.spatial import SpatialLike
 
 class FakeGps(GpsLike):
     def get_fix(self):
-        return GpsFix(timestamp=datetime.now(),
+        return GpsFix(timestamp=datetime.utcnow(),
                       latitude=13,
                       longitude=37,
                       altitude=20,

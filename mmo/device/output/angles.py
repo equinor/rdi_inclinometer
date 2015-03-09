@@ -13,6 +13,9 @@ class RollPitchYaw(object):
         g0, g1, g2 = gravity
         c0, c1, c2 = magnetic_fields
 
+        if g0 is None or c0 is None:
+            return RollPitchYaw(None, None, None)
+
         roll_angle_rad = atan2(-g0, g2)
         pitch_angle_rad = atan(-g1 / ((-g0 * sin(roll_angle_rad)) + (g2 * cos(roll_angle_rad))))
         yaw_angle_rad = atan2(

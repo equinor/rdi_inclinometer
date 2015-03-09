@@ -65,11 +65,15 @@ class Spatial(SpatialLike):
         """
         :returns: (float, float, float)
         """
+        if not self.spatial.isAttached():
+            return None, None, None
         return (self.spatial.getAcceleration(0),
                 self.spatial.getAcceleration(1),
                 self.spatial.getAcceleration(2))
 
     def get_compass_raw(self):
+        if not self.spatial.isAttached():
+            return None, None, None
         return (self.spatial.getMagneticField(0),
                 self.spatial.getMagneticField(1),
                 self.spatial.getMagneticField(2))

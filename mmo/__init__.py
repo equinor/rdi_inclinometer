@@ -53,7 +53,7 @@ class StatusType(object):
 
     @staticmethod
     def get_system_time():
-        return datetime.now()
+        return datetime.utcnow()
 
 
 config = ConfigType()
