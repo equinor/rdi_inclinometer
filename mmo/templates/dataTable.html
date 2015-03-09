@@ -1,10 +1,10 @@
 {% extends "layout.html" %}
 {% block outer_body %}
     <div class="dataTable">
-    <table class="table table-striped">
+    <table class="table table-striped fixed-header">
         <thead>
         <tr>
-            {% for key in rows[0] %}
+            {% for key in fields %}
                 <th>{{ key }}</th>
             {% endfor %}
         </tr>
@@ -12,17 +12,19 @@
         <tbody>
         {% for row in rows %}
             <tr>
-                {% for key in row %}
-                    <td>
-                        {% if key == 'comments' %}
+                {% for key in fields %}
+                    {% if key == 'comments' %}
+                        <td class="comment">
                             <input placeholder="..." type="text" id="comment_{{ row['id'] }}"
-                                   onfocus="this.style.background=''" onchange="saveComment('{{ row['id'] }}',this)" {% if row[key] %}
+                                   onfocus="this.style.background=''" onchange="saveComment('{{ row['id'] }}',this)"
+                                    {% if row[key] %}
                                    value="{{ row[key] }}" {% endif %}/>
-
-                        {% else %}
-                            {{ row[key] }}
-                        {% endif %}
-                    </td>
+                        </td>
+                    {% else %}
+                        <td style="white-space: nowrap">
+                            {{ format_column(row[key]) }}
+                        </td>
+                    {% endif %}
                 {% endfor %}
             </tr>
         {% endfor %}

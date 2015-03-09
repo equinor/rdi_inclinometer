@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 import socket
 import random
 import string
@@ -33,8 +34,25 @@ def dump_csv():
 
 @app.route('/data.html')
 def dump_table():
+    time_zone = 0
+    fields = request.args.get('fields')
+    if request.args.get('tz'):
+        time_zone = int(request.args.get('tz'))
     rows = registry.binoculars.storage.dump_list()
-    return render_template('dataTable.html', rows=rows)
+
+    if fields is None:
+        fields = rows[0].keys()
+    else:
+        fields = fields.split(',')
+
+    def format_column(data):
+        if type(data) is float:
+            return round(data, 2)
+        if type(data) is datetime:
+            return (data - timedelta(hours=time_zone)).strftime("%Y-%m-%d %H:%M:%S")
+        return data
+
+    return render_template('dataTable.html', rows=rows, format_column=format_column, fields=fields)
 
 
 @app.route('/data.xlsx')

@@ -1,13 +1,16 @@
 {% extends "layout.html" %}
 {% block body %}
-<div>
-<ul>
-    <li><a href="/data.html">See data in table</a></li>
-    <li><a href="/data.xlsx">See data in excel</a></li>
-    <li><a href="/data.csv">See data in csv</a></li>
-    <li><a href="/track.gpx">Get GPS track for all time</a></li>
-</ul>
-</div>
+    <div>
+        <ul>
+            <li><a href="/data.html">See data (all columns) in table</a></li>
+            <li><a href="/data.html?fields=system_time,button,height,gps_time,lat,lon,hdg,vel,roll,pitch,yaw,comments">
+                Some columns hidden - better for commenting
+            </a></li>
+            <li><a href="/data.xlsx">See data in excel</a></li>
+            <li><a href="/data.csv">See data in csv</a></li>
+            <li><a href="/track.gpx">Get GPS track for all time</a></li>
+        </ul>
+    </div>
 
     <h2>Device status</h2>
     <table class="table table-bordered">

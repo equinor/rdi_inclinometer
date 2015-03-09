@@ -3,6 +3,14 @@
 }
 
 .dataTable {
-    padding: 60px 0px;
+    padding: 60px 0;
+    width: 100%;
+}
+
+td.comment {
+    width: 100%;
+}
+
+td.comment input {
     width: 100%;
 }
