@@ -2,13 +2,20 @@
 {% block body %}
     <div>
         <ul>
-            <li><a href="/data.html">See data (all columns) in table</a></li>
-            <li><a href="/data.html?fields=system_time,button,height,gps_time,lat,lon,hdg,vel,roll,pitch,yaw,comments">
-                Some columns hidden - better for commenting
-            </a></li>
-            <li><a href="/data.xlsx">See data in excel</a></li>
-            <li><a href="/data.csv">See data in csv</a></li>
-            <li><a href="/track.gpx">Get GPS track for all time</a></li>
+            <li><a href="{{ url_for('dump_table') }}">See data (all columns) in table</a></li>
+            <li>
+                <a href="{{ url_for('dump_table') }}?fields=system_time,button,height,gps_time,lat,lon,hdg,vel,roll,pitch,yaw,comments">
+                    Some columns hidden - better for commenting
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('dump_table') }}?fields=system_time,button,height,gps_time,lat,lon,hdg,vel,roll,pitch,yaw,comments&reverse=1&tz=2.5">
+                    Some columns hidden, also reversed and showing date/time for timezone 2:30 (St. John)
+                </a>
+            </li>
+            <li><a href="{{ url_for('dump_excel') }}">See data in excel</a></li>
+            <li><a href="{{ url_for('dump_csv') }}">See data in csv</a></li>
+            <li><a href="{{ url_for('gpx_track') }}">Get GPS track for all time</a></li>
         </ul>
     </div>
 
@@ -24,7 +31,7 @@
             <td>{{ status.get_spatial_status() }}</td>
         </tr>
         <tr>
-            <th>System time</th>
+            <th>System time (UTC)</th>
             <td>{{ status.get_system_time() }}</td>
         </tr>
         <tr>
