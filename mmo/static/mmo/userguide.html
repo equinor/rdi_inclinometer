@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+    <h1>User guide</h1>
+    <h2>Software requirements</h2>
+    <h3>Install these on laptop before departure</h3>
+    <ul>
+        <li><a href="http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html" target="_blank">Putty</a> is a client that lets you connect to the SBC's via SSH.</li>
+        <li><a href="http://www.phidgets.com/docs/OS_-_Windows#Quick_Downloads" target="_blank">Phidgets libraries for Windows</a> are a set of tools that lets you interact with the sensors,
+        including the important Compass calibration</li>
+        <li><a href="https://support.apple.com/kb/dl999?locale=en_US" target="_blank">Bonjour for Windows</a> is useful for discovering SBC's more seamlessly. </li>
+    </ul>
+    <h2>Routines</h2>
+    <h3>Start of Day</h3>
+    <ul>
+        <li>Before starting a new day of observations, Calibrate compass using the Compass calibration tool installed.</li>
+        <li>Update the configuration (height, and axis of phidget on binoculars) if needed.</li>
+        <li>Align with horizon</li>
+    </ul>
+    <h3>During day</h3>
+    <ul>
+        <li>Keep an eye on observations, to make sure gyro does not drift too much. Realign with horizon if necessary.</li>
+    </ul>
+    <h3>After day</h3>
+    <ul>
+        <li>Export data of the day, so that you are sure you have a backup source.</li>
+    </ul>
+    <h2>Other useful notes</h2>
+    <h3>SBC hostnames</h3>
+    <ul>
+        <li>Hostname SBC1: 192.168.2.11</li>
+        <li>Hostname SBC2: 192.168.2.12</li>
+    </ul>
+
+    <p>With <a href="http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html" target="_blank">Putty</a> installed, you will be able to connect to the SBC's through SSH. Host address for SBC1 is root@192.168.2.11 and for SBC2 it is root@192.168.2.12 password is mobydick </p>
+    <p>You can also connect to the PhidgetSBC configuration page for each SBC. <a href="http://192.168.2.11:5000" target="_parent">SBC1</a> and <a href="http://192.168.2.12:5000" target="_parent">SBC2</a>. Username is admin, password is mobydick</p>
+    <p>If you need to connect to the router gateway interface, <a href="192.168.2.1" target="_blank">connect here</a>. Username is admin, password is mobydick </p>
+
+
+</body>
+</html>
