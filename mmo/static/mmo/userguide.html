@@ -13,6 +13,7 @@
         <li><a href="http://www.phidgets.com/docs/OS_-_Windows#Quick_Downloads" target="_blank">Phidgets libraries for Windows</a> are a set of tools that lets you interact with the sensors,
         including the important Compass calibration</li>
         <li><a href="https://support.apple.com/kb/dl999?locale=en_US" target="_blank">Bonjour for Windows</a> is useful for discovering SBC's more seamlessly. </li>
+        <li>Attach all sensors to laptop while being connected to the internet, to make sure drivers can be downloaded if necessary!</li>
     </ul>
     <h2>Routines</h2>
     <h3>Start of Day</h3>
@@ -30,7 +31,6 @@
         <li>Export data of the day, so that you are sure you have a backup source.</li>
     </ul>
     <h2>Other useful notes</h2>
-    <h3>SBC hostnames</h3>
     <ul>
         <li>Hostname SBC1: 192.168.2.11</li>
         <li>Hostname SBC2: 192.168.2.12</li>
@@ -39,7 +39,8 @@
     <p>With <a href="http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html" target="_blank">Putty</a> installed, you will be able to connect to the SBC's through SSH. Host address for SBC1 is root@192.168.2.11 and for SBC2 it is root@192.168.2.12 password is mobydick </p>
     <p>You can also connect to the PhidgetSBC configuration page for each SBC. <a href="http://192.168.2.11:5000" target="_parent">SBC1</a> and <a href="http://192.168.2.12:5000" target="_parent">SBC2</a>. Username is admin, password is mobydick</p>
     <p>If you need to connect to the router gateway interface, <a href="http://192.168.2.1" target="_blank">connect here</a>. Username is admin, password is mobydick </p>
-
+    <p>If there are bugfixes done while on the trip, once you are online, you need to get the latest version of the code. Connect with putty to the SBC. Go to the directory /usr/userapps/rdi_inclinometer and type "git pull". If the code changes are complex, you might need to reboot the SBC. That can be done by connecting to the PhidgetSBC configuration page, and then going into "System" -> "Reboot".</p>
+    <p>The router has been preconfigured to give the SBC's static IP's, and the SBC's have been preconfigured to automatically start the application, and connect to the router's network. If this fails, everything you need to fix the problem can be found in the web interface for the PhidgetSBC, and the router web interface.</p>
 
 </body>
 </html>
