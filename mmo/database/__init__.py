@@ -135,9 +135,10 @@ class Database(object):
         return session.query(GpsTrack).all()
 
     @staticmethod
-    def dump_observations():
+    def dump_observations(limit=1000000):
         session = Session()
-        fixes = session.query(Observation)
+        fixes = session.query(Observation).order_by(Observation.id.desc()).limit(limit)
+
         return [x.as_dict() for x in fixes.all()]
 
     @staticmethod

@@ -35,7 +35,7 @@ def dump_csv():
 @app.route('/data.html')
 def dump_table():
     fields = request.args.get('fields')
-    rows = registry.binoculars.storage.dump_list()
+    rows = registry.binoculars.storage.dump_list(200)
 
     if request.args.get('reverse') is not None:
         rows.reverse()

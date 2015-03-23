@@ -16,7 +16,7 @@ class CsvStorage(Storage):
         with open(self.file_path, "r") as f:
             return f.read()
 
-    def dump_list(self):
+    def dump_list(self, limit):
         with open(self.file_path, "r") as f:
             reader = csv.DictReader(f)
             return [row for row in reader]

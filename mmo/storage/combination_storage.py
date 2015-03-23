@@ -12,8 +12,8 @@ class CombinationStorage(Storage):
     def dump_table(self):
         return self.storages[0].dump_table()
 
-    def dump_list(self):
-        return self.storages[0].dump_list()
+    def dump_list(self,  limit=1000000):
+        return self.storages[0].dump_list(limit)
 
     def store(self, host_name, gps_fix, gyro, accelerometer_fix, compass_fix, roll_pitch_yaw, typ):
         for storage in self.storages:
