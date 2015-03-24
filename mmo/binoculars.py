@@ -59,3 +59,6 @@ class Binoculars:
             self.button.beep(2.0)
         else:
             self.button.beep(0.2)
+
+    def config_updated(self):
+        self.spatial.update_from_config()

@@ -10,6 +10,10 @@ from mmo.device.output import AccelerometerFix, CompassFix, RollPitchYaw
 
 class SpatialLike(Device):
     @abstractmethod
+    def set_average_count(self, count):
+        pass
+
+    @abstractmethod
     def get_accelerometer_fix(self):
         pass
 
@@ -46,6 +50,9 @@ class SpatialLike(Device):
     def get_compass_raw(self):
         pass
 
+    def set_sampling_rate(self, sampling_rate):
+        pass
+
 
 class Spatial(SpatialLike):
     """
@@ -54,12 +61,36 @@ class Spatial(SpatialLike):
 
     gyro = Gyro()
     spatial = SpatialPhidget()
+    averaging_array0 = [0.0]
+    averaging_array1 = [0.0]
+    averaging_array2 = [0.0]
+    averaging_index = 0
+    averaging_n = 1
 
     def __init__(self):
         spatial = self.spatial
         spatial.setOnAttachHandler(self.attach_handler)
         spatial.setOnDetachHandler(self.detach_handler)
         spatial.openPhidget()
+
+    def set_average_count(self, count):
+        self.averaging_array0 = [0.0] * count
+        self.averaging_array1 = [0.0] * count
+        self.averaging_array2 = [0.0] * count
+        self.averaging_n = count
+        self.averaging_index = 0
+
+    def get_gravity_avg(self):
+
+        a = (sum(self.averaging_array0) / self.averaging_n,
+                sum(self.averaging_array1) / self.averaging_n,
+                sum(self.averaging_array2) / self.averaging_n)
+        print a
+        print self.averaging_array0
+        print self.averaging_array1
+        print self.averaging_array2
+
+        return a
 
     def get_gravity_raw(self):
         """
@@ -84,7 +115,7 @@ class Spatial(SpatialLike):
         return AccelerometerFix(*self.get_gravity_raw())
 
     def get_roll_pitch_yaw(self):
-        return RollPitchYaw.calculate_from(gravity=self.get_gravity(), magnetic_fields=self.get_compass())
+        return RollPitchYaw.calculate_from(gravity=self.get_gravity_avg(), magnetic_fields=self.get_compass())
 
     def get_compass_fix(self):
         if not self.spatial.isAttached():
@@ -97,12 +128,19 @@ class Spatial(SpatialLike):
     def reset_gyro(self):
         print "Resetting gyro"
         self.spatial.zeroGyro()
+
         self.gyro.reset()
 
     # Updates the gyro integral
     # noinspection PyUnusedLocal
     def on_spatial_data_handler(self, event):
         self.gyro.update_from(self.spatial)
+        idx = self.averaging_index
+        a0, a1, a2 = self.get_gravity()
+        self.averaging_array0[idx] = a0
+        self.averaging_array1[idx] = a1
+        self.averaging_array2[idx] = a2
+        idx = (idx + 1) % self.averaging_n
 
     def attach_handler(self, event):
         super(Spatial, self).attach_handler(event)
@@ -115,3 +153,7 @@ class Spatial(SpatialLike):
         super(Spatial, self).detach_handler(event)
         mmo.status.spatial_connected = False
         print "WARNING: Spatial disconnected"
+
+    def update_from_config(self):
+        self.spatial.setDataRate(mmo.config.get_sampling_rate())
+        self.set_average_count(mmo.config.average_sample_count)

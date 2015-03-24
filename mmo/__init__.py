@@ -10,6 +10,9 @@ class ConfigType(object):
     height = 0
     axis_translator = None
     gps_timedelta = timedelta(seconds=10)
+    sampling_rate = 8
+    average_sample_count = 20
+    observations_to_show_on_main_page = 200
 
     def __init__(self):
         self.refresh()
@@ -24,6 +27,9 @@ class ConfigType(object):
     def refresh(self):
         db_config = Database.get_config()
         self.height = int(db_config['height'])
+        self.sampling_rate = int(db_config['samplingRate'])
+        self.average_sample_count = int(db_config['averageSampleCount'])
+        self.observations_to_show_on_main_page = db_config['observationsToShowOnMainPage']
 
         axis = db_config['selectedAxis']
         self.axis_translator = translator_dict[axis]

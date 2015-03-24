@@ -1,6 +1,7 @@
 from collections import OrderedDict
 import datetime
 
+from mmo.distance_calculator import calculate_distance
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, Float, DateTime, Text
@@ -138,15 +139,40 @@ class Database(object):
     def dump_observations(limit=1000000):
         session = Session()
         fixes = session.query(Observation).order_by(Observation.id.desc()).limit(limit)
+        dicts = [x.as_dict() for x in fixes.all()]
 
-        return [x.as_dict() for x in fixes.all()]
+        rev_dicts = reversed(dicts)
+        last_ref_pitch = None
+        for observation in rev_dicts:
+            observation['rpitch'] = None
+            observation['distance'] = None
+            if observation['pitch'] is None:
+                continue
+            if observation['button'] == 'long':
+                last_ref_pitch = observation['pitch']
+                observation['rpitch'] = 0.0
+                observation['distance'] = calculate_distance(height_m=observation['height'],
+                                                             degrees_below_horizon=0)
+            else:
+                if last_ref_pitch is None:
+                    observation['rpitch'] = None
+                else:
+                    observation['rpitch'] = last_ref_pitch - observation['pitch']
+                    observation['distance'] = calculate_distance(height_m=observation['height'],
+                                                                 degrees_below_horizon=observation['rpitch'])
+
+        return dicts
 
     @staticmethod
     def get_config():
         session = Session()
         configs = session.query(Config).all()
         # Initialize with default values
-        d = {'height': '20', 'selectedAxis': 'A'}
+        d = {'height': '20',
+             'selectedAxis': 'A',
+             'samplingRate': '8',
+             'averageSampleCount': '1',
+             'observationsToShowOnMainPage': '200'}
         for config in configs:
             d[config.key] = config.value
         return d
