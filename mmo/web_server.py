@@ -35,7 +35,7 @@ def dump_csv():
 @app.route('/data.html')
 def dump_table():
     fields = request.args.get('fields')
-    rows = registry.binoculars.storage.dump_list(200)
+    rows = registry.binoculars.storage.dump_list(mmo.config.observations_to_show_on_main_page)
 
     if request.args.get('reverse') is not None:
         rows.reverse()
@@ -79,6 +79,7 @@ def set_config():
     Database.set_config(request.form)
     flash("Config was updated")
     mmo.config.refresh()
+    registry.binoculars.config_updated(mmo.config)
     return redirect('/config.html')
 
 
@@ -121,5 +122,7 @@ def save_comment():
 
 def start(binoculars, **kwargs):
     registry.binoculars = binoculars
+    mmo.config.refresh()
+    registry.binoculars.config_updated()
     app.run(host="0.0.0.0", **kwargs)
 

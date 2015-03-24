@@ -34,3 +34,5 @@ class FakeSpatial(SpatialLike):
     def get_accelerometer_fix(self):
         return AccelerometerFix(*self.get_gravity_raw())
 
+    def set_average_count(self, count):
+        pass
