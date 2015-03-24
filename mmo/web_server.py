@@ -79,7 +79,7 @@ def set_config():
     Database.set_config(request.form)
     flash("Config was updated")
     mmo.config.refresh()
-    registry.binoculars.config_updated(mmo.config)
+    registry.binoculars.config_updated()
     return redirect('/config.html')
 
 
