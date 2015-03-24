@@ -11,19 +11,12 @@ class ConfigType(object):
     height = 0
     axis_translator = None
     gps_timedelta = timedelta(seconds=10)
-    sampling_rate = 8
+    sampling_rate = 8 # Varies between 4 and 1000
     average_sample_count = 20
     observations_to_show_on_main_page = 200
 
     def __init__(self):
         self.refresh()
-
-    @staticmethod
-    def get_sampling_rate():
-        """
-        8 is the lowest allowed number to use with the compass
-        """
-        return 8
 
     def refresh(self):
         db_config = Database.get_config()

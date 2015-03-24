@@ -23,7 +23,7 @@
 
                 <div class="col-sm-3 input-group">
                     <select id="samplingRate" name="samplingRate" class="form-control">
-                        {% for op in "8,10,12,16,20,64,128,256".split(",") %}
+                        {% for op in "8,10,12,16,20,64,128,200,400,500,800,1000".split(",") %}
                             <option {% if op == samplingRate %}selected="selected"{% endif %}>{{ op }}</option>
                         {% endfor %}
                     </select>

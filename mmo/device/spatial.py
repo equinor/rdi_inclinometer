@@ -138,7 +138,7 @@ class Spatial(SpatialLike):
     def attach_handler(self, event):
         super(Spatial, self).attach_handler(event)
         mmo.status.spatial_connected = True
-        self.spatial.setDataRate(mmo.config.get_sampling_rate())
+        self.spatial.setDataRate(mmo.config.sampling_rate)
         self.reset_gyro()
         self.spatial.setOnSpatialDataHandler(self.on_spatial_data_handler)
 
@@ -149,5 +149,5 @@ class Spatial(SpatialLike):
 
     def update_from_config(self):
         if self.spatial.isAttached():
-            self.spatial.setDataRate(mmo.config.get_sampling_rate())
+            self.spatial.setDataRate(mmo.config.sampling_rate)
         self.set_average_count(mmo.config.average_sample_count)
