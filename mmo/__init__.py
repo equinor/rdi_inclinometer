@@ -22,7 +22,7 @@ class ConfigType(object):
         db_config = Database.get_config()
         self.height = int(db_config['height'])
         self.sampling_rate = int(db_config['samplingRate'])
-        self.average_sample_count = int(db_config['averageSampleCount'])
+        #self.average_sample_count = int(db_config['averageSampleCount'])
         self.observations_to_show_on_main_page = db_config['observationsToShowOnMainPage']
 
         axis = db_config['selectedAxis']

@@ -170,7 +170,7 @@ class Database(object):
         # Initialize with default values
         d = {'height': '20',
              'selectedAxis': 'A',
-             'samplingRate': '8',
+             'samplingRate': '200',
              'averageSampleCount': '1',
              'observationsToShowOnMainPage': '200'}
         for config in configs:
