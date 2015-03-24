@@ -140,7 +140,7 @@ class Spatial(SpatialLike):
         self.averaging_array0[idx] = a0
         self.averaging_array1[idx] = a1
         self.averaging_array2[idx] = a2
-        idx = (idx + 1) % self.averaging_n
+        self.averaging_index = (idx + 1) % self.averaging_n
 
     def attach_handler(self, event):
         super(Spatial, self).attach_handler(event)
