@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from os import system
 from mmo.axis_translator import *
 from mmo.database import Database
 
@@ -61,6 +62,9 @@ class StatusType(object):
     def get_system_time():
         return datetime.utcnow()
 
+    def update_system_time_from_gps(self):
+        gps_time_string = self.last_gps_fix.timestamp.isoformat()
+        system('date -s {}'.format(gps_time_string))
 
 config = ConfigType()
 

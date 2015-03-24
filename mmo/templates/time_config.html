@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+{% block body %}
+    <table class="table table-bordered">
+        <tbody>
+        <tr>
+            <th>Current system time</th>
+            <td>{{ system_time }}</td>
+        </tr>
+        <tr>
+            <th>Current GPS time</th>
+            <td>{{ gps_time }}</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <form action="" method="post">
+        <button type="submit">Set system time from GPS</button>
+    </form>
+{% endblock %}

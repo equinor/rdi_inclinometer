@@ -54,7 +54,7 @@ def dump_table():
             time_zone = 0
             if request.args.get('tz'):
                 time_zone = float(request.args.get('tz'))
-            h, m = divmod(time_zone*60, 60)
+            h, m = divmod(time_zone * 60, 60)
             return (data - timedelta(hours=h, minutes=m)).strftime("%Y-%m-%d %H:%M:%S")
         return data
 
@@ -118,6 +118,22 @@ def save_comment():
     comment = request.form['comment']
     Database.store_comment(observation_id, comment)
     return unicode("Stored comment for id {}: {}").format(observation_id, comment)
+
+
+@app.route('/set_time', methods=['POST', 'GET'])
+def set_time_from_gps():
+    if request.method == 'GET':
+        if not mmo.status.gps_connected:
+            return "GPS must be connected"
+        if mmo.status.last_gps_fix is None:
+            return "GPS has not received any time signal yet"
+        return render_template('time_config.html',
+                               system_time=mmo.status.get_system_time(),
+                               gps_time=mmo.status.last_gps_fix.timestamp)
+    elif request.method == 'POST':
+        mmo.status.update_system_time_from_gps()
+        flash("Time was updated")
+        return redirect('/set_time')
 
 
 def start(binoculars, **kwargs):

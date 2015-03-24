@@ -81,16 +81,9 @@ class Spatial(SpatialLike):
         self.averaging_index = 0
 
     def get_gravity_avg(self):
-
-        a = (sum(self.averaging_array0) / self.averaging_n,
+        return (sum(self.averaging_array0) / self.averaging_n,
                 sum(self.averaging_array1) / self.averaging_n,
                 sum(self.averaging_array2) / self.averaging_n)
-        print a
-        print self.averaging_array0
-        print self.averaging_array1
-        print self.averaging_array2
-
-        return a
 
     def get_gravity_raw(self):
         """
@@ -155,5 +148,6 @@ class Spatial(SpatialLike):
         print "WARNING: Spatial disconnected"
 
     def update_from_config(self):
-        self.spatial.setDataRate(mmo.config.get_sampling_rate())
+        if self.spatial.isAttached():
+            self.spatial.setDataRate(mmo.config.get_sampling_rate())
         self.set_average_count(mmo.config.average_sample_count)

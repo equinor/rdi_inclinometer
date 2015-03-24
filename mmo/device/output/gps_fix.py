@@ -1,6 +1,13 @@
 from collections import OrderedDict
 from datetime import datetime
+from Phidgets.PhidgetException import PhidgetException
 
+
+def wrap_exception_with_none(op):
+    try:
+        return op()
+    except PhidgetException:
+        return None
 
 class GpsFix(object):
     """
@@ -40,5 +47,5 @@ class GpsFix(object):
                       latitude=gps.getLatitude(),
                       longitude=gps.getLongitude(),
                       altitude=gps.getAltitude(),
-                      heading=gps.getHeading(),
-                      velocity=gps.getVelocity())
+                      heading=wrap_exception_with_none(gps.getHeading),
+                      velocity=wrap_exception_with_none(gps.getVelocity))

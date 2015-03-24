@@ -1,73 +1,80 @@
 {% extends "layout.html" %}
 {% block body %}
-<div>
-    <form action="" method="POST" class="form-horizontal">
-        <h1>Configuration</h1>
 
-        <div class="form-group">
-            <label for="height" class="col-sm-2 control-label">Height over sea level</label>
+    <h2><a href="{{ url_for('set_time_from_gps') }}">Time settings</a></h2>
+    <h1>Configuration</h1>
 
-            <div class="col-sm-3 input-group">
-                <input type="text" id="height" name="height" value="{{height}}" class="form-control"/>
-                <div class="input-group-addon">m</div>
+
+
+    <div>
+        <form action="" method="POST" class="form-horizontal">
+            <div class="form-group">
+                <label for="height" class="col-sm-2 control-label">Height over sea level</label>
+
+                <div class="col-sm-3 input-group">
+                    <input type="text" id="height" name="height" value="{{ height }}" class="form-control"/>
+
+                    <div class="input-group-addon">m</div>
+                </div>
             </div>
-        </div>
 
-        <div class="form-group">
-            <label for="samplingRate" class="col-sm-2 control-label">Sampling rate</label>
+            <div class="form-group">
+                <label for="samplingRate" class="col-sm-2 control-label">Sampling rate</label>
 
-            <div class="col-sm-3 input-group">
-                <select id="samplingRate" name="samplingRate" class="form-control">
-                    {% for op in "8,10,12,16,20,64,128,256".split(",") %}
-                        <option {% if op == samplingRate %}selected="selected"{% endif %}>{{ op }}</option>
+                <div class="col-sm-3 input-group">
+                    <select id="samplingRate" name="samplingRate" class="form-control">
+                        {% for op in "8,10,12,16,20,64,128,256".split(",") %}
+                            <option {% if op == samplingRate %}selected="selected"{% endif %}>{{ op }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <div class="input-group-addon">ms/sample</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="averageSampleCount" class="col-sm-2 control-label">Average over N samples</label>
+
+                <div class="col-sm-3 input-group">
+                    <input type="text" id="averageSampleCount" name="averageSampleCount"
+                           value="{{ averageSampleCount }}" class="form-control"/>
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <label for="observationsToShowOnMainPage" class="col-sm-2 control-label">Observations to show in
+                    observations page</label>
+
+                <div class="col-sm-3 input-group">
+                    <input type="text" id="observationsToShowOnMainPage" name="observationsToShowOnMainPage"
+                           value="{{ observationsToShowOnMainPage }}" class="form-control"/>
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Axis configuration</label>
+
+                <div class="col-sm-3">
+                    {% for axisOption in axisOptions %}
+                        <label>
+                            <input class="input-control" type="radio"
+                                   name="selectedAxis"
+                                   value="{{ axisOption }}"
+                                    {% if selectedAxis == axisOption %} checked="checked" {% endif %}
+
+                                    />
+                            <img src="{{ url_for('static', filename='mmo/images/axis_{}.png'.format(axisOption)) }}"
+                                 alt="Axis setup {{ axisOption }}"/>
+                            {{ axisOption }}
+                        </label><br/>
                     {% endfor %}
-                </select>
-                <div class="input-group-addon">ms/sample</div>
+                </div>
             </div>
-        </div>
+            <button class="btn btn-default" type="submit">Save</button>
 
-        <div class="form-group">
-            <label for="averageSampleCount" class="col-sm-2 control-label">Average over N samples</label>
+        </form>
 
-            <div class="col-sm-3 input-group">
-                <input type="text" id="averageSampleCount" name="averageSampleCount"
-                       value="{{averageSampleCount}}" class="form-control"/>
-            </div>
-        </div>
-
-
-        <div class="form-group">
-            <label for="observationsToShowOnMainPage" class="col-sm-2 control-label">Observations to show in observations page</label>
-
-            <div class="col-sm-3 input-group">
-                <input type="text" id="observationsToShowOnMainPage" name="observationsToShowOnMainPage"
-                       value="{{observationsToShowOnMainPage}}" class="form-control"/>
-            </div>
-        </div>
-
-
-
-        <div class="form-group">
-            <label class="col-sm-2 control-label">Axis configuration</label>
-
-            <div class="col-sm-3">
-                {% for axisOption in axisOptions %}
-                <label>
-                    <input class="input-control" type="radio"
-                           name="selectedAxis"
-                           value="{{axisOption}}"
-                           {%if selectedAxis == axisOption %} checked="checked" {% endif %}
-
-                            />
-                    <img src="{{url_for('static', filename='mmo/images/axis_{}.png'.format(axisOption))}}" alt="Axis setup {{axisOption}}" />
-                    {{axisOption}}
-                </label><br/>
-                {% endfor %}
-            </div>
-        </div>
-        <button class="btn btn-default" type="submit">Save</button>
-
-    </form>
-
-</div>
+    </div>
 {% endblock %}
