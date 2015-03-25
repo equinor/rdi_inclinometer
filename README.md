@@ -1,7 +1,7 @@
 # Marine Mammal Observatory
 
 ## Python prerequisites
-* apt-get install gcc python python-dev python-pip
+* apt-get install git gcc python python-dev python-pip
 
 
 ## Getting started
