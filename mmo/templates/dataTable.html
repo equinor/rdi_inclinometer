@@ -1,6 +1,23 @@
 {% extends "layout.html" %}
 {% block outer_body %}
     <div class="dataTable">
+    <ul class="pagination">
+        {% if (page - 1) in pages %}
+            <li><a href="?page={{ page - 1 }}">&laquo;</a></li>
+        {% else %}
+            <li class="disabled"><a>&laquo;</a></li>
+        {% endif %}
+
+        {%  for p in pages %}
+            <li {% if page == p %}class="active"{% endif %}><a href="?page={{ p }}">{{ p }}</a></li>
+        {% endfor %}
+
+        {% if (page + 1) in pages %}
+            <li><a href="?page={{ page + 1 }}">&raquo;</a></li>
+        {% else %}
+            <li class="disabled"><a>&raquo;</a></li>
+        {% endif %}
+    </ul>
     <table class="table table-striped fixed-header">
         <thead>
         <tr>
@@ -27,8 +44,14 @@
                     {% endif %}
                 {% endfor %}
             </tr>
+        {% else %}
+            <h1>No observations found</h1>
         {% endfor %}
         </tbody>
     </table>
-{% endblock %}
 </div>
+{% endblock %}
+{% block extra_head %}
+    <link rel="next" href="?page={{ page + 1 }}"/>
+    <link rel="prev" href="?page={{ page - 1 }}"/>
+{% endblock %}

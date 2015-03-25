@@ -4,6 +4,7 @@ import random
 import string
 
 from flask import Flask, make_response, request, render_template, send_file, redirect, flash
+from math import ceil
 
 import mmo
 from json_dumper import dump_as_json
@@ -35,13 +36,26 @@ def dump_csv():
 @app.route('/data.html')
 def dump_table():
     fields = request.args.get('fields')
-    rows = registry.binoculars.storage.dump_list(mmo.config.observations_to_show_on_main_page)
+    page = request.args.get('page')
+
+    if page is None:
+        page = 1
+    else:
+        page = int(page)
+    num_records = mmo.config.get_num_records()
+    records_per_page = mmo.config.observations_to_show_on_main_page
+
+    pages = range(1, int(ceil(num_records / records_per_page) + 2))
+    rows = registry.binoculars.storage.dump_list(limit=records_per_page, page=page)
 
     if request.args.get('reverse') is not None:
         rows.reverse()
 
     if fields is None:
-        fields = rows[0].keys()
+        if len(rows) == 0:
+            fields = []
+        else:
+            fields = rows[0].keys()
     else:
         fields = fields.split(',')
 
@@ -58,7 +72,12 @@ def dump_table():
             return (data - timedelta(hours=h, minutes=m)).strftime("%Y-%m-%d %H:%M:%S")
         return data
 
-    return render_template('dataTable.html', rows=rows, format_column=format_column, fields=fields)
+    return render_template('dataTable.html',
+                           rows=rows,
+                           format_column=format_column,
+                           fields=fields,
+                           page=page,
+                           pages=pages)
 
 
 @app.route('/data.xlsx')

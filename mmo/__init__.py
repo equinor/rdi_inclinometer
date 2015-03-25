@@ -23,10 +23,14 @@ class ConfigType(object):
         self.height = int(db_config['height'])
         self.sampling_rate = int(db_config['samplingRate'])
         #self.average_sample_count = int(db_config['averageSampleCount'])
-        self.observations_to_show_on_main_page = db_config['observationsToShowOnMainPage']
+        self.observations_to_show_on_main_page = int(db_config['observationsToShowOnMainPage'])
 
         axis = db_config['selectedAxis']
         self.axis_translator = translator_dict[axis]
+
+    @staticmethod
+    def get_num_records():
+        return Database.get_num_observations()
 
 
 class StatusType(object):

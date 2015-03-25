@@ -23,7 +23,7 @@ class Storage(object):
         pass
 
     @abstractmethod
-    def dump_list(self, limit=1000000):
+    def dump_list(self, limit=1000000, page=1):
         return []
 
     def dump_csv(self):

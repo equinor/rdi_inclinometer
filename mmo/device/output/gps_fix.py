@@ -9,6 +9,7 @@ def wrap_exception_with_none(op):
     except PhidgetException:
         return None
 
+
 class GpsFix(object):
     """
     Contains info from a GPS position

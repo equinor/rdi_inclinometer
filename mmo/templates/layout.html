@@ -8,6 +8,7 @@
     <script type="text/javascript" src="{{url_for('static', filename='mmo/script.js')}}"></script>
     <link rel="stylesheet" href="{{url_for('static', filename='bootstrap/css/bootstrap.min.css')}}">
     <link rel="stylesheet" href="{{url_for('static', filename='mmo/layout.css')}}">
+    {% block extra_head %}{% endblock %}
 </head>
 
 <body>
