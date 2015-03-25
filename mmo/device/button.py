@@ -15,7 +15,8 @@ class Button(object):
         self.down_time = time.clock()
 
     def key_up(self):
-        self.key_pressed(time.clock() - self.down_time)
+        if self.down_time is not None:
+            self.key_pressed(time.clock() - self.down_time)
 
     def key_pressed(self, param):
         pass
