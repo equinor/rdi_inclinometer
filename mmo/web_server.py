@@ -10,6 +10,7 @@ from json_dumper import dump_as_json
 from export import excel
 from mmo.database import Database
 from mmo.export.gpx import export_gpx
+from mmo.timer import Timer
 
 
 class Registry:
@@ -34,6 +35,7 @@ def dump_csv():
 
 @app.route('/data.html')
 def dump_table():
+    start_timer = Timer("data.html")
     fields = request.args.get('fields')
     rows = registry.binoculars.storage.dump_list(mmo.config.observations_to_show_on_main_page)
 
@@ -57,9 +59,11 @@ def dump_table():
             h, m = divmod(time_zone * 60, 60)
             return (data - timedelta(hours=h, minutes=m)).strftime("%Y-%m-%d %H:%M:%S")
         return data
-
-    return render_template('dataTable.html', rows=rows, format_column=format_column, fields=fields)
-
+    render_timer = Timer("render")
+    result = render_template('dataTable.html', rows=rows, format_column=format_column, fields=fields)
+    render_timer.elapsed()
+    start_timer.elapsed()
+    return result
 
 @app.route('/data.xlsx')
 def dump_excel():
