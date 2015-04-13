@@ -31,6 +31,11 @@ class FakeSpatial(SpatialLike):
     def get_gyro(self):
         return Gyro(0.0, 60.0, 0.0)
 
+    def get_gyro_momentary(self):
+        return {'gm0': 0.0,
+                'gm1': 1.0,
+                'gm2': 2.0}
+
     def get_accelerometer_fix(self):
         return AccelerometerFix(*self.get_gravity_raw())
 

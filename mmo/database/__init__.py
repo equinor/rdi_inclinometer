@@ -53,6 +53,9 @@ class Observation(Base):
     g0 = Column(Float)
     g1 = Column(Float)
     g2 = Column(Float)
+    gm0 = Column(Float)
+    gm1 = Column(Float)
+    gm2 = Column(Float)
     a0 = Column(Float)
     a1 = Column(Float)
     a2 = Column(Float)
@@ -85,7 +88,7 @@ create_tables()
 
 class Database(object):
     @staticmethod
-    def store_observation(host_name, gps_fix, gyro, accelerometer_fix, compass_fix, roll_pitch_yaw, typ):
+    def store_observation(host_name, gps_fix, gyro, gyro_momentary, accelerometer_fix, compass_fix, roll_pitch_yaw, typ):
         obs = Observation()
 
         obs.hostname = host_name
@@ -116,6 +119,10 @@ class Database(object):
         obs.g0 = gyro.gyro0
         obs.g1 = gyro.gyro1
         obs.g2 = gyro.gyro2
+
+        obs.gm0 = gyro_momentary['gm0']
+        obs.gm1 = gyro_momentary['gm1']
+        obs.gm2 = gyro_momentary['gm2']
 
         session = Session()
         session.add(obs)

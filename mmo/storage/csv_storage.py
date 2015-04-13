@@ -21,7 +21,7 @@ class CsvStorage(Storage):
             reader = csv.DictReader(f)
             return [row for row in reader]
 
-    def store(self, host_name, gps_fix, gyro, accelerometer_fix, compass_fix, roll_pitch_yaw, typ):
+    def store(self, host_name, gps_fix, gyro, gyro_momentary, accelerometer_fix, compass_fix, roll_pitch_yaw, typ):
         date = datetime.datetime.utcnow()
 
         data_dict = OrderedDict()
@@ -30,6 +30,7 @@ class CsvStorage(Storage):
         data_dict["System_time"] = date
         data_dict.update(gps_fix.as_dict())
         data_dict.update(gyro.as_dict())
+        data_dict.update(gyro_momentary)
         data_dict.update(accelerometer_fix.as_dict())
         data_dict.update(compass_fix.as_dict())
         data_dict.update(roll_pitch_yaw.as_dict())

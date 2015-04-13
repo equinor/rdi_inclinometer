@@ -10,7 +10,7 @@ class Storage(object):
         pass
 
     @abstractmethod
-    def store(self, host_name, gps_fix, gyro, accelerometer_fix, compass_fix, roll_pitch_yaw, typ):
+    def store(self, host_name, gps_fix, gyro, gyro_momentary, accelerometer_fix, compass_fix, roll_pitch_yaw, typ):
         """
         :type host_name: str
         :type compass_fix: mmo.device.output.CompassFix

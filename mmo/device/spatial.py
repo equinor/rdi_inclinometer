@@ -30,6 +30,10 @@ class SpatialLike(Device):
         pass
 
     @abstractmethod
+    def get_gyro_momentary(self):
+        pass
+
+    @abstractmethod
     def get_gravity_raw(self):
         """
         :returns: (float, float, float)
@@ -118,6 +122,13 @@ class Spatial(SpatialLike):
     def get_gyro(self):
         return self.gyro
 
+    def get_gyro_momentary(self):
+        return {
+            'gm0': self.spatial.getAngularRate(0),
+            'gm1': self.spatial.getAngularRate(1),
+            'gm2': self.spatial.getAngularRate(2)
+        }
+
     def reset_gyro(self):
         print "Resetting gyro"
         self.spatial.zeroGyro()
@@ -150,4 +161,4 @@ class Spatial(SpatialLike):
     def update_from_config(self):
         if self.spatial.isAttached():
             self.spatial.setDataRate(mmo.config.sampling_rate)
-        #self.set_average_count(mmo.config.average_sample_count)
+            # self.set_average_count(mmo.config.average_sample_count)
