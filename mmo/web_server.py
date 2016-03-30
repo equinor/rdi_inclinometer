@@ -20,7 +20,7 @@ class Registry:
 
 registry = Registry()
 
-app = Flask(__name__, static_url_path='', template_folder='templates')
+app = Flask(__name__, static_url_path='/static', template_folder='templates')
 app.secret_key = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(20))
 app.config['hostname'] = socket.gethostname()
 
