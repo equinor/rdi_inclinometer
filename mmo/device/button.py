@@ -3,7 +3,6 @@ import thread
 from threading import Thread
 from Phidgets.PhidgetException import PhidgetException
 
-
 class Button(object):
     """
     Contains methods to encapsulate long/short press. key_pressed is the callback method to use
@@ -34,6 +33,31 @@ class Button(object):
         except PhidgetException:
             print "No phidget button detected -- using keyboard button."
             return KeyboardButton()
+
+
+class RaspberryButton(Button):
+    import RPi.GPIO as GPIO
+    BUTTON=11
+    BUZZER=13
+    def __init__(self):
+        Button.__init__(self)
+        GPIO.setmode(GPIO.BOARD)
+        GPIO.setup(self.BUZZER, GPIO.OUT)
+        GPIO.output(self.BUZZER, GPIO_LOW)
+        GPIO.setup(self.BUTTON, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+        GPIO.add_event_detect(self.BUTTON, GPIO.FALLING, callback=self.key_down, bouncetime=300)
+        GPIO.add_event_detect(self.BUTTON, GPIO.RISING, callback=self.key_up, bouncetime=300)
+
+    def unbeep(self, seconds):
+        def f():
+            time.sleep(seconds)
+            GPIO.output(self.BUZZER, GPIO.LOW)
+        return f;
+
+    def beep(self, seconds):
+        GPIO.output(self.BUZZER, GPIO.HIGH)
+        t = Thread(target=self.unbeep(seconds))
+        t.start()
 
 
 class PhidgetButton(Button):
