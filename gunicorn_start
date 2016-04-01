@@ -2,4 +2,4 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd $DIR
 source ../venv/bin/activate
-gunicorn start_actual:app --log-file /var/log/gunicorn.log --error-logfile /var/log/gunicorn-err.log 
+gunicorn start_actual:app --log-file /var/log/gunicorn.log --error-logfile /var/log/gunicorn-err.log --workers=1 

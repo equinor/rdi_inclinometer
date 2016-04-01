@@ -154,10 +154,10 @@ def set_time_from_gps():
         flash("Time was updated")
         return redirect('/set_time')
 
-
-def start(binoculars, **kwargs):
+def prestart(binoculars):
     registry.binoculars = binoculars
     mmo.config.refresh()
     registry.binoculars.config_updated()
-    app.run(host="0.0.0.0", **kwargs)
 
+def start(binoculars, **kwargs):
+    app.run(host="0.0.0.0", **kwargs)

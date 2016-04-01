@@ -12,5 +12,5 @@ button = Button.get_for_system()
 binoculars = Binoculars(button=button, gps=Gps(), spatial=Spatial(), storage=storage)
 
 from mmo import web_server
+web_server.prestart(binoculars)
 app = web_server.app
-#web_server.start(binoculars, debug=False, use_reloader=False)

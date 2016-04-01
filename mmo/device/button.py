@@ -43,22 +43,25 @@ class Button(object):
 
 
 class RaspberryButton(Button):
-    BUTTON=11
+    BUTTON1=8
+    BUTTON2=10
     BUZZER=13
     def __init__(self):
         Button.__init__(self)
         GPIO.setmode(GPIO.BOARD)
         GPIO.setup(self.BUZZER, GPIO.OUT)
         GPIO.output(self.BUZZER, GPIO.LOW)
-        GPIO.setup(self.BUTTON, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-        GPIO.add_event_detect(self.BUTTON, GPIO.BOTH, callback=self.edge, bouncetime=100)
+        GPIO.setup(self.BUTTON1, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.setup(self.BUTTON2, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.add_event_detect(self.BUTTON1, GPIO.FALLING, callback=self.edge, bouncetime=500)
+        GPIO.add_event_detect(self.BUTTON2, GPIO.FALLING, callback=self.edge, bouncetime=500)
         atexit.register(GPIO.cleanup)
 
-    def edge(self):
-        if GPIO.input(self.BUTTON):
-            self.key_up()
-        else:
-            self.key_down()
+    def edge(self, pin):
+        if pin == self.BUTTON1:
+            self.key_pressed(0.2)
+        if pin == self.BUTTON2:
+            self.key_pressed(1.0)
 
     def unbeep(self, seconds):
         def f():

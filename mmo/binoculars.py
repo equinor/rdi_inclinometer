@@ -30,6 +30,7 @@ class Binoculars:
     # noinspection PyTypeChecker
     # -- because IDEA interprets enum as int
     def key_pressed(self, length):
+        print "Key pressed", length
         if length < 1.0:
             self.button_click(ButtonType.short)
         else:
@@ -58,9 +59,9 @@ class Binoculars:
         if button_type == ButtonType.long:
             self.spatial.reset_gyro()
             # The user should hold the binoculars still for two seconds
-            self.button.beep(2.0)
+            self.button.beep(0.1)
         else:
-            self.button.beep(0.2)
+            self.button.beep(0.01)
 
     def config_updated(self):
         self.spatial.update_from_config()
