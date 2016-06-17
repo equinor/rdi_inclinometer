@@ -3,7 +3,6 @@ import thread
 import atexit
 from threading import Thread
 from Phidgets.PhidgetException import PhidgetException
-import RPi.GPIO as GPIO
 
 class Button(object):
     """
@@ -47,6 +46,7 @@ class RaspberryButton(Button):
     BUTTON2=10
     BUZZER=13
     def __init__(self):
+        import RPi.GPIO as GPIO
         Button.__init__(self)
         GPIO.setmode(GPIO.BOARD)
         GPIO.setup(self.BUZZER, GPIO.OUT)
@@ -64,12 +64,14 @@ class RaspberryButton(Button):
             self.key_pressed(1.0)
 
     def unbeep(self, seconds):
+        import RPi.GPIO as GPIO
         def f():
             time.sleep(seconds)
             GPIO.output(self.BUZZER, GPIO.LOW)
-        return f;
+        return f
 
     def beep(self, seconds):
+        import RPi.GPIO as GPIO
         GPIO.output(self.BUZZER, GPIO.HIGH)
         t = Thread(target=self.unbeep(seconds))
         t.start()
