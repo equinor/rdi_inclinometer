@@ -83,7 +83,7 @@ def dump_table():
 @app.route('/data.xlsx')
 def dump_excel():
     filename = excel.export(registry.binoculars.storage.dump_list())
-    response = send_file(filename)
+    response = send_file(filename, as_attachment=True, attachment_filename="mmo_export.xlsx")
     return response
 
 
