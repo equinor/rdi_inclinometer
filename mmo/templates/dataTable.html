@@ -22,7 +22,8 @@
         <thead>
         <tr>
             {% for key in fields %}
-                <th>{{ key }}</th>
+                <th>{{ key }}
+                    {% if key == 'distance' %}(km){% endif %}</th>
             {% endfor %}
         </tr>
         </thead>
