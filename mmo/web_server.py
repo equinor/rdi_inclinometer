@@ -150,14 +150,19 @@ def set_time_from_gps():
                                system_time=mmo.status.get_system_time(),
                                gps_time=mmo.status.last_gps_fix.timestamp)
     elif request.method == 'POST':
-        mmo.status.update_system_time_from_gps()
-        flash("Time was updated")
+        date_updated_ok = mmo.status.update_system_time_from_gps()
+        if date_updated_ok:
+            flash("Time was updated")
+        else:
+            flash("Could not set time", "error")
         return redirect('/set_time')
+
 
 def prestart(binoculars):
     registry.binoculars = binoculars
     mmo.config.refresh()
     registry.binoculars.config_updated()
+
 
 def start(binoculars, **kwargs):
     app.run(host="0.0.0.0", **kwargs)
