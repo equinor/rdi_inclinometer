@@ -61,7 +61,7 @@ class StatusType(object):
 
     def update_system_time_from_gps(self):
         gps_time_string = self.last_gps_fix.timestamp.isoformat()
-        system('date -s {}'.format(gps_time_string))
+        system('sudo date -s {}'.format(gps_time_string))
 
 config = ConfigType()
 
