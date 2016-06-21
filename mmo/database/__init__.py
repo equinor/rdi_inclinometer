@@ -179,7 +179,8 @@ class Database(object):
              'selectedAxis': 'A',
              'samplingRate': '200',
              'averageSampleCount': '1',
-             'observationsToShowOnMainPage': '25'}
+             'observationsToShowOnMainPage': '25',
+             'sampleSpeak': '1'}
         for config in configs:
             d[config.key] = config.value
         return d
