@@ -8,6 +8,7 @@ class Voice:
         self.engine = pyttsx.init()
 
         self.thread = Thread(target=self._start_loop)
+        self.thread.daemon = True
         self.thread.start()
         atexit.register(self.stop_loop_thread)
 
