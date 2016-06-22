@@ -9,8 +9,8 @@ from mmo.storage import CsvStorage, DatabaseStorage, CombinationStorage
 
 storage = CombinationStorage(DatabaseStorage(), CsvStorage('output_actual.csv'))
 button = Button.get_for_system()
-
-say = Voice().say
+voice = Voice()
+say = voice.say
 
 
 def say_nothing(text):

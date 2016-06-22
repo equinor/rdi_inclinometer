@@ -161,9 +161,13 @@ def set_time_from_gps():
 
 @app.route('/click/<length>', methods=['POST'])
 def click(length):
-    if length==ButtonType.long or length == ButtonType.short:
-        registry.binoculars.button_click(length)
-        return "OK"
+    if length=='short':
+        registry.binoculars.button_click(ButtonType.short)
+    elif length=='long':
+        registry.binoculars.button_click(ButtonType.long)
+    else:
+        return "", 404
+    return "OK " + length
 
 
 def prestart(binoculars):

@@ -127,8 +127,9 @@ class Database(object):
         session = Session()
         session.add(obs)
         session.commit()
+        stored_id = obs.id
         session.close()
-        return obs.id
+        return stored_id
 
     @staticmethod
     def store_position(gps_time, latitude, longitude, altitude):
