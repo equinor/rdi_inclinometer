@@ -163,6 +163,7 @@ def set_time_from_gps():
 def click(length):
     if length==ButtonType.long or length == ButtonType.short:
         registry.binoculars.button_click(length)
+        return "OK"
 
 
 def prestart(binoculars):
