@@ -19,6 +19,7 @@ class Storage(object):
         :type gyro: mmo.device.Gyro
         :type roll_pitch_yaw: mmo.device.output.RollPitchYaw
         :type gps_fix: mmo.device.GpsFix
+        :return id or None
         """
         pass
 

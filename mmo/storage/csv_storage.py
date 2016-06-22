@@ -44,3 +44,4 @@ class CsvStorage(Storage):
             if not file_already_exists:
                 writer.writeheader()
             writer.writerow(data_dict)
+        return None

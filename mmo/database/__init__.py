@@ -128,6 +128,7 @@ class Database(object):
         session.add(obs)
         session.commit()
         session.close()
+        return obs.id
 
     @staticmethod
     def store_position(gps_time, latitude, longitude, altitude):
