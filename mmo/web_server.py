@@ -9,6 +9,7 @@ from math import ceil
 import mmo
 from json_dumper import dump_as_json
 from export import excel
+from mmo.binoculars import ButtonType
 from mmo.database import Database
 from mmo.export.gpx import export_gpx
 
@@ -156,6 +157,12 @@ def set_time_from_gps():
         else:
             flash("Could not set time", "error")
         return redirect('/set_time')
+
+
+@app.route('/click/<length>', methods=['POST'])
+def click(length):
+    if length==ButtonType.long or length == ButtonType.short:
+        registry.binoculars.button_click(length)
 
 
 def prestart(binoculars):
