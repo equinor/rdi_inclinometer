@@ -9,6 +9,7 @@ from math import ceil
 import mmo
 from json_dumper import dump_as_json
 from export import excel
+from mmo.binoculars import ButtonType
 from mmo.database import Database
 from mmo.export.gpx import export_gpx
 
@@ -83,7 +84,7 @@ def dump_table():
 @app.route('/data.xlsx')
 def dump_excel():
     filename = excel.export(registry.binoculars.storage.dump_list())
-    response = send_file(filename)
+    response = send_file(filename, as_attachment=True, attachment_filename="mmo_export.xlsx")
     return response
 
 
@@ -150,14 +151,30 @@ def set_time_from_gps():
                                system_time=mmo.status.get_system_time(),
                                gps_time=mmo.status.last_gps_fix.timestamp)
     elif request.method == 'POST':
-        mmo.status.update_system_time_from_gps()
-        flash("Time was updated")
+        date_updated_ok = mmo.status.update_system_time_from_gps()
+        if date_updated_ok:
+            flash("Time was updated")
+        else:
+            flash("Could not set time", "error")
         return redirect('/set_time')
 
 
-def start(binoculars, **kwargs):
+@app.route('/click/<length>', methods=['POST'])
+def click(length):
+    if length=='short':
+        registry.binoculars.button_click(ButtonType.short)
+    elif length=='long':
+        registry.binoculars.button_click(ButtonType.long)
+    else:
+        return "", 404
+    return "OK " + length
+
+
+def prestart(binoculars):
     registry.binoculars = binoculars
     mmo.config.refresh()
     registry.binoculars.config_updated()
-    app.run(host="0.0.0.0", **kwargs)
 
+
+def start(binoculars, **kwargs):
+    app.run(host="0.0.0.0", **kwargs)

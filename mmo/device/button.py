@@ -1,8 +1,8 @@
 import time
 import thread
+import atexit
 from threading import Thread
 from Phidgets.PhidgetException import PhidgetException
-
 
 class Button(object):
     """
@@ -32,8 +32,49 @@ class Button(object):
         try:
             return PhidgetButton()
         except PhidgetException:
-            print "No phidget button detected -- using keyboard button."
-            return KeyboardButton()
+            print "No phidget button detected -- using raspberry GPIO button."
+            try:
+                return RaspberryButton()
+            except Exception as e:
+                print e
+                print "Problem initializing Raspberry PI GPIO button -- using keyboard button."
+                return KeyboardButton()
+
+
+class RaspberryButton(Button):
+    BUTTON1=8
+    BUTTON2=10
+    BUZZER=13
+    def __init__(self):
+        import RPi.GPIO as GPIO
+        Button.__init__(self)
+        GPIO.setmode(GPIO.BOARD)
+        GPIO.setup(self.BUZZER, GPIO.OUT)
+        GPIO.output(self.BUZZER, GPIO.LOW)
+        GPIO.setup(self.BUTTON1, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.setup(self.BUTTON2, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.add_event_detect(self.BUTTON1, GPIO.FALLING, callback=self.edge, bouncetime=500)
+        GPIO.add_event_detect(self.BUTTON2, GPIO.FALLING, callback=self.edge, bouncetime=500)
+        atexit.register(GPIO.cleanup)
+
+    def edge(self, pin):
+        if pin == self.BUTTON1:
+            self.key_pressed(0.2)
+        if pin == self.BUTTON2:
+            self.key_pressed(1.0)
+
+    def unbeep(self, seconds):
+        import RPi.GPIO as GPIO
+        def f():
+            time.sleep(seconds)
+            GPIO.output(self.BUZZER, GPIO.LOW)
+        return f
+
+    def beep(self, seconds):
+        import RPi.GPIO as GPIO
+        GPIO.output(self.BUZZER, GPIO.HIGH)
+        t = Thread(target=self.unbeep(seconds))
+        t.start()
 
 
 class PhidgetButton(Button):
