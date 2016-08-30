@@ -5,7 +5,7 @@ FLAKE8 := $(shell command -v flake8 2>/dev/null)
 all: clean-pyc test dev-run
 
 
-test: pep8
+test:
 	pip install -r requirements.txt -q
 	python tests.py
 
