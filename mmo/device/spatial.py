@@ -55,6 +55,14 @@ class SpatialLike(Device):
     def set_sampling_rate(self, sampling_rate):
         pass
 
+    @abstractmethod
+    def update_from_config(self):
+        """
+        Updates the spatial device with new parameters
+        :returns: None
+        """
+        pass
+
 
 class Spatial(SpatialLike):
     from Phidgets.Devices.Spatial import Spatial as SpatialPhidget
