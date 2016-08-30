@@ -1,11 +1,14 @@
 from datetime import datetime
-from mmo.device import Gyro
+from mmo.device.gyro import Gyro
 from mmo.device.output import CompassFix, AccelerometerFix
 from mmo.device.gps import GpsLike, GpsFix
 from mmo.device.spatial import SpatialLike
-
+from mmo import status
 
 class FakeGps(GpsLike):
+    def __init__(self):
+        status.gps_connected = True
+
     def get_fix(self):
         return GpsFix(timestamp=datetime.utcnow(),
                       latitude=13,
@@ -16,6 +19,9 @@ class FakeGps(GpsLike):
 
 
 class FakeSpatial(SpatialLike):
+    def __init__(self):
+        status.spatial_connected = True
+        
     def get_gravity_raw(self):
         return 0.0, 0.0, -1.0
 
@@ -40,4 +46,7 @@ class FakeSpatial(SpatialLike):
         return AccelerometerFix(*self.get_gravity_raw())
 
     def set_average_count(self, count):
+        pass
+
+    def update_from_config(self):
         pass

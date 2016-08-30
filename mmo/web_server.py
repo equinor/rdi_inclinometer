@@ -3,7 +3,8 @@ import socket
 import random
 import string
 
-from flask import Flask, make_response, request, render_template, send_file, redirect, flash
+from flask import Flask, make_response, request, render_template, \
+    send_file, redirect, flash
 from math import ceil
 
 import mmo
@@ -22,7 +23,9 @@ class Registry:
 registry = Registry()
 
 app = Flask(__name__, static_url_path='/static', template_folder='templates')
-app.secret_key = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(20))
+app.secret_key = ''.join(
+    random.SystemRandom().choice(string.ascii_uppercase + string.digits)
+    for _ in range(20))
 app.config['hostname'] = socket.gethostname()
 
 
@@ -161,9 +164,9 @@ def set_time_from_gps():
 
 @app.route('/click/<length>', methods=['POST'])
 def click(length):
-    if length=='short':
+    if length == 'short':
         registry.binoculars.button_click(ButtonType.short)
-    elif length=='long':
+    elif length == 'long':
         registry.binoculars.button_click(ButtonType.long)
     else:
         return "", 404

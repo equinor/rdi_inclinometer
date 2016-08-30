@@ -14,7 +14,7 @@ say = voice.say
 
 
 def say_nothing(text):
-   pass
+    pass
 
 binoculars = Binoculars(button=button, gps=Gps(), spatial=Spatial(), storage=storage, say=say)
 

@@ -1,10 +1,8 @@
 from abc import abstractmethod
 
-from Phidgets.Devices.Spatial import Spatial as SpatialPhidget
-
 import mmo
 from mmo.device.device import Device
-from mmo.device import Gyro
+from mmo.device.gyro import Gyro
 from mmo.device.output import AccelerometerFix, CompassFix, RollPitchYaw
 
 
@@ -57,14 +55,24 @@ class SpatialLike(Device):
     def set_sampling_rate(self, sampling_rate):
         pass
 
+    @abstractmethod
+    def update_from_config(self):
+        """
+        Updates the spatial device with new parameters
+        :returns: None
+        """
+        pass
+
 
 class Spatial(SpatialLike):
+    from Phidgets.Devices.Spatial import Spatial as SpatialPhidget
+
     """
     Sample rate cannot be shorter than 8ms, or the compass won't work
     """
 
     gyro = Gyro()
-    spatial = SpatialPhidget()
+    spatial = None
     # averaging_array0 = [0.0]
     # averaging_array1 = [0.0]
     # averaging_array2 = [0.0]
@@ -72,6 +80,7 @@ class Spatial(SpatialLike):
     # averaging_n = 1
 
     def __init__(self):
+        self.spatial = SpatialPhidget()
         spatial = self.spatial
         spatial.setOnAttachHandler(self.attach_handler)
         spatial.setOnDetachHandler(self.detach_handler)
