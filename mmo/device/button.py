@@ -2,12 +2,13 @@ import time
 import thread
 import atexit
 from threading import Thread
-#from Phidgets.PhidgetException import PhidgetException
+# from Phidgets.PhidgetException import PhidgetException
 
 
 class Button(object):
     """
-    Contains methods to encapsulate long/short press. key_pressed is the callback method to use
+    Contains methods to encapsulate long/short press.
+    key_pressed is the callback method to use
     """
 
     down_time = None
@@ -28,14 +29,15 @@ class Button(object):
     @staticmethod
     def get_for_system():
         """
-        Returns a phidget button if possible, otherwise it will be a keyboard button
+        Returns a phidget button if possible, otherwise it will
+        be a keyboard button
         """
         try:
             return RaspberryButton()
         except Exception as e:
             print(e)
-            print(
-                "Problem initializing Raspberry PI GPIO button -- using KeyboardButton.")
+            print("Problem initializing Raspberry PI GPIO button"
+                  " -- using KeyboardButton.")
             return KeyboardButton()
 
 
@@ -117,7 +119,8 @@ class KeyboardButton(Button):
         self.start_input_thread()
 
     def read_input(self):
-        print "Reading keyboard. Press 'a' for short, 's' for long, 'q' for stop"
+        print("Reading keyboard."
+              "Press 'a' for short, 's' for long, 'q' for stop")
         while True:
             key = raw_input()
             if key == "q":

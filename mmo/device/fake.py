@@ -1,5 +1,5 @@
 from datetime import datetime
-from mmo.device import Gyro
+from mmo.device.gyro import Gyro
 from mmo.device.output import CompassFix, AccelerometerFix
 from mmo.device.gps import GpsLike, GpsFix
 from mmo.device.spatial import SpatialLike

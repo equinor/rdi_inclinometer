@@ -11,7 +11,10 @@ storage = CombinationStorage(DatabaseStorage(), CsvStorage('output_fake.csv'))
 button = KeyboardButton()
 
 
-binoculars = Binoculars(button=button, gps=FakeGps(), spatial=spatial, storage=storage)
+def say_nothing(text):
+    pass
+
+binoculars = Binoculars(button=button, gps=FakeGps(), spatial=spatial, storage=storage, say=say_nothing)
 
 from mmo import web_server
 web_server.start(binoculars=binoculars, debug=True, use_reloader=False)
