@@ -47,3 +47,6 @@ class FakeSpatial(SpatialLike):
 
     def set_average_count(self, count):
         pass
+
+    def update_from_config(self):
+        pass
