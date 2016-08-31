@@ -19,13 +19,13 @@ class CombinationStorage(Storage):
         sample_id = None
         for storage in self.storages:
             temp_id = storage.store(host_name=host_name,
-                          gps_fix=gps_fix,
-                          gyro=gyro,
-                          gyro_momentary=gyro_momentary,
-                          accelerometer_fix=accelerometer_fix,
-                          compass_fix=compass_fix,
-                          roll_pitch_yaw=roll_pitch_yaw,
-                          typ=typ)
+                                    gps_fix=gps_fix,
+                                    gyro=gyro,
+                                    gyro_momentary=gyro_momentary,
+                                    accelerometer_fix=accelerometer_fix,
+                                    compass_fix=compass_fix,
+                                    roll_pitch_yaw=roll_pitch_yaw,
+                                    typ=typ)
             if temp_id is not None:
                 sample_id = temp_id
         return sample_id

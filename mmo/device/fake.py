@@ -1,6 +1,6 @@
 from datetime import datetime
 from mmo.device.gyro import Gyro
-from mmo.device.output import CompassFix, AccelerometerFix
+from mmo.device.output import CompassFix, AccelerometerFix, RollPitchYaw
 from mmo.device.gps import GpsLike, GpsFix
 from mmo.device.spatial import SpatialLike
 from mmo import status
@@ -21,7 +21,7 @@ class FakeGps(GpsLike):
 class FakeSpatial(SpatialLike):
     def __init__(self):
         status.spatial_connected = True
-        
+
     def get_gravity_raw(self):
         return 0.0, 0.0, -1.0
 
@@ -50,3 +50,6 @@ class FakeSpatial(SpatialLike):
 
     def update_from_config(self):
         pass
+
+    def get_roll_pitch_yaw(self):
+        return RollPitchYaw.calculate_from(self.get_gravity_raw(), self.get_compass_raw())
