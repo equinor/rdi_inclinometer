@@ -40,6 +40,12 @@ class Binoculars:
     def button_click(self, button_type):
         """
         :type button_type: ButtonType
+
+        Device will get a reading from the GPS, Accelerometer,
+        Compass and Gyro,
+
+        If user pressed the long button the device will reset
+        the Gyro.
         """
 
         gps_fix = self.gps.get_fix()
