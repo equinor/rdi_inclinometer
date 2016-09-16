@@ -65,7 +65,6 @@ class SpatialLike(Device):
 
 
 class Spatial(SpatialLike):
-    from Phidgets.Devices.Spatial import Spatial as SpatialPhidget
 
     """
     Sample rate cannot be shorter than 8ms, or the compass won't work
@@ -80,6 +79,7 @@ class Spatial(SpatialLike):
     # averaging_n = 1
 
     def __init__(self):
+        from Phidgets.Devices.Spatial import Spatial as SpatialPhidget
         self.spatial = SpatialPhidget()
         spatial = self.spatial
         spatial.setOnAttachHandler(self.attach_handler)

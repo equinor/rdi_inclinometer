@@ -2,7 +2,8 @@
 
 from mmo.binoculars import Binoculars
 from mmo.device.button import Button
-from mmo.device import Gps, Spatial
+from mmo.device.gps import Gps
+from mmo.device.spatial import Spatial
 from mmo.device.tts import Voice
 from mmo.storage import CsvStorage, DatabaseStorage, CombinationStorage
 

@@ -28,7 +28,7 @@
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
                 <li><a href="/">Home</a></li>
-                <li><a href="{{ url_for('dump_table') }}?fields=system_time,button,height,gps_time,lat,lon,hdg,vel,roll,pitch,yaw,distance,comments">Observations</a></li>
+                <li><a href="{{ url_for('dump_table') }}?fields=id,system_time,button,height,gps_time,lat,lon,hdg,vel,roll,pitch,yaw,distance,comments">Observations</a></li>
                 <li><a href="{{ url_for('get_config') }}">Config</a></li>
             </ul>
         </div>
