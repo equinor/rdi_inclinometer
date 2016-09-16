@@ -104,16 +104,21 @@ class Spatial(SpatialLike):
         """
         if not self.spatial.isAttached():
             return None, None, None
-        return (self.spatial.getAcceleration(0),
-                self.spatial.getAcceleration(1),
-                self.spatial.getAcceleration(2))
+
+        tmp = (self.spatial.getAcceleration(0),
+               self.spatial.getAcceleration(1),
+               self.spatial.getAcceleration(2))
+        print("gravity raw: {}".format(tmp))
+        return tmp
 
     def get_compass_raw(self):
         if not self.spatial.isAttached():
             return None, None, None
-        return (self.spatial.getMagneticField(0),
-                self.spatial.getMagneticField(1),
-                self.spatial.getMagneticField(2))
+        tmp = (self.spatial.getMagneticField(0),
+               self.spatial.getMagneticField(1),
+               self.spatial.getMagneticField(2))
+        print("compass_raw: {}".format(tmp))
+        return tmp
 
     def get_accelerometer_fix(self):
         if not self.spatial.isAttached():
@@ -121,7 +126,8 @@ class Spatial(SpatialLike):
         return AccelerometerFix(*self.get_gravity_raw())
 
     def get_roll_pitch_yaw(self):
-        return RollPitchYaw.calculate_from(gravity=self.get_gravity(), magnetic_fields=self.get_compass())
+        rpy = RollPitchYaw.calculate_from(gravity=self.get_gravity(), magnetic_fields=self.get_compass())
+        return rpy
 
     def get_compass_fix(self):
         if not self.spatial.isAttached():
