@@ -1,9 +1,11 @@
+
 from datetime import datetime
 from mmo.device.gyro import Gyro
 from mmo.device.output import CompassFix, AccelerometerFix, RollPitchYaw
 from mmo.device.gps import GpsLike, GpsFix
 from mmo.device.spatial import SpatialLike
 from mmo import status
+
 
 class FakeGps(GpsLike):
     def __init__(self):
