@@ -25,19 +25,25 @@ class FakeSpatial(SpatialLike):
         status.spatial_connected = True
 
     def get_gravity_raw(self):
-        return 0.0, 0.0, -1.0
+        tmp = (0.0, 0.0, -1.0)
+        print("gravity_raw: {}".format(tmp))
+        print tmp
 
     def get_compass_raw(self):
-        return 0.6, 0.6, 0.0
+        tmp = (0.6, 0.6, 0.0)
+        print("compas_raw: {}".format(tmp))
+        return tmp
 
     def reset_gyro(self):
         print "Fakely resetting gyro"
 
     def get_compass_fix(self):
-        return CompassFix(*self.get_compass_raw())
+        return CompassFix(self.get_compass_raw())
 
     def get_gyro(self):
-        return Gyro(0.0, 60.0, 0.0)
+        fake_g = Gyro(0.0, 1.0, 0.8)
+        print("Fake gyro: {}".format(fake_g))
+        return fake_g
 
     def get_gyro_momentary(self):
         return {'gm0': 0.0,
@@ -45,7 +51,7 @@ class FakeSpatial(SpatialLike):
                 'gm2': 2.0}
 
     def get_accelerometer_fix(self):
-        return AccelerometerFix(*self.get_gravity_raw())
+        return AccelerometerFix(self.get_gravity_raw())
 
     def set_average_count(self, count):
         pass
