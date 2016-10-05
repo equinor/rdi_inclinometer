@@ -1,10 +1,11 @@
+from __future__ import absolute_import
+from __future__ import print_function
 from abc import abstractmethod
 
 import mmo
 from mmo.device.device import Device
 from mmo.device.gyro import Gyro
 from mmo.device.output import AccelerometerFix, CompassFix, RollPitchYaw
-
 
 class SpatialLike(Device):
     @abstractmethod
@@ -147,15 +148,17 @@ class Spatial(SpatialLike):
         return gyro_momentary
 
     def reset_gyro(self):
-        print("Resetting gyro")
+        print("reset gyro")
         self.spatial.zeroGyro()
         self.gyro.reset()
 
     # Updates the gyro integral
     # noinspection PyUnusedLocal
     def on_spatial_data_handler(self, event):
-        print("update Gyro")
         self.gyro.update_from(self.spatial)
+        #print("updated gyro: {}".format(self.gyro))
+        spatialEventData = event.spatialData[0]
+        print("spatial event: \n\taccel: {}\n\tangularRate: {}\n\tmagneticField: {}".format(spatialEventData.Acceleration, spatialEventData.AngularRate, spatialEventData.MagneticField))
         # idx = self.averaging_index
         # a0, a1, a2 = self.get_gravity()
         # self.averaging_array0[idx] = a0
@@ -173,9 +176,19 @@ class Spatial(SpatialLike):
     def detach_handler(self, event):
         super(Spatial, self).detach_handler(event)
         mmo.status.spatial_connected = False
-        print "WARNING: Spatial disconnected"
+        print("WARNING: Spatial disconnected")
 
     def update_from_config(self):
         if self.spatial.isAttached():
             self.spatial.setDataRate(mmo.config.sampling_rate)
             # self.set_average_count(mmo.config.average_sample_count)
+
+
+if __name__ == "__main__":
+    # Quick testing of the Spatil sensors
+    s = Spatial()
+    import time
+    count = 10
+    while count:
+        count -= 1
+        time.sleep(1)
