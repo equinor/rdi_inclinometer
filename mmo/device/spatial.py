@@ -104,16 +104,21 @@ class Spatial(SpatialLike):
         """
         if not self.spatial.isAttached():
             return None, None, None
-        return (self.spatial.getAcceleration(0),
-                self.spatial.getAcceleration(1),
-                self.spatial.getAcceleration(2))
+
+        tmp = (self.spatial.getAcceleration(0),
+               self.spatial.getAcceleration(1),
+               self.spatial.getAcceleration(2))
+        print("gravity raw: {}".format(tmp))
+        return tmp
 
     def get_compass_raw(self):
         if not self.spatial.isAttached():
             return None, None, None
-        return (self.spatial.getMagneticField(0),
-                self.spatial.getMagneticField(1),
-                self.spatial.getMagneticField(2))
+        tmp = (self.spatial.getMagneticField(0),
+               self.spatial.getMagneticField(1),
+               self.spatial.getMagneticField(2))
+        print("compass_raw: {}".format(tmp))
+        return tmp
 
     def get_accelerometer_fix(self):
         if not self.spatial.isAttached():
@@ -121,7 +126,8 @@ class Spatial(SpatialLike):
         return AccelerometerFix(*self.get_gravity_raw())
 
     def get_roll_pitch_yaw(self):
-        return RollPitchYaw.calculate_from(gravity=self.get_gravity(), magnetic_fields=self.get_compass())
+        rpy = RollPitchYaw.calculate_from(gravity=self.get_gravity(), magnetic_fields=self.get_compass())
+        return rpy
 
     def get_compass_fix(self):
         if not self.spatial.isAttached():
@@ -129,24 +135,26 @@ class Spatial(SpatialLike):
         return CompassFix(*self.get_compass_raw())
 
     def get_gyro(self):
+        print("get_gyro() -> %s" % self.gyro)
         return self.gyro
 
     def get_gyro_momentary(self):
-        return {
+        gyro_momentary = {
             'gm0': self.spatial.getAngularRate(0),
             'gm1': self.spatial.getAngularRate(1),
             'gm2': self.spatial.getAngularRate(2)
         }
+        return gyro_momentary
 
     def reset_gyro(self):
-        print "Resetting gyro"
+        print("Resetting gyro")
         self.spatial.zeroGyro()
-
         self.gyro.reset()
 
     # Updates the gyro integral
     # noinspection PyUnusedLocal
     def on_spatial_data_handler(self, event):
+        print("update Gyro")
         self.gyro.update_from(self.spatial)
         # idx = self.averaging_index
         # a0, a1, a2 = self.get_gravity()

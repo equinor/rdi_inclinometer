@@ -63,6 +63,7 @@ class RaspberryButton(Button):
     def edge(self, pin):
         if pin == self.BUTTON1:
             self.key_pressed(0.2)
+
         if pin == self.BUTTON2:
             self.key_pressed(1.0)
 

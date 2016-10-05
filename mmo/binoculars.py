@@ -1,5 +1,6 @@
 from socket import gethostname
 
+from mmo.distance_calculator import calculate_distance
 from enum import Enum
 
 
@@ -40,6 +41,12 @@ class Binoculars:
     def button_click(self, button_type):
         """
         :type button_type: ButtonType
+
+        Device will get a reading from the GPS, Accelerometer,
+        Compass and Gyro,
+
+        If user pressed the long button the device will reset
+        the Gyro.
         """
 
         gps_fix = self.gps.get_fix()
@@ -57,14 +64,25 @@ class Binoculars:
                                        roll_pitch_yaw=roll_pitch_yaw,
                                        typ=str(button_type))
 
+        obs = self.storage.get_observation(sample_id)
+        distance = obs['distance']
+
         if button_type == ButtonType.long:
             self.spatial.reset_gyro()
             # The user should hold the binoculars still for two seconds
             self.button.beep(0.1)
-            self.say("horizon")
+            self.say("Horizon! Observation: ")
         else:
             self.button.beep(0.01)
+            self.say("Shoot! Observation: ")
         self.say(sample_id)
+
+        distance_speak = str(distance)
+        shorten_float = lambda x: ".".join([x[0], x[1][:2]])
+        distance_speak = shorten_float(distance_speak.split("."))
+
+        self.say("Distance: {} kilometers.".format(distance_speak))
+        print("Distance: {} km".format(distance_speak))
 
     def config_updated(self):
         self.spatial.update_from_config()

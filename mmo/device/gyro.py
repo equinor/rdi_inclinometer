@@ -31,6 +31,9 @@ class Gyro:
             ('gyro2', self.gyro2)
         ))
 
+    def __str__(self):
+        return "Gyro({0}, {1}, {2}".format(self.gyro0, self.gyro1, self.gyro2)
+
     def update_from(self, spatial):
         """
         :type spatial: SpatialPhidget
