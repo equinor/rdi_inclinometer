@@ -10,3 +10,6 @@ class DatabaseStorage(Storage):
 
     def dump_list(self, limit=1000000, page=1):
         return Database.dump_observations(limit=limit, page=page)
+    
+    def get(self, sample_id):
+        return Database.get_observation(sample_id)

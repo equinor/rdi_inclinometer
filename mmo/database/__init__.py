@@ -143,6 +143,35 @@ class Database(object):
     def get_positions():
         session = Session()
         return session.query(GpsTrack).all()
+    
+    @staticmethod
+    def get_observation(obs_id):
+        session = Session()
+        obs = session.query(Observation).get(obs_id)
+        session.close()
+        if not obs:
+            print("Database error: Could not find observation with id: {}".format(obs_id))
+            return None
+
+        observation = obs.as_dict()
+        #if obs['pitch'] is None:
+        #    continue
+
+        if observation['button'] == 'long':
+            last_ref_pitch = observation['pitch']
+            observation['rpitch'] = 0.0
+            observation['distance'] = calculate_distance(height_m=observation['height'],
+                    degrees_below_horizon=0)
+        else:
+            if last_ref_pitch is None:
+                observation['rpitch'] = None
+            else:
+                observation['rpitch'] = last_ref_pitch - observation['pitch']
+                observation['distance'] = calculate_distance(height_m=observation['height'],
+                        degrees_below_horizon=observation['rpitch'])
+
+        return observation
+
 
     @staticmethod
     def dump_observations(limit=1000000, page=1):

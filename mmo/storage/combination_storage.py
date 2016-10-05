@@ -29,3 +29,6 @@ class CombinationStorage(Storage):
             if temp_id is not None:
                 sample_id = temp_id
         return sample_id
+
+    def get_observation(self, sample_id):
+        return self.storages[0].get(sample_id)
