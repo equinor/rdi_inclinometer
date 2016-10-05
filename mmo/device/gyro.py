@@ -32,7 +32,7 @@ class Gyro:
         ))
 
     def __str__(self):
-        return "Gyro({0}, {1}, {2}".format(self.gyro0, self.gyro1, self.gyro2)
+        return "Gyro({0}, {1}, {2})".format(self.gyro0, self.gyro1, self.gyro2)
 
     def update_from(self, spatial):
         """
