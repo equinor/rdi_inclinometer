@@ -1,9 +1,8 @@
 from collections import OrderedDict
+# from Phidgets.Devices.Spatial import Spatial as SpatialPhidget
 
-from Phidgets.Devices.Spatial import Spatial as SpatialPhidget
 
-
-class Gyro:
+class Gyro(object):
     def __init__(self, gyro0=0.0, gyro1=0.0, gyro2=0.0):
         self.gyro0 = gyro0
         self.gyro1 = gyro1
