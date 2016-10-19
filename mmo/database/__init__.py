@@ -177,8 +177,12 @@ class Database(object):
             return None
 
         observation = obs.as_dict()
-        #if obs['pitch'] is None:
-        #    continue
+        last_ref_pitch = None
+        observation['rpitch'] = None
+
+        if observation['pitch'] is None:
+            print("observation['pitch'] is None!")
+            return observation
 
         if observation['button'] == 'long':
             last_ref_pitch = observation['pitch']
@@ -186,12 +190,17 @@ class Database(object):
             observation['distance'] = calculate_distance(height_m=observation['height'],
                     degrees_below_horizon=0)
         else:
-            if last_ref_pitch is None:
-                observation['rpitch'] = None
-            else:
-                observation['rpitch'] = last_ref_pitch - observation['pitch']
-                observation['distance'] = calculate_distance(height_m=observation['height'],
+            last_ref_pitch = Database.get_last_ref_pitch()
+
+            print("observation pitch: {}".format(observation['pitch']))
+            print("last_ref_pitch: {}".format(last_ref_pitch))
+
+            observation['rpitch'] = last_ref_pitch - observation['pitch']
+
+            print("rpitch: {}".format(observation['rpitch']))
+            observation['distance'] = calculate_distance(height_m=observation['height'],
                         degrees_below_horizon=observation['rpitch'])
+            print("calculated distance: {}".format(observation['distance']))
 
         return observation
 
