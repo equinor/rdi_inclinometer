@@ -6,3 +6,5 @@ __pycache__
 database.db
 *.csv
 venv
+*.swp
+logs
