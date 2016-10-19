@@ -143,6 +143,29 @@ class Database(object):
     def get_positions():
         session = Session()
         return session.query(GpsTrack).all()
+
+    @staticmethod
+    def get_last_ref_pitch():
+        session = Session()
+        fixes = session.query(Observation).order_by(Observation.id.desc()).filter(Observation.button == 'long').limit(1)
+        session.close()
+
+        observation = [x.as_dict() for x in fixes]
+
+        if not observation:
+            print("ERROR: get_last_ref_pitch: Could not find last pitch ref")
+            return None
+
+        observation = observation[0]
+
+
+        last_ref_pitch = None
+        if not observation['button'] == 'long':
+            return None
+
+        last_ref_pitch = observation['pitch']
+        print("get_last_ref_pitch: Found last ref pitch: {}".format(last_ref_pitch))
+        return last_ref_pitch
     
     @staticmethod
     def get_observation(obs_id):
