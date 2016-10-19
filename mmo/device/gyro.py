@@ -38,3 +38,13 @@ class Gyro(object):
                  spatial.getAngularRate(1),
                  spatial.getAngularRate(2),
                  spatial.getDataRate() / 1000.0)
+
+    def __getitem__(self, index):
+        if index == 0:
+            return self.gyro0
+        elif index == 1:
+            return self.gyro1
+        elif index == 2:
+            return self.gyro2
+        else:
+            raise IndexError("Gyro has only 3 items")

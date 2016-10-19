@@ -10,8 +10,9 @@ class RollPitchYaw(object):
 
     @staticmethod
     def calculate_from(gravity, magnetic_fields):
-        print("gravity -> {}".format(gravity))
-        print("magnetic_fields -> {}".format(magnetic_fields))
+        print("RollPitchYaw:")
+        print("    gravity -> {}".format(gravity))
+        print("    magnetic_fields -> {}".format(magnetic_fields))
         g0, g1, g2 = gravity
         c0, c1, c2 = magnetic_fields
 
