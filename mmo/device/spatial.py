@@ -159,6 +159,7 @@ class Spatial(SpatialLike):
         #print("updated gyro: {}".format(self.gyro))
         spatialEventData = event.spatialData[0]
         print("spatial event: \n\taccel: {}\n\tangularRate: {}\n\tmagneticField: {}".format(spatialEventData.Acceleration, spatialEventData.AngularRate, spatialEventData.MagneticField))
+        print("gyro: {}".format(self.gyro))
         # idx = self.averaging_index
         # a0, a1, a2 = self.get_gravity()
         # self.averaging_array0[idx] = a0
@@ -170,6 +171,7 @@ class Spatial(SpatialLike):
         super(Spatial, self).attach_handler(event)
         mmo.status.spatial_connected = True
         self.spatial.setDataRate(mmo.config.sampling_rate)
+        print("Setting data rate to: {}".format(mmo.config.sampling_rate))
         self.reset_gyro()
         self.spatial.setOnSpatialDataHandler(self.on_spatial_data_handler)
 
