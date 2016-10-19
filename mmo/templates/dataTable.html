@@ -38,6 +38,10 @@
                                     {% if row[key] %}
                                    value="{{ row[key] }}" {% endif %}/>
                         </td>
+                    {% elif key in ('gm0', 'gm1', 'gm2') %}
+                        <td style="white-space: nowrap">
+                            {{ row[key] }}
+                        </td>
                     {% else %}
                         <td style="white-space: nowrap">
                             {{ format_column(row[key]) }}
