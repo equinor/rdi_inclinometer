@@ -1,3 +1,6 @@
+from __future__ import absolute_import
+from __future__ import print_function
+
 from datetime import datetime, timedelta
 from os import system
 from mmo.axis_translator import *
