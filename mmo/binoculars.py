@@ -65,7 +65,14 @@ class Binoculars:
                                        typ=str(button_type))
 
         obs = self.storage.get_observation(sample_id)
+        #print("obs: {}".format(obs))
         distance = obs['distance']
+        #print("distance: {}".format(distance))
+
+        if not distance:
+            print("Missing distance!!")
+            self.say("Error: missing distance calculation. Check system log.")
+            return
 
         if button_type == ButtonType.long:
             self.spatial.reset_gyro()
@@ -75,6 +82,7 @@ class Binoculars:
         else:
             self.button.beep(0.01)
             self.say("Shoot! Observation: ")
+
         self.say(sample_id)
 
         distance_speak = str(distance)
