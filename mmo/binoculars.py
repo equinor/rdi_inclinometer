@@ -69,11 +69,6 @@ class Binoculars:
         distance = obs['distance']
         #print("distance: {}".format(distance))
 
-        if not distance:
-            print("Missing distance!!")
-            self.say("Error: missing distance calculation. Check system log.")
-            return
-
         if button_type == ButtonType.long:
             self.spatial.reset_gyro()
             # The user should hold the binoculars still for two seconds
@@ -85,12 +80,15 @@ class Binoculars:
 
         self.say(sample_id)
 
-        distance_speak = str(distance)
-        shorten_float = lambda x: ".".join([x[0], x[1][:2]])
-        distance_speak = shorten_float(distance_speak.split("."))
+        if distance:
+            distance_speak = str(distance)
+            shorten_float = lambda x: ".".join([x[0], x[1][:2]])
+            distance_speak = shorten_float(distance_speak.split("."))
 
-        self.say("Distance: {} kilometers.".format(distance_speak))
-        print("Distance: {} km".format(distance_speak))
+            self.say("Distance: {} kilometers.".format(distance_speak))
+            print("Distance: {} km".format(distance_speak))
+        else:
+            self.say("No distance available.")
 
     def config_updated(self):
         self.spatial.update_from_config()
