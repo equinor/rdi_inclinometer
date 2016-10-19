@@ -137,7 +137,14 @@ class Spatial(SpatialLike):
 
     def get_roll_pitch_yaw(self):
         rpy = RollPitchYaw.calculate_from(gravity=self.get_gravity(), magnetic_fields=self.get_compass())
+
+        #rpy_gyro = RollPitchYaw.calculate_from(gravity=self.get_gyro(), magnetic_fields=self.get_compass())
+
+        #print("rpy acce: {}".format(rpy))
+        #print("rpy gyro: {}".format(rpy_gyro))
+
         return rpy
+
 
     def get_compass_fix(self):
         if not self.spatial.isAttached():
