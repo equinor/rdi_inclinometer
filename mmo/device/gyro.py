@@ -21,9 +21,6 @@ class Gyro:
         self.gyro1 = 0.0
         self.gyro2 = 0.0
 
-    def __str__(self):
-        return "{} {} {}".format(self.gyro0, self.gyro1, self.gyro2)
-
     def as_dict(self):
         return OrderedDict((
             ('gyro0', self.gyro0),
@@ -32,7 +29,7 @@ class Gyro:
         ))
 
     def __str__(self):
-        return "Gyro({0}, {1}, {2})".format(self.gyro0, self.gyro1, self.gyro2)
+        return "Gyro(pitch={0}, roll={1}, yaw={2})".format(self.gyro0, self.gyro1, self.gyro2)
 
     def update_from(self, spatial):
         """
