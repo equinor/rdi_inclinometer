@@ -66,9 +66,16 @@ class SpatialLike(Device):
 
 
 class Spatial(SpatialLike):
-
     """
-    Sample rate cannot be shorter than 8ms, or the compass won't work
+    This object connects to the SpatialPhidget and adds a callback
+    method that will be called at a pre-defined sample rate (default: 8ms).
+
+    For every callback we can query the SpatialPhidget to get:
+        - Accelereometer
+        - Gyroscope
+        - Magnetic compass
+
+    NOTE: Sample rate cannot be shorter than 8ms, or the compass won't work
     """
 
     gyro = Gyro()
@@ -140,6 +147,10 @@ class Spatial(SpatialLike):
         return self.gyro
 
     def get_gyro_momentary(self):
+        if not self.spatial.isAttached():
+            print("spatial device is not attached!")
+            return {'gm0': 0.0, 'gm1': 0.0, 'gm2': 0.0}
+            
         gyro_momentary = {
             'gm0': self.spatial.getAngularRate(0),
             'gm1': self.spatial.getAngularRate(1),
