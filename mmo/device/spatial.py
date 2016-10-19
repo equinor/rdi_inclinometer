@@ -94,6 +94,8 @@ class Spatial(SpatialLike):
         spatial.setOnDetachHandler(self.detach_handler)
         spatial.openPhidget()
 
+        self.event_count = 0
+
     # def set_average_count(self, count):
     #     self.averaging_array0 = [0.0] * count
     #     self.averaging_array1 = [0.0] * count
@@ -169,8 +171,13 @@ class Spatial(SpatialLike):
         self.gyro.update_from(self.spatial)
         #print("updated gyro: {}".format(self.gyro))
         spatialEventData = event.spatialData[0]
-        print("spatial event: \n\taccel: {}\n\tangularRate: {}\n\tmagneticField: {}".format(spatialEventData.Acceleration, spatialEventData.AngularRate, spatialEventData.MagneticField))
-        print("gyro: {}".format(self.gyro))
+        self.event_count += 1
+
+        if self.event_count % 30 == 0:
+            print("spatial event: \n\taccel: {}\n\tangularRate: {}\n\tmagneticField: {}".format(spatialEventData.Acceleration, spatialEventData.AngularRate, spatialEventData.MagneticField))
+            self.event_count = 0
+
+        #print("gyro: {}".format(self.gyro))
         # idx = self.averaging_index
         # a0, a1, a2 = self.get_gravity()
         # self.averaging_array0[idx] = a0
