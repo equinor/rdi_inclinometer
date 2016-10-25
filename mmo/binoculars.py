@@ -65,9 +65,7 @@ class Binoculars:
                                        typ=str(button_type))
 
         obs = self.storage.get_observation(sample_id)
-        #print("obs: {}".format(obs))
         distance = obs['distance']
-        #print("distance: {}".format(distance))
 
         if button_type == ButtonType.long:
             self.spatial.reset_gyro()
@@ -82,10 +80,13 @@ class Binoculars:
 
         if distance:
             distance_speak = str(distance)
-            shorten_float = lambda x: ".".join([x[0], x[1][:2]])
-            distance_speak = shorten_float(distance_speak.split("."))
 
+            def shorten_float(float_nr):
+                return ".".join([float_nr[0], float_nr[1][:2]])
+
+            distance_speak = shorten_float(distance_speak.split("."))
             self.say("Distance: {} kilometers.".format(distance_speak))
+            
             print("Distance: {} km".format(distance_speak))
         else:
             self.say("No distance available.")
