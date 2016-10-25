@@ -115,20 +115,20 @@ class Spatial(SpatialLike):
         if not self.spatial.isAttached():
             return None, None, None
 
-        tmp = (self.spatial.getAcceleration(0),
+        acceleration = (self.spatial.getAcceleration(0),
                self.spatial.getAcceleration(1),
                self.spatial.getAcceleration(2))
-        print("gravity raw: {}".format(tmp))
-        return tmp
+        print("gravity raw: {}".format(acceleration))
+        return acceleration
 
     def get_compass_raw(self):
         if not self.spatial.isAttached():
             return None, None, None
-        tmp = (self.spatial.getMagneticField(0),
+        magneticFields = (self.spatial.getMagneticField(0),
                self.spatial.getMagneticField(1),
                self.spatial.getMagneticField(2))
-        print("compass_raw: {}".format(tmp))
-        return tmp
+        print("compass_raw: {}".format(magneticFields))
+        return magneticFields
 
     def get_accelerometer_fix(self):
         if not self.spatial.isAttached():
@@ -136,15 +136,15 @@ class Spatial(SpatialLike):
         return AccelerometerFix(*self.get_gravity_raw())
 
     def get_roll_pitch_yaw(self):
-        rpy = RollPitchYaw.calculate_from(gravity=self.get_gravity(), magnetic_fields=self.get_compass())
+        rpy = RollPitchYaw.calculate_from(gravity=self.get_gravity(),
+                                          magnetic_fields=self.get_compass())
 
-        #rpy_gyro = RollPitchYaw.calculate_from(gravity=self.get_gyro(), magnetic_fields=self.get_compass())
-
-        #print("rpy acce: {}".format(rpy))
-        #print("rpy gyro: {}".format(rpy_gyro))
+        # rpy_gyro = RollPitchYaw.calculate_from(gravity=self.get_gyro(),
+        #                                       magnetic_fields=self.get_compass())
+        # print("rpy acce: {}".format(rpy))
+        # print("rpy gyro: {}".format(rpy_gyro))
 
         return rpy
-
 
     def get_compass_fix(self):
         if not self.spatial.isAttached():
@@ -159,7 +159,7 @@ class Spatial(SpatialLike):
         if not self.spatial.isAttached():
             print("spatial device is not attached!")
             return {'gm0': 0.0, 'gm1': 0.0, 'gm2': 0.0}
-            
+
         gyro_momentary = {
             'gm0': self.spatial.getAngularRate(0),
             'gm1': self.spatial.getAngularRate(1),
@@ -176,15 +176,19 @@ class Spatial(SpatialLike):
     # noinspection PyUnusedLocal
     def on_spatial_data_handler(self, event):
         self.gyro.update_from(self.spatial)
-        #print("updated gyro: {}".format(self.gyro))
+        # print("updated gyro: {}".format(self.gyro))
         spatialEventData = event.spatialData[0]
         self.event_count += 1
 
         if self.event_count % 30 == 0:
-            print("spatial event: \n\taccel: {}\n\tangularRate: {}\n\tmagneticField: {}".format(spatialEventData.Acceleration, spatialEventData.AngularRate, spatialEventData.MagneticField))
+            print("""spatial event: \n\taccel: {}\n\t
+                     angularRate: {}\n\tmagneticField: {}
+                  """.format(spatialEventData.Acceleration,
+                             spatialEventData.AngularRate,
+                             spatialEventData.MagneticField))
             self.event_count = 0
 
-        #print("gyro: {}".format(self.gyro))
+        # print("gyro: {}".format(self.gyro))
         # idx = self.averaging_index
         # a0, a1, a2 = self.get_gravity()
         # self.averaging_array0[idx] = a0
