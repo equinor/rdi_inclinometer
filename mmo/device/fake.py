@@ -1,10 +1,17 @@
-
 from datetime import datetime
+import mmo
 from mmo.device.gyro import Gyro
 from mmo.device.output import CompassFix, AccelerometerFix, RollPitchYaw
 from mmo.device.gps import GpsLike, GpsFix
 from mmo.device.spatial import SpatialLike
 from mmo import status
+import threading
+import time
+from collections import namedtuple
+
+
+SpatialEventData = namedtuple('SpatialEventData',
+                              'data, numAccelAxes, numGyroAxes, numCompassAxes')
 
 
 class FakeGps(GpsLike):
@@ -20,19 +27,86 @@ class FakeGps(GpsLike):
                       velocity=5)
 
 
+class FakeSpatialDevice(object):
+    def __init__(self):
+        self._event_handler = None
+        self._attach_handler = None
+        self._detach_handler = None
+        self.lock = threading.Lock()
+        self._attached = False
+        self._running = False
+
+    def _run(self):
+        while True:
+            self.lock.acquire()
+            try:
+                if not self._running:
+                    break
+                if self._attached:
+                    data = [
+                           [0.1, 0.15, 0.0],  # accelerator
+                           [1.0, 0.8, 0.1],   # gyro
+                           [2.0, 2.0, 0.4]    # compass
+                    ]
+                    spatialEvent = SpatialEventData(data, 3, 3, 3)
+
+                    if self._event_handler:
+                        self._event_handler(spatialEvent)
+            finally:
+                self.lock.release()
+
+            time.sleep(1)
+
+    def setOnAttachHandler(self, handler):
+        self._attach_handler = handler
+        self._attached = True
+
+    def setOnDetachHandler(self, handler):
+        self._detach_handler = handler
+
+    def run(self):
+        self._running = True
+        thread = threading.Thread(target=self._run)
+
+        def close_running_threads():
+            self.stop()
+            thread.join()
+            print("Threads complete, ready to finish")
+
+        import atexit
+        # Register the function to be called on exit
+        atexit.register(close_running_threads)
+
+        import signal
+        signal.signal(signal.SIGINT, close_running_threads)
+
+        thread.start()
+
+    def stop(self):
+        self.lock.acquire()
+        if self._detach_handler:
+            self._detach_handler({'attached': False})
+        self._running = False
+        self.lock.release()
+
+
 class FakeSpatial(SpatialLike):
     def __init__(self):
         status.spatial_connected = True
+        self.spatial = FakeSpatialDevice()
+        self.spatial.setOnAttachHandler(self.attach_handler)
+        self.spatial.setOnDetachHandler(self.detach_handler)
+        self.spatial.run()
 
     def get_gravity_raw(self):
-        tmp = (0.0, 0.0, -1.0)
-        print("gravity_raw: {}".format(tmp))
-        print tmp
+        acceleration = (0.0, 0.0, -1.0)
+        print("gravity_raw: {}".format(acceleration))
+        return acceleration
 
     def get_compass_raw(self):
-        tmp = (0.6, 0.6, 0.0)
-        print("compas_raw: {}".format(tmp))
-        return tmp
+        magneticFields = (0.6, 0.6, 0.0)
+        print("compas_raw: {}".format(magneticFields))
+        return magneticFields
 
     def reset_gyro(self):
         print "Fakely resetting gyro"
@@ -57,7 +131,23 @@ class FakeSpatial(SpatialLike):
         pass
 
     def update_from_config(self):
-        pass
+        print("Config update request")
 
     def get_roll_pitch_yaw(self):
         return RollPitchYaw.calculate_from(self.get_gravity_raw(), self.get_compass_raw())
+
+    def on_spatial_data_handler(self, event):
+        print("got fake spatial event: {}".format(event))
+
+    def attach_handler(self, event):
+        # super(FakeSpatial, self).attach_handler(event)
+        mmo.status.spatial_connected = True
+        print("attach handler event")
+
+    def detach_handler(self, event):
+        # super(FakeSpatial, self).detach_handler(event)
+        mmo.status.spatial_connected = False
+        print("detach handler event")
+
+    def stop(self):
+        self.spatial.stop()

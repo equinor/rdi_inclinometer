@@ -180,4 +180,11 @@ def prestart(binoculars):
 
 
 def start(binoculars, **kwargs):
-    app.run(host="0.0.0.0", **kwargs)
+    try:
+        app.run(host="0.0.0.0", **kwargs)
+
+    except Exception:
+        print("Got exception in web_server:start")
+        print("Stopping fake spatial service..")
+        binoculars.spatial.stop()
+        print("Done!")
