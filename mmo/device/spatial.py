@@ -85,6 +85,7 @@ class Spatial(SpatialLike):
     # averaging_array2 = [0.0]
     # averaging_index = 0
     # averaging_n = 1
+    # gyro_
 
     def __init__(self):
         from Phidgets.Devices.Spatial import Spatial as SpatialPhidget
