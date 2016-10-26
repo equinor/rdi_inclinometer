@@ -52,6 +52,8 @@ class FakeSpatialDevice(object):
 
                     if self._event_handler:
                         self._event_handler(spatialEvent)
+                    else:
+                        self._attach_handler({'attached': True})
             finally:
                 self.lock.release()
 
@@ -64,6 +66,9 @@ class FakeSpatialDevice(object):
     def setOnDetachHandler(self, handler):
         self._detach_handler = handler
 
+    def setOnSpatialDataHandler(self, handler):
+        self._event_handler = handler
+
     def run(self):
         self._running = True
         thread = threading.Thread(target=self._run)
@@ -71,7 +76,6 @@ class FakeSpatialDevice(object):
         def close_running_threads():
             self.stop()
             thread.join()
-            print("Threads complete, ready to finish")
 
         import atexit
         # Register the function to be called on exit
@@ -143,6 +147,7 @@ class FakeSpatial(SpatialLike):
         # super(FakeSpatial, self).attach_handler(event)
         mmo.status.spatial_connected = True
         print("attach handler event")
+        self.spatial.setOnSpatialDataHandler(self.on_spatial_data_handler)
 
     def detach_handler(self, event):
         # super(FakeSpatial, self).detach_handler(event)
