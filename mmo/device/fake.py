@@ -8,7 +8,7 @@ from mmo import status
 import threading
 import time
 from collections import namedtuple
-
+from random import uniform
 
 SpatialEventData = namedtuple('SpatialEventData',
                               'data, numAccelAxes, numGyroAxes, numCompassAxes')
@@ -44,8 +44,8 @@ class FakeSpatialDevice(object):
                     break
                 if self._attached:
                     data = [
-                           [0.1, 0.15, 0.0],  # accelerator
-                           [1.0, 0.8, 0.1],   # gyro
+                           [uniform(0.0, 0.3), uniform(0.1, 0.5), uniform(0.4, 0.8)],  # accelerator
+                           [uniform(0.8, 1.0), uniform(0.4, 0.8), uniform(0.1, 0.2)],  # gyro
                            [2.0, 2.0, 0.4]    # compass
                     ]
                     spatialEvent = SpatialEventData(data, 3, 3, 3)
@@ -102,9 +102,13 @@ class FakeSpatial(SpatialLike):
         self.spatial.setOnDetachHandler(self.detach_handler)
         self.spatial.run()
 
+        self.acceleration = None
+        self.gyro = None
+        self.magneticFields = None
+
     def get_gravity_raw(self):
-        acceleration = (0.0, 0.0, -1.0)
-        print("gravity_raw: {}".format(acceleration))
+        # acceleration = (0.0, 0.0, -1.0)
+        print("gravity_raw: {}".format(self.acceleration))
         return acceleration
 
     def get_compass_raw(self):
@@ -142,6 +146,9 @@ class FakeSpatial(SpatialLike):
 
     def on_spatial_data_handler(self, event):
         print("got fake spatial event: {}".format(event))
+        self.acceleration = event.data[0]
+        self.gyro = Gyro(*event.data[1])
+        self.magneticFields = event.data[2]
 
     def attach_handler(self, event):
         # super(FakeSpatial, self).attach_handler(event)
