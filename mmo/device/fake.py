@@ -11,7 +11,7 @@ from collections import namedtuple
 from random import uniform
 
 SpatialEventData = namedtuple('SpatialEventData',
-                              'data, numAccelAxes, numGyroAxes, numCompassAxes')
+                              'data, numAccelAxes, numGyroAxes, numCompassAxes dataRate')
 
 
 class FakeGps(GpsLike):
@@ -48,7 +48,7 @@ class FakeSpatialDevice(object):
                            [uniform(0.8, 1.0), uniform(0.4, 0.8), uniform(0.1, 0.2)],  # gyro
                            [2.0, 2.0, 0.4]    # compass
                     ]
-                    spatialEvent = SpatialEventData(data, 3, 3, 3)
+                    spatialEvent = SpatialEventData(data, 3, 3, 3, 200)
 
                     if self._event_handler:
                         self._event_handler(spatialEvent)
@@ -103,18 +103,18 @@ class FakeSpatial(SpatialLike):
         self.spatial.run()
 
         self.acceleration = None
-        self.gyro = None
+        self.gyro = Gyro()
         self.magneticFields = None
 
     def get_gravity_raw(self):
         # acceleration = (0.0, 0.0, -1.0)
         print("gravity_raw: {}".format(self.acceleration))
-        return acceleration
+        return self.acceleration
 
     def get_compass_raw(self):
-        magneticFields = (0.6, 0.6, 0.0)
-        print("compas_raw: {}".format(magneticFields))
-        return magneticFields
+        # magneticFields = (0.6, 0.6, 0.0)
+        print("compas_raw: {}".format(self.magneticFields))
+        return self.magneticFields
 
     def reset_gyro(self):
         print "Fakely resetting gyro"
