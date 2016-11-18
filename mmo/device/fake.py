@@ -45,8 +45,8 @@ class FakeSpatialDevice(object):
                 if self._attached:
                     data = [
                            [uniform(0.0, 0.3), uniform(0.1, 0.5), uniform(0.4, 0.8)],  # accelerator
-                           [uniform(0.8, 1.0), uniform(0.4, 0.8), uniform(0.1, 0.2)],  # gyro
-                           [2.0, 2.0, 0.4]    # compass
+                           [uniform(-0.9, 0.6), uniform(-0.8, 0.8), uniform(-0.4, 0.4)],  # gyro
+                           [2.0, 2.0, 0.4]  # compass
                     ]
                     spatialEvent = SpatialEventData(data, 3, 3, 3, 200)
 
@@ -145,9 +145,18 @@ class FakeSpatial(SpatialLike):
         return RollPitchYaw.calculate_from(self.get_gravity_raw(), self.get_compass_raw())
 
     def on_spatial_data_handler(self, event):
-        print("got fake spatial event: {}".format(event))
+        print("got fake spatial event.")
         self.acceleration = event.data[0]
-        self.gyro = Gyro(*event.data[1])
+
+        gyro_data = event.data[1]
+        gyro_data.append(event.dataRate)
+        self.gyro.update_from(gyro_data)
+
+        print("Gyro roll avg pitch={}, roll={}, yaw={}".format(
+            self.gyro.get_avg_pitch(),
+            self.gyro.get_avg_roll(),
+            self.gyro.get_avg_yaw()))
+
         self.magneticFields = event.data[2]
 
     def attach_handler(self, event):
