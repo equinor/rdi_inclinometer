@@ -120,20 +120,20 @@ class FakeSpatial(SpatialLike):
         print "Fakely resetting gyro"
 
     def get_compass_fix(self):
-        return CompassFix(self.get_compass_raw())
+        return CompassFix(*self.get_compass_raw())
 
     def get_gyro(self):
-        fake_g = Gyro(0.0, 1.0, 0.8)
-        print("Fake gyro: {}".format(fake_g))
-        return fake_g
+        return self.gyro
 
     def get_gyro_momentary(self):
-        return {'gm0': 0.0,
-                'gm1': 1.0,
-                'gm2': 2.0}
+        return {
+            'gm0': self.gyro.get_avg_roll(),
+            'gm1': self.gyro.get_avg_pitch(),
+            'gm2': self.gyro.get_avg_yaw()
+        }
 
     def get_accelerometer_fix(self):
-        return AccelerometerFix(self.get_gravity_raw())
+        return AccelerometerFix(*self.get_gravity_raw())
 
     def set_average_count(self, count):
         pass
@@ -142,7 +142,9 @@ class FakeSpatial(SpatialLike):
         print("Config update request")
 
     def get_roll_pitch_yaw(self):
-        return RollPitchYaw.calculate_from(self.get_gravity_raw(), self.get_compass_raw())
+        rpy = RollPitchYaw.calculate_from(self.get_gravity_raw(), self.get_compass_raw())
+        print("get_roll_pitch_yaw -> {}".format(rpy))
+        return rpy
 
     def on_spatial_data_handler(self, event):
         print("got fake spatial event.")
