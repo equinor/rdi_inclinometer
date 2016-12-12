@@ -1,6 +1,7 @@
 {% extends "layout.html" %}
 
 {% block extra_head %}
+<!--
 <script type="text/javascript" charset="utf-8">
         $(document).ready(function(){
             $('form').submit(function(event){
@@ -16,7 +17,7 @@
                 alert("WebSocket not supported");
             }
         });
-</script>
+</script> -->
 {% endblock %}
 
 {% block body %}
@@ -57,6 +58,8 @@
         </tbody>
     </table>
 
+    <!--
+
     <h1>Send:</h1>
     <form method='POST' action='#'>
         <textarea name='data' id="data"></textarea>
@@ -64,4 +67,5 @@
     </form>
     <h1>Receive:</h1>
     <div id="log"></div>
+    -->
 {% endblock %}
