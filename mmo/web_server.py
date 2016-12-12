@@ -15,6 +15,7 @@ from export import excel
 from mmo.binoculars import ButtonType
 from mmo.database import Database
 from mmo.export.gpx import export_gpx
+import geventwebsocket
 
 
 class Registry:
@@ -48,13 +49,26 @@ def echo_socket(ws):
 @sockets.route('/observations')
 def observations(ws):
     while True:
-        if not event_queue.empty():
+        if not event_queue.empty() and ws:
             obs = event_queue.get_nowait()
             if obs:
-                print("new observation")
-                ws.send(dump_as_json(obs))
+                for k,v in obs.items():
+                    if type(v) is float:
+                        obs[k] = round(v, 2)
 
-        gevent.sleep(0.5)
+                    elif type(v) is datetime:
+                        time_zone = 0
+                        h, m = divmod(time_zone * 60, 60)
+                        obs[k] = (v - timedelta(hours=h, minutes=m)).strftime("%Y-%m-%d %H:%M:%S")
+
+                print("new observation")
+                try:
+                    ws.send(dump_as_json(obs))
+                except geventwebsocket.WebSocketError, ex:
+                    print("error: {}".format(ex))
+                    print("trying to continue..")
+
+        gevent.sleep(0.2)
 
 
 def long_click_handler(obs):
