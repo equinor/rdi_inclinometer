@@ -7,41 +7,57 @@
     <script type="text/javascript" charset="utf-8">
         var fields = window.location.search.substr(1).split("=")[1].split(",");
         $(document).ready(function(){
-            if ("WebSocket" in window) {
-                ws = new WebSocket("ws://" + document.domain + ":5000/observations");
-                ws.onmessage = function (event) {
-                    /*$("#log").append("<p>"+msg.data+"</p>");*/
-                    console.log("new messsage from server.");
-                    var msg = JSON.parse(event.data);
-                    console.log("receveid ws message: ", msg);
-                    addNewObservation(msg);
-                };
+            var websocketUrl = "ws://" + document.domain + ":5000/observations";
+            function setupWebSocket(wsUrl) {
+                if ("WebSocket" in window) {
+                    ws = new WebSocket(wsUrl);
+                    ws.onmessage = function (event) {
+                        console.log("new messsage from server.");
+                        var msg = JSON.parse(event.data);
+                        console.log("receveid ws message: ", msg);
+                        addNewObservation(msg);
+                    };
 
-                ws.onopen = function(event) {
-                    console.log("Websocket connection open");
-                };
-            } else {
-                alert("WebSocket not supported");
-            }
+                    ws.onopen = function(event) {
+                        console.log("Websocket connection open");
+                    };
 
-            function addNewObservation(obs) {
-                //$('#observations > tbody:last-child').append();
-                var observation = $("<tr></tr>");
-                var numFields = fields.length;
-                for (var i=0; i<numFields; i++) {
-                    console.log("f: " + fields[i]);
-                    if (fields[i] == 'comments') {
-                        var td = $("<td class='comment'>" + 
-                                "<input placeholder='...' type='text' id='comment_"+obs['id'] + "' " + 
-                                "onfocus='this.style.background=' onchange='saveComment(" + obs['id'] + ", this)' value='" + obs['comments'] + "'/></td>");
-                        observation.append(td);
-                    } else {
-                        observation.append("<td>"+obs[fields[i]]+"</td>");
-                    }
+                    ws.onclose = function(){
+                        //try to reconnect in 5 seconds
+                        console.log("Websocket connection closed.. Trying to reconnect");
+                        setTimeout(function(){setupWebSocket(wsUrl)}, 5000);
+                    };
+                } else {
+                    alert("WebSocket not supported");
                 }
-                observation.prependTo("#observations > tbody:last-child");
-                //$("<tr><td>"+obs['id']+"</td></tr>").prependTo("#observations > tbody:last-child");
+
+                function addNewObservation(obs) {
+                    //$('#observations > tbody:last-child').append();
+                    var observation = $("<tr></tr>");
+                    var numFields = fields.length;
+                    for (var i=0; i<numFields; i++) {
+                        console.log("f: " + fields[i]);
+                        if (fields[i] == 'comments') {
+                            var comment = null;
+                            if (obs[fields[i]]) comment = obs[fields[i]];
+                            else comment = "";
+
+                            var td = $("<td class='comment'>" + 
+                                    "<input placeholder='...' type='text' id='comment_"+obs['id'] + "' " + 
+                                    "onfocus='this.style.background=' onchange='saveComment(" + obs['id'] + ", this)' value='" + comment + "'/></td>");
+                            observation.append(td);
+                        } else if (['gm0', 'gm1', 'gm2'].indexOf(fields[i]) >= 0) {
+                            var td = $("<td style='white-space: nowrap'>" + obs[fields[i]] + "</td>")
+
+                        } else {
+                            observation.append("<td style='white-space: nowrap'>"+obs[fields[i]]+"</td>");
+                        }
+                    }
+                    observation.prependTo("#observations > tbody:last-child");
+                };
             };
+
+            setupWebSocket(websocketUrl);
         });
     </script>
 {% endblock %}
