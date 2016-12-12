@@ -17,7 +17,7 @@ class Binoculars:
     Sews together all the sensors for the binocular
     """
 
-    def __init__(self, button, gps, spatial, storage, say):
+    def __init__(self, button, gps, spatial, storage, say, on_long_click=None, on_short_click=None):
         self.storage = storage
         self.button = button
         self.say = say
@@ -28,6 +28,9 @@ class Binoculars:
 
         if spatial:
             self.spatial = spatial
+
+        self.long_click_handler = on_long_click
+        self.short_click_handler = on_short_click
 
     # noinspection PyTypeChecker
     # -- because IDEA interprets enum as int
@@ -72,9 +75,14 @@ class Binoculars:
             # The user should hold the binoculars still for two seconds
             self.button.beep(0.1)
             self.say("Horizon! Observation: ")
+            if callable(self.long_click_handler):
+                self.long_click_handler(obs)
+            print("observation: {}".format(obs))
         else:
             self.button.beep(0.01)
             self.say("Shoot! Observation: ")
+            if callable(self.short_click_handler):
+                self.short_click_handler(obs)
 
         self.say(sample_id)
 
@@ -86,7 +94,7 @@ class Binoculars:
 
             distance_speak = shorten_float(distance_speak.split("."))
             self.say("Distance: {} kilometers.".format(distance_speak))
-            
+
             print("Distance: {} km".format(distance_speak))
         else:
             self.say("No distance available.")

@@ -5,7 +5,9 @@ import string
 
 from flask import Flask, make_response, request, render_template, \
     send_file, redirect, flash
+from flask_sockets import Sockets
 from math import ceil
+import gevent.queue
 
 import mmo
 from json_dumper import dump_as_json
@@ -27,6 +29,40 @@ app.secret_key = ''.join(
     random.SystemRandom().choice(string.ascii_uppercase + string.digits)
     for _ in range(20))
 app.config['hostname'] = socket.gethostname()
+
+# Websocket
+sockets = Sockets(app)
+clients = []
+event_queue = gevent.queue.Queue()
+
+
+@sockets.route('/echo')
+def echo_socket(ws):
+    while True:
+        msg = ws.receive()
+        if msg is None:
+            break
+        ws.send(msg)
+
+
+@sockets.route('/observations')
+def observations(ws):
+    while True:
+        if not event_queue.empty():
+            obs = event_queue.get_nowait()
+            if obs:
+                print("new observation")
+                ws.send(dump_as_json(obs))
+
+        gevent.sleep(0.5)
+
+
+def long_click_handler(obs):
+    event_queue.put(obs)
+
+
+def short_click_handler(obs):
+    event_queue.put(obs)
 
 
 @app.route('/data.csv')
@@ -106,9 +142,9 @@ def set_config():
     return redirect('/config.html')
 
 
-@app.route('/observations')
-def observations():
-    return "Hello there"
+#@app.route('/observations')
+#def observations():
+#    return "Hello there"
 
 
 @app.route('/data.json')
