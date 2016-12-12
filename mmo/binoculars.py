@@ -1,6 +1,5 @@
 from socket import gethostname
-
-from mmo.distance_calculator import calculate_distance
+# from mmo.distance_calculator import calculate_distance
 from enum import Enum
 
 
