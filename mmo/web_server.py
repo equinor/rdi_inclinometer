@@ -73,6 +73,8 @@ class ObservationBackend(object):
                     time_zone = 0
                     h, m = divmod(time_zone * 60, 60)
                     data[k] = (v - timedelta(hours=h, minutes=m)).strftime("%Y-%m-%d %H:%M:%S")
+            fields = data.keys()
+            data['fields'] = fields
             client.send(dump_as_json(data))
         except Exception:
             print("ObservationBackend exception occured. Remove client: {}".format(client))
@@ -137,7 +139,7 @@ def dump_table():
     if request.args.get('reverse') is not None:
         rows.reverse()
 
-    if fields is None:
+    if not fields:
         if len(rows) == 0:
             fields = []
         else:

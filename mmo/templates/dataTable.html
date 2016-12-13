@@ -5,16 +5,31 @@
     <link rel="prev" href="?page={{ page - 1 }}"/>
 
     <script type="text/javascript" charset="utf-8">
-        var fields = window.location.search.substr(1).split("=")[1].split(",");
+        function getQueryStringValue (key) {
+            return decodeURIComponent(window.location.search.replace(new RegExp("^(?:.*[&\\?]" + encodeURIComponent(key).replace(/[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));
+        }
+        var fields = getQueryStringValue("fields");
+        if(fields) {
+            fields = fields.split(',');
+            //console.log("Got fields from input parameters: ", fields);
+        }
+
         $(document).ready(function(){
             var websocketUrl = "ws://" + document.domain + ":5000/observations";
+            var websocketRetry = 3;
             function setupWebSocket(wsUrl) {
                 if ("WebSocket" in window) {
+                    // Only retry a certain times
+                    if (websocketRetry == 0) {
+                        console.log("Retried max nr of times. Stopping!");
+                        return;
+                    }
+                    websocketRetry -= 1;
+
                     ws = new WebSocket(wsUrl);
                     ws.onmessage = function (event) {
-                        console.log("new messsage from server.");
                         var msg = JSON.parse(event.data);
-                        console.log("receveid ws message: ", msg);
+                        //console.log("msg: ", msg);
                         addNewObservation(msg);
                     };
 
@@ -32,11 +47,17 @@
                 }
 
                 function addNewObservation(obs) {
-                    //$('#observations > tbody:last-child').append();
                     var observation = $("<tr></tr>");
+                    if(!fields) {
+                        // No query parameter specifying fields to include.
+                        // Use everyone from the JSON data
+                        fields = obs.fields;
+                        //console.log(" setting fields to: ", fields);
+                    }
                     var numFields = fields.length;
                     for (var i=0; i<numFields; i++) {
-                        console.log("f: " + fields[i]);
+                        if(fields[i] == 'fields') continue;
+
                         if (fields[i] == 'comments') {
                             var comment = null;
                             if (obs[fields[i]]) comment = obs[fields[i]];
@@ -47,6 +68,7 @@
                                     "onfocus='this.style.background=' onchange='saveComment(" + obs['id'] + ", this)' value='" + comment + "'/></td>");
                             observation.append(td);
                         } else {
+                            //console.log("field: " + fields[i]);
                             observation.append("<td style='white-space: nowrap'>"+obs[fields[i]]+"</td>");
                         }
                     }
@@ -64,13 +86,13 @@
     <div class="dataTable">
     <ul class="pagination">
         {% if (page - 1) in pages %}
-            <li><a href="?page={{ page - 1 }}">&laquo;</a></li>
+            <li><a href="?page={{ page - 1 }}&fields={{ request.args.get('fields') }}">&laquo;</a></li>
         {% else %}
             <li class="disabled"><a>&laquo;</a></li>
         {% endif %}
 
         {%  for p in pages %}
-            <li {% if page == p %}class="active"{% endif %}><a href="?page={{ p }}">{{ p }}</a></li>
+            <li {% if page == p %}class="active"{% endif %}><a href="?page={{ p }}&fields={{ request.args.get('fields') }}">{{ p }}</a></li>
         {% endfor %}
 
         {% if (page + 1) in pages %}
