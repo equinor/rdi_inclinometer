@@ -39,36 +39,68 @@ event_queue = gevent.queue.Queue()
 
 @sockets.route('/echo')
 def echo_socket(ws):
-    while True:
+    while not ws.closed:
         msg = ws.receive()
         if msg is None:
             break
         ws.send(msg)
 
 
+class ObservationBackend(object):
+
+    def __init__(self):
+        self.clients = list()
+
+    def __iter_data(self):
+        while True:
+            obs = event_queue.get()
+            app.logger.info("New observation. Yielding observation")
+            yield obs
+
+    def register(self, client):
+        self.clients.append(client)
+
+    def send(self, client, data):
+        try:
+            for k, v in data.items():
+                if data[k] is None:
+                    data[k] = '-'
+                elif k in ('gm0', 'gm1', 'gm2'):
+                    continue
+                elif type(v) is float:
+                    data[k] = round(v, 2)
+                elif type(v) is datetime:
+                    time_zone = 0
+                    h, m = divmod(time_zone * 60, 60)
+                    data[k] = (v - timedelta(hours=h, minutes=m)).strftime("%Y-%m-%d %H:%M:%S")
+            client.send(dump_as_json(data))
+        except Exception:
+            print("ObservationBackend exception occured. Remove client: {}".format(client))
+            self.clients.remove(client)
+
+    def run(self):
+        print("Running ObservationBackend")
+        for obs in self.__iter_data():
+            for client in self.clients:
+                gevent.spawn(self.send, client, obs)
+
+    def start(self):
+        print("Start ObservationBackend")
+        gevent.spawn(self.run)
+
+
+obsBackend = ObservationBackend()
+obsBackend.start()
+
+
 @sockets.route('/observations')
 def observations(ws):
-    while True:
-        if not event_queue.empty() and ws:
-            obs = event_queue.get_nowait()
-            if obs:
-                for k,v in obs.items():
-                    if type(v) is float:
-                        obs[k] = round(v, 2)
-
-                    elif type(v) is datetime:
-                        time_zone = 0
-                        h, m = divmod(time_zone * 60, 60)
-                        obs[k] = (v - timedelta(hours=h, minutes=m)).strftime("%Y-%m-%d %H:%M:%S")
-
-                print("new observation")
-                try:
-                    ws.send(dump_as_json(obs))
-                except geventwebsocket.WebSocketError, ex:
-                    print("error: {}".format(ex))
-                    print("trying to continue..")
-
-        gevent.sleep(0.2)
+    # print("New incoming observation ws request: {}".format(dir(ws)))
+    print("New websocket client accepted")
+    obsBackend.register(ws)
+    while not ws.closed:
+        # Context switch while ObservationBackend.start runs in the background
+        gevent.sleep(0.1)
 
 
 def long_click_handler(obs):

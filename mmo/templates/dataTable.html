@@ -46,9 +46,6 @@
                                     "<input placeholder='...' type='text' id='comment_"+obs['id'] + "' " + 
                                     "onfocus='this.style.background=' onchange='saveComment(" + obs['id'] + ", this)' value='" + comment + "'/></td>");
                             observation.append(td);
-                        } else if (['gm0', 'gm1', 'gm2'].indexOf(fields[i]) >= 0) {
-                            var td = $("<td style='white-space: nowrap'>" + obs[fields[i]] + "</td>")
-
                         } else {
                             observation.append("<td style='white-space: nowrap'>"+obs[fields[i]]+"</td>");
                         }

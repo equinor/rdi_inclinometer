@@ -80,7 +80,7 @@ class Binoculars:
         else:
             self.button.beep(0.01)
             self.say("Shoot! Observation: ")
-            if callable(self.short_click_handler) and distance:
+            if callable(self.short_click_handler):
                 self.short_click_handler(obs)
 
         self.say(sample_id)
