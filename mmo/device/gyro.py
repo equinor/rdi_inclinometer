@@ -17,9 +17,27 @@ class Gyro(object):
         self.gyro2 = gyro2
         self.sampleYaw.append(gyro2)
 
+        self._bad_pitch = False
+        self._bad_roll = False
+        self._bad_yaw = False
+
     _fields = ('gyro0', 'gyro1', 'gyro2')
 
+    def is_unstable(self):
+        return self._bad_pitch
+
     def add(self, dd0, dd1, dd2, scaling_factor=1.0):
+        """
+        :note: We detect if the pitch change is big. If so, we
+               flag it as an unstable sampling.
+        """
+        print("samplePitch: {}".format(self.samplePitch))
+        if self.samplePitch and abs(self.samplePitch[-1] - dd0) > 1.0:
+            print("Large gyro pitch change - unstable reading!")
+            self._bad_pitch = True
+        else:
+            self._bad_pitch = False
+
         self.samplePitch.append(dd0)
         self.sampleRoll.append(dd1)
         self.sampleYaw.append(dd2)
@@ -85,3 +103,6 @@ class Gyro(object):
             return self.gyro2
         else:
             raise IndexError("Gyro has only 3 items")
+
+    def __len__(self):
+        return len(self._fields)

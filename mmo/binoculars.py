@@ -67,6 +67,10 @@ class Binoculars:
         obs = self.storage.get_observation(sample_id)
         distance = obs['distance']
 
+        if gyro_fix.is_unstable():
+            print("== Unstable movements!! ==")
+            self.say("Unstable reading. Try not to move that much")
+
         if button_type == ButtonType.long:
             self.spatial.reset_gyro()
             # The user should hold the binoculars still for two seconds
