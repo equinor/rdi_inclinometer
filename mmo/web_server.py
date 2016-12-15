@@ -15,7 +15,6 @@ from export import excel
 from mmo.binoculars import ButtonType
 from mmo.database import Database
 from mmo.export.gpx import export_gpx
-import geventwebsocket
 
 
 class Registry:
@@ -47,6 +46,9 @@ def echo_socket(ws):
 
 
 class ObservationBackend(object):
+    """
+    A backend
+    """
 
     def __init__(self):
         self.clients = list()
@@ -77,28 +79,26 @@ class ObservationBackend(object):
             data['fields'] = fields
             client.send(dump_as_json(data))
         except Exception:
-            print("ObservationBackend exception occured. Remove client: {}".format(client))
+            app.logger.debug("ObservationBackend exception occured. Remove client: {}".format(client))
             self.clients.remove(client)
 
     def run(self):
-        print("Running ObservationBackend")
+        app.logger.info("Running ObservationBackend")
         for obs in self.__iter_data():
             for client in self.clients:
                 gevent.spawn(self.send, client, obs)
 
     def start(self):
-        print("Start ObservationBackend")
+        app.logger.info("Start ObservationBackend")
         gevent.spawn(self.run)
 
-
+# Start our backend to broadcast new observations to all listening web clients
 obsBackend = ObservationBackend()
 obsBackend.start()
 
 
 @sockets.route('/observations')
 def observations(ws):
-    # print("New incoming observation ws request: {}".format(dir(ws)))
-    print("New websocket client accepted")
     obsBackend.register(ws)
     while not ws.closed:
         # Context switch while ObservationBackend.start runs in the background
@@ -188,11 +188,6 @@ def set_config():
     mmo.config.refresh()
     registry.binoculars.config_updated()
     return redirect('/config.html')
-
-
-#@app.route('/observations')
-#def observations():
-#    return "Hello there"
 
 
 @app.route('/data.json')
