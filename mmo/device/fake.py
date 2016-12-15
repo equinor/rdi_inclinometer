@@ -116,8 +116,13 @@ class FakeSpatial(SpatialLike):
         print("compas_raw: {}".format(self.magneticFields))
         return self.magneticFields
 
-    def reset_gyro(self):
-        print "Fakely resetting gyro"
+    def get_accelerometer_fix(self):
+        return AccelerometerFix(*self.get_gravity_raw())
+
+    def get_roll_pitch_yaw(self):
+        rpy = RollPitchYaw.calculate_from(self.get_gravity_raw(), self.get_compass_raw())
+        print("get_roll_pitch_yaw -> {}".format(rpy))
+        return rpy
 
     def get_compass_fix(self):
         return CompassFix(*self.get_compass_raw())
@@ -132,19 +137,12 @@ class FakeSpatial(SpatialLike):
             'gm2': self.gyro.get_avg_yaw()
         }
 
-    def get_accelerometer_fix(self):
-        return AccelerometerFix(*self.get_gravity_raw())
+    def reset_gyro(self):
+        self.gyro.reset()
+        print "Fakely resetting gyro"
 
     def set_average_count(self, count):
         pass
-
-    def update_from_config(self):
-        print("Config update request")
-
-    def get_roll_pitch_yaw(self):
-        rpy = RollPitchYaw.calculate_from(self.get_gravity_raw(), self.get_compass_raw())
-        print("get_roll_pitch_yaw -> {}".format(rpy))
-        return rpy
 
     def on_spatial_data_handler(self, event):
         print("got fake spatial event.")
@@ -158,6 +156,7 @@ class FakeSpatial(SpatialLike):
             self.gyro.get_avg_pitch(),
             self.gyro.get_avg_roll(),
             self.gyro.get_avg_yaw()))
+        print("  gyro_data = {}".format(gyro_data))
 
         self.magneticFields = event.data[2]
 
@@ -166,6 +165,7 @@ class FakeSpatial(SpatialLike):
         mmo.status.spatial_connected = True
         print("attach handler event")
         self.spatial.setOnSpatialDataHandler(self.on_spatial_data_handler)
+        self.reset_gyro()
 
     def detach_handler(self, event):
         # super(FakeSpatial, self).detach_handler(event)
@@ -174,3 +174,7 @@ class FakeSpatial(SpatialLike):
 
     def stop(self):
         self.spatial.stop()
+
+    def update_from_config(self):
+        print("Config update request")
+
