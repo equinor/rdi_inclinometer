@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 from __future__ import print_function
 from abc import abstractmethod
+#from collections import deque
 
 import mmo
 from mmo.device.device import Device
@@ -87,6 +88,7 @@ class Spatial(SpatialLike):
     # averaging_n = 1
     # gyro_
 
+
     def __init__(self):
         from Phidgets.Devices.Spatial import Spatial as SpatialPhidget
         self.spatial = SpatialPhidget()
@@ -123,8 +125,12 @@ class Spatial(SpatialLike):
         return acceleration
 
     def get_compass_raw(self):
+        """
+        :returns: (float, float, float)
+        """
         if not self.spatial.isAttached():
             return None, None, None
+
         magneticFields = (self.spatial.getMagneticField(0),
                self.spatial.getMagneticField(1),
                self.spatial.getMagneticField(2))
@@ -188,14 +194,6 @@ class Spatial(SpatialLike):
                              spatialEventData.AngularRate,
                              spatialEventData.MagneticField))
             self.event_count = 0
-
-        # print("gyro: {}".format(self.gyro))
-        # idx = self.averaging_index
-        # a0, a1, a2 = self.get_gravity()
-        # self.averaging_array0[idx] = a0
-        # self.averaging_array1[idx] = a1
-        # self.averaging_array2[idx] = a2
-        # self.averaging_index = (idx + 1) % self.averaging_n
 
     def attach_handler(self, event):
         super(Spatial, self).attach_handler(event)
