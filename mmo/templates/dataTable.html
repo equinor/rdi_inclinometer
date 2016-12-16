@@ -67,6 +67,10 @@
                                     "<input placeholder='...' type='text' id='comment_"+obs['id'] + "' " + 
                                     "onfocus='this.style.background=' onchange='saveComment(" + obs['id'] + ", this)' value='" + comment + "'/></td>");
                             observation.append(td);
+                        } else if (['gm0', 'gm1', 'gm2'].indexOf(fields[i]) > -1) {
+                            // Reduce the gyro decimals to 3 (same as in Jinja2 template code)
+                            var rounded = Number( (obs[fields[i]]).toFixed(3) );
+                            observation.append("<td style='white-space: nowrap'>"+rounded+"</td>");
                         } else {
                             //console.log("field: " + fields[i]);
                             observation.append("<td style='white-space: nowrap'>"+obs[fields[i]]+"</td>");
@@ -123,7 +127,7 @@
                         </td>
                     {% elif key in ('gm0', 'gm1', 'gm2') %}
                         <td style="white-space: nowrap">
-                            {{ row[key] }}
+                            {{ row[key]|round(3, 'floor') }}
                         </td>
                     {% else %}
                         <td style="white-space: nowrap">
