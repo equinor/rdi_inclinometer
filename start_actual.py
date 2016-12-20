@@ -18,7 +18,13 @@ say = voice.say
 def say_nothing(text):
     pass
 
-binoculars = Binoculars(button=button, gps=Gps(), spatial=Spatial(), storage=storage, say=say)
+binoculars = Binoculars(button=button,
+                        gps=Gps(),
+                        spatial=Spatial(),
+                        storage=storage,
+                        say=say,
+                        on_long_click=web_server.long_click_handler,
+                        on_short_click=web_server.short_click_handler)
 
 web_server.prestart(binoculars)
 app = web_server.app
