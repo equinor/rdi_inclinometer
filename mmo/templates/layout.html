@@ -29,8 +29,8 @@
             <ul class="nav navbar-nav">
                 <li><a href="/">Home</a></li>
                 <li><a href="{{ url_for('dump_table') }}?fields=id,system_time,button,height,gps_time,lat,lon,hdg,vel,roll,pitch,yaw,distance,comments">Observations</a></li>
+                <li><a href="{{ url_for('dump_table') }}?fields=id,system_time,button,height,gps_time,lat,lon,hdg,vel,roll,pitch,yaw,distance,gm0,gm1,gm2">Obs with Gyro values</a></li>
                 <li><a href="{{ url_for('get_config') }}">Config</a></li>
-                <li><a href="{{ url_for('dump_table') }}?fields=id,system_time,button,height,gps_time,lat,lon,hdg,vel,roll,pitch,yaw,distance,gm0,gm1,gm2">Obs with Gyro</a></li>
             </ul>
         </div>
         <!--/.nav-collapse -->

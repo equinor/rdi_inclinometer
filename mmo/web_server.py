@@ -5,7 +5,9 @@ import string
 
 from flask import Flask, make_response, request, render_template, \
     send_file, redirect, flash
+from flask_sockets import Sockets
 from math import ceil
+import gevent.queue
 
 import mmo
 from json_dumper import dump_as_json
@@ -27,6 +29,88 @@ app.secret_key = ''.join(
     random.SystemRandom().choice(string.ascii_uppercase + string.digits)
     for _ in range(20))
 app.config['hostname'] = socket.gethostname()
+
+# Websocket
+sockets = Sockets(app)
+clients = []
+event_queue = gevent.queue.Queue()
+
+
+@sockets.route('/echo')
+def echo_socket(ws):
+    while not ws.closed:
+        msg = ws.receive()
+        if msg is None:
+            break
+        ws.send(msg)
+
+
+class ObservationBackend(object):
+    """
+    A backend
+    """
+
+    def __init__(self):
+        self.clients = list()
+
+    def __iter_data(self):
+        while True:
+            obs = event_queue.get()
+            app.logger.info("New observation. Yielding observation")
+            yield obs
+
+    def register(self, client):
+        self.clients.append(client)
+
+    def send(self, client, data):
+        try:
+            for k, v in data.items():
+                if data[k] is None:
+                    data[k] = '-'
+                elif k in ('gm0', 'gm1', 'gm2'):
+                    continue
+                elif type(v) is float:
+                    data[k] = round(v, 2)
+                elif type(v) is datetime:
+                    time_zone = 0
+                    h, m = divmod(time_zone * 60, 60)
+                    data[k] = (v - timedelta(hours=h, minutes=m)).strftime("%Y-%m-%d %H:%M:%S")
+            fields = data.keys()
+            data['fields'] = fields
+            client.send(dump_as_json(data))
+        except Exception:
+            app.logger.debug("ObservationBackend exception occured. Remove client: {}".format(client))
+            self.clients.remove(client)
+
+    def run(self):
+        app.logger.info("Running ObservationBackend")
+        for obs in self.__iter_data():
+            for client in self.clients:
+                gevent.spawn(self.send, client, obs)
+
+    def start(self):
+        app.logger.info("Start ObservationBackend")
+        gevent.spawn(self.run)
+
+# Start our backend to broadcast new observations to all listening web clients
+obsBackend = ObservationBackend()
+obsBackend.start()
+
+
+@sockets.route('/observations')
+def observations(ws):
+    obsBackend.register(ws)
+    while not ws.closed:
+        # Context switch while ObservationBackend.start runs in the background
+        gevent.sleep(0.1)
+
+
+def long_click_handler(obs):
+    event_queue.put(obs)
+
+
+def short_click_handler(obs):
+    event_queue.put(obs)
 
 
 @app.route('/data.csv')
@@ -55,7 +139,7 @@ def dump_table():
     if request.args.get('reverse') is not None:
         rows.reverse()
 
-    if fields is None:
+    if not fields:
         if len(rows) == 0:
             fields = []
         else:
@@ -104,11 +188,6 @@ def set_config():
     mmo.config.refresh()
     registry.binoculars.config_updated()
     return redirect('/config.html')
-
-
-@app.route('/observations')
-def observations():
-    return "Hello there"
 
 
 @app.route('/data.json')

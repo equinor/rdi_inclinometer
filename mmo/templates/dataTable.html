@@ -1,15 +1,98 @@
 {% extends "layout.html" %}
+
+{% block extra_head %}
+    <link rel="next" href="?page={{ page + 1 }}"/>
+    <link rel="prev" href="?page={{ page - 1 }}"/>
+
+    <script type="text/javascript" charset="utf-8">
+        function getQueryStringValue (key) {
+            return decodeURIComponent(window.location.search.replace(new RegExp("^(?:.*[&\\?]" + encodeURIComponent(key).replace(/[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));
+        }
+        var fields = getQueryStringValue("fields");
+        if(fields) {
+            fields = fields.split(',');
+            //console.log("Got fields from input parameters: ", fields);
+        }
+
+        $(document).ready(function(){
+            var websocketUrl = "ws://" + document.domain + ":5000/observations";
+            var websocketRetry = 3;
+            function setupWebSocket(wsUrl) {
+                if ("WebSocket" in window) {
+                    // Only retry a certain times
+                    if (websocketRetry == 0) {
+                        console.log("Retried max nr of times. Stopping!");
+                        return;
+                    }
+                    websocketRetry -= 1;
+
+                    ws = new WebSocket(wsUrl);
+                    ws.onmessage = function (event) {
+                        var msg = JSON.parse(event.data);
+                        //console.log("msg: ", msg);
+                        addNewObservation(msg);
+                    };
+
+                    ws.onopen = function(event) {
+                        console.log("Websocket connection open");
+                    };
+
+                    ws.onclose = function(){
+                        //try to reconnect in 5 seconds
+                        console.log("Websocket connection closed.. Trying to reconnect");
+                        setTimeout(function(){setupWebSocket(wsUrl)}, 5000);
+                    };
+                } else {
+                    alert("WebSocket not supported");
+                }
+
+                function addNewObservation(obs) {
+                    var observation = $("<tr></tr>");
+                    if(!fields) {
+                        // No query parameter specifying fields to include.
+                        // Use everyone from the JSON data
+                        fields = obs.fields;
+                        //console.log(" setting fields to: ", fields);
+                    }
+                    var numFields = fields.length;
+                    for (var i=0; i<numFields; i++) {
+                        if(fields[i] == 'fields') continue;
+
+                        if (fields[i] == 'comments') {
+                            var comment = null;
+                            if (obs[fields[i]]) comment = obs[fields[i]];
+                            else comment = "";
+
+                            var td = $("<td class='comment'>" + 
+                                    "<input placeholder='...' type='text' id='comment_"+obs['id'] + "' " + 
+                                    "onfocus='this.style.background=' onchange='saveComment(" + obs['id'] + ", this)' value='" + comment + "'/></td>");
+                            observation.append(td);
+                        } else {
+                            //console.log("field: " + fields[i]);
+                            observation.append("<td style='white-space: nowrap'>"+obs[fields[i]]+"</td>");
+                        }
+                    }
+                    observation.prependTo("#observations > tbody:last-child");
+                };
+            };
+
+            setupWebSocket(websocketUrl);
+        });
+    </script>
+{% endblock %}
+
+
 {% block outer_body %}
     <div class="dataTable">
     <ul class="pagination">
         {% if (page - 1) in pages %}
-            <li><a href="?page={{ page - 1 }}">&laquo;</a></li>
+            <li><a href="?page={{ page - 1 }}&fields={{ request.args.get('fields') }}">&laquo;</a></li>
         {% else %}
             <li class="disabled"><a>&laquo;</a></li>
         {% endif %}
 
         {%  for p in pages %}
-            <li {% if page == p %}class="active"{% endif %}><a href="?page={{ p }}">{{ p }}</a></li>
+            <li {% if page == p %}class="active"{% endif %}><a href="?page={{ p }}&fields={{ request.args.get('fields') }}">{{ p }}</a></li>
         {% endfor %}
 
         {% if (page + 1) in pages %}
@@ -18,7 +101,7 @@
             <li class="disabled"><a>&raquo;</a></li>
         {% endif %}
     </ul>
-    <table class="table table-striped fixed-header">
+    <table class="table table-striped fixed-header" id="observations">
         <thead>
         <tr>
             {% for key in fields %}
@@ -55,8 +138,4 @@
         </tbody>
     </table>
 </div>
-{% endblock %}
-{% block extra_head %}
-    <link rel="next" href="?page={{ page + 1 }}"/>
-    <link rel="prev" href="?page={{ page - 1 }}"/>
 {% endblock %}
