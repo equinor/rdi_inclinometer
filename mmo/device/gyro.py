@@ -1,24 +1,60 @@
-from collections import OrderedDict
+from collections import OrderedDict, deque
 # from Phidgets.Devices.Spatial import Spatial as SpatialPhidget
 
 
 class Gyro(object):
+    samplePitch = deque([], 5)
+    sampleRoll = deque([], 5)
+    sampleYaw = deque([], 5)
+
     def __init__(self, gyro0=0.0, gyro1=0.0, gyro2=0.0):
         self.gyro0 = gyro0
+        self.samplePitch.append(gyro0)
+
         self.gyro1 = gyro1
+        self.sampleRoll.append(gyro1)
+
         self.gyro2 = gyro2
+        self.sampleYaw.append(gyro2)
+
+        self._bad_pitch = False
+        self._bad_roll = False
+        self._bad_yaw = False
 
     _fields = ('gyro0', 'gyro1', 'gyro2')
 
+    def is_unstable(self):
+        return self._bad_pitch
+
     def add(self, dd0, dd1, dd2, scaling_factor=1.0):
+        """
+        :note: We detect if the pitch change is big. If so, we
+               flag it as an unstable sampling.
+        """
+        print("samplePitch: {}".format(self.samplePitch))
+        if self.samplePitch and abs(self.samplePitch[-1] - dd0) > 1.0:
+            print("Large gyro pitch change - unstable reading!")
+            self._bad_pitch = True
+        else:
+            self._bad_pitch = False
+
+        self.samplePitch.append(dd0)
+        self.sampleRoll.append(dd1)
+        self.sampleYaw.append(dd2)
+
         self.gyro0 += dd0 * scaling_factor
         self.gyro1 += dd1 * scaling_factor
         self.gyro2 += dd2 * scaling_factor
 
     def reset(self):
         self.gyro0 = 0.0
+        self.samplePitch.clear()
+
         self.gyro1 = 0.0
+        self.sampleRoll.clear()
+
         self.gyro2 = 0.0
+        self.sampleYaw.clear()
 
     def as_dict(self):
         return OrderedDict((
@@ -32,12 +68,31 @@ class Gyro(object):
 
     def update_from(self, spatial):
         """
-        :type spatial: SpatialPhidget
+        :type spatial: SpatialPhidget or tuple
         """
-        self.add(spatial.getAngularRate(0),
-                 spatial.getAngularRate(1),
-                 spatial.getAngularRate(2),
-                 spatial.getDataRate() / 1000.0)
+        if isinstance(spatial, list):
+            self.add(spatial[0],
+                     spatial[1],
+                     spatial[2],
+                     spatial[3] / 1000.0)
+        else:
+            self.add(spatial.getAngularRate(0),
+                     spatial.getAngularRate(1),
+                     spatial.getAngularRate(2),
+                     spatial.getDataRate() / 1000.0)
+
+    @staticmethod
+    def average(iterable):
+        return reduce(lambda x, y: x + y, iterable) / len(iterable)
+
+    def get_avg_pitch(self):
+        return Gyro.average(self.samplePitch)
+
+    def get_avg_roll(self):
+        return Gyro.average(self.sampleRoll)
+
+    def get_avg_yaw(self):
+        return Gyro.average(self.sampleYaw)
 
     def __getitem__(self, index):
         if index == 0:
@@ -48,3 +103,6 @@ class Gyro(object):
             return self.gyro2
         else:
             raise IndexError("Gyro has only 3 items")
+
+    def __len__(self):
+        return len(self._fields)

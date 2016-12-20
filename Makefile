@@ -26,3 +26,4 @@ run:
 dev-run:
 	python start_fake.py
 
+.PHONY: test pep8 clean-pyc run dev-run

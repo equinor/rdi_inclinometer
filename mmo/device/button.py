@@ -125,7 +125,7 @@ class KeyboardButton(Button):
         while True:
             key = raw_input()
             if key == "q":
-                print "Q was pressed. Namaste!"
+                print("Q was pressed. Namaste!")
                 break
             elif key == "a":
                 self.key_pressed(0.2)
