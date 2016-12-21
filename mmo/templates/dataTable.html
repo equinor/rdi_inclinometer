@@ -15,7 +15,12 @@
         }
 
         $(document).ready(function(){
-            var websocketUrl = "ws://" + document.domain + ":5000/observations";
+            var websocketUrl = "ws://" + document.domain;
+            if (window.location.port) {
+                websocketUrl += ":" + window.location.port + "/observations";
+            } else {
+                websocketUrl += "/observations";
+            }
             var websocketRetry = 3;
             function setupWebSocket(wsUrl) {
                 if ("WebSocket" in window) {
