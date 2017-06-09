@@ -1,13 +1,11 @@
 # Marine Mammal Observatory
 
-## Python prerequisites
-* apt-get install git gcc python python-dev python-pip espeak
+The MMO Durimeter (_Marine Mammal Observatory Tool_) is a very cost-effective and sweet tool for observing and record detailed information for each observation.
 
+### Introduction
 
-## Getting started
+Read the [Introduction](docs/introduction.md) page.
 
-* Install Driver (See [Phidgets website] (http://www.phidgets.com/docs/Operating_System_Support))
-* Create a Python virtualenv
-* Within this virtualenv, run:
-  * `pip install -r requirements.txt`
-* And you're golden
+### Developers
+
+Read the [Developer](docs/for_developers.md) page.
