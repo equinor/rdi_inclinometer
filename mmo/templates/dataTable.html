@@ -88,6 +88,7 @@
 
 
 {% block outer_body %}
+    <!-- page: {{ page }}, pages: {{ pages }} -->
     <div class="dataTable">
     <ul class="pagination">
         {% if (page - 1) in pages %}
@@ -96,9 +97,23 @@
             <li class="disabled"><a>&laquo;</a></li>
         {% endif %}
 
-        {%  for p in pages %}
-            <li {% if page == p %}class="active"{% endif %}><a href="?page={{ p }}&fields={{ request.args.get('fields') }}">{{ p }}</a></li>
-        {% endfor %}
+
+        {% if pages|length > 5 %}
+            {% set window_size = 5 %}
+            {% set window_len = window_size if (page+window_size) in pages else (pages|length - page) %}
+            {% set window_start = 0 if (page-window_size) < 0 else (page-window_size) %}
+            <!-- More than 5 pages.. -->
+            {%  for p in pages[window_start:page + window_len] %}
+                <li {% if page == p %}class="active"{% endif %}><a href="?page={{ p }}&fields={{ request.args.get('fields') }}">{{ p }}</a></li>
+            {% endfor %}
+                <li><a class="disabled">...</a></li>
+
+        {% else %}
+            <!-- Less than 6 pages.. -->
+            {%  for p in pages %}
+                <li {% if page == p %}class="active"{% endif %}><a href="?page={{ p }}&fields={{ request.args.get('fields') }}">{{ p }}</a></li>
+            {% endfor %}
+        {% endif %}
 
         {% if (page + 1) in pages %}
             <li><a href="?page={{ page + 1 }}">&raquo;</a></li>
@@ -106,6 +121,7 @@
             <li class="disabled"><a>&raquo;</a></li>
         {% endif %}
     </ul>
+
     <table class="table table-striped fixed-header" id="observations">
         <thead>
         <tr>
