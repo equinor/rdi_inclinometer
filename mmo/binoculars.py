@@ -1,7 +1,7 @@
 from socket import gethostname
 # from mmo.distance_calculator import calculate_distance
 from enum import Enum
-
+import mmo
 
 class ButtonType(Enum):
     short = 1
@@ -34,7 +34,7 @@ class Binoculars:
     # noinspection PyTypeChecker
     # -- because IDEA interprets enum as int
     def key_pressed(self, length):
-        print("Key pressed: {}".format(length))
+        mmo.logger.info("Key pressed: {}".format(length))
         if length < 1.0:
             self.button_click(ButtonType.short)
         else:
@@ -70,7 +70,7 @@ class Binoculars:
         distance = obs['distance']
 
         if gyro_fix.is_unstable():
-            print("== Unstable movements!! ==")
+            mmo.logger.debug("== Unstable movements!! ==")
             self.say("Unstable reading. Try not to move that much")
 
         if button_type == ButtonType.long:
@@ -80,7 +80,7 @@ class Binoculars:
             self.say("Horizon! Observation: ")
             if callable(self.long_click_handler):
                 self.long_click_handler(obs)
-            print("observation: {}".format(obs))
+            mmo.logger.debug("observation: {}".format(obs))
         else:
             self.button.beep(0.01)
             self.say("Shoot! Observation: ")
@@ -98,7 +98,7 @@ class Binoculars:
             distance_speak = shorten_float(distance_speak.split("."))
             self.say("Distance: {} kilometers.".format(distance_speak))
 
-            print("Distance: {} km".format(distance_speak))
+            mmo.logger.info("Distance: {} km".format(distance_speak))
         else:
             self.say("No distance available.")
 

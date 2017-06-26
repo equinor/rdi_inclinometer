@@ -121,7 +121,7 @@ class Spatial(SpatialLike):
         acceleration = (self.spatial.getAcceleration(0),
                self.spatial.getAcceleration(1),
                self.spatial.getAcceleration(2))
-        print("gravity raw: {}".format(acceleration))
+        mmo.logger.debug("gravity raw: {}".format(acceleration))
         return acceleration
 
     def get_compass_raw(self):
@@ -134,7 +134,7 @@ class Spatial(SpatialLike):
         magneticFields = (self.spatial.getMagneticField(0),
                self.spatial.getMagneticField(1),
                self.spatial.getMagneticField(2))
-        print("compass_raw: {}".format(magneticFields))
+        mmo.logger.debug("compass_raw: {}".format(magneticFields))
         return magneticFields
 
     def get_accelerometer_fix(self):
@@ -159,12 +159,12 @@ class Spatial(SpatialLike):
         return CompassFix(*self.get_compass_raw())
 
     def get_gyro(self):
-        print("get_gyro() -> %s" % self.gyro)
+        mmo.logger.debug("get_gyro() -> %s" % self.gyro)
         return self.gyro
 
     def get_gyro_momentary(self):
         if not self.spatial.isAttached():
-            print("spatial device is not attached!")
+            mmo.logger.debug("spatial device is not attached!")
             return {'gm0': 0.0, 'gm1': 0.0, 'gm2': 0.0}
 
         gyro_momentary = {
@@ -175,7 +175,7 @@ class Spatial(SpatialLike):
         return gyro_momentary
 
     def reset_gyro(self):
-        print("reset gyro")
+        mmo.logger.debug("reset gyro")
         self.spatial.zeroGyro()
         self.gyro.reset()
 
@@ -188,7 +188,7 @@ class Spatial(SpatialLike):
         self.event_count += 1
 
         if self.event_count % 30 == 0:
-            print("""spatial event: \n\taccel: {}\n\t
+            mmo.logger.debug("""spatial event: \n\taccel: {}\n\t
                      angularRate: {}\n\tmagneticField: {}
                   """.format(spatialEventData.Acceleration,
                              spatialEventData.AngularRate,
@@ -199,14 +199,14 @@ class Spatial(SpatialLike):
         super(Spatial, self).attach_handler(event)
         mmo.status.spatial_connected = True
         self.spatial.setDataRate(mmo.config.sampling_rate)
-        print("Setting data rate to: {}".format(mmo.config.sampling_rate))
+        mmo.logger.debug("Setting data rate to: {}".format(mmo.config.sampling_rate))
         self.reset_gyro()
         self.spatial.setOnSpatialDataHandler(self.on_spatial_data_handler)
 
     def detach_handler(self, event):
         super(Spatial, self).detach_handler(event)
         mmo.status.spatial_connected = False
-        print("WARNING: Spatial disconnected")
+        mmo.logger.debug("WARNING: Spatial disconnected")
 
     def update_from_config(self):
         if self.spatial.isAttached():

@@ -1,3 +1,4 @@
+import mmo
 from collections import OrderedDict, deque
 # from Phidgets.Devices.Spatial import Spatial as SpatialPhidget
 
@@ -31,9 +32,8 @@ class Gyro(object):
         :note: We detect if the pitch change is big. If so, we
                flag it as an unstable sampling.
         """
-        print("samplePitch: {}".format(self.samplePitch))
         if self.samplePitch and abs(self.samplePitch[-1] - dd0) > 1.0:
-            print("Large gyro pitch change - unstable reading!")
+            mmo.logger.error("Large gyro pitch change - unstable reading!")
             self._bad_pitch = True
         else:
             self._bad_pitch = False

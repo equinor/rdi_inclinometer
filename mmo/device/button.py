@@ -2,7 +2,7 @@ import time
 import thread
 import atexit
 from threading import Thread
-# from Phidgets.PhidgetException import PhidgetException
+import mmo
 
 
 class Button(object):
@@ -35,8 +35,8 @@ class Button(object):
         try:
             return RaspberryButton()
         except Exception as e:
-            print(e)
-            print("Problem initializing Raspberry PI GPIO button"
+            mmo.logger.error(e)
+            mmo.logger.error("Problem initializing Raspberry PI GPIO button"
                   " -- using KeyboardButton.")
             return KeyboardButton()
 
@@ -120,12 +120,12 @@ class KeyboardButton(Button):
         self.start_input_thread()
 
     def read_input(self):
-        print("Reading keyboard."
+        mmo.logger.info("Reading keyboard."
               "Press 'a' for short, 's' for long, 'q' for stop")
         while True:
             key = raw_input()
             if key == "q":
-                print("Q was pressed. Namaste!")
+                mmo.logger.info("Q was pressed. Namaste!")
                 break
             elif key == "a":
                 self.key_pressed(0.2)
@@ -138,4 +138,4 @@ class KeyboardButton(Button):
         t.start()
 
     def beep(self, seconds):
-        print("Beep: {}".format(seconds))
+        mmo.logger.info("Beep: {}".format(seconds))

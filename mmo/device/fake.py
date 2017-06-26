@@ -10,6 +10,7 @@ import time
 from collections import namedtuple
 from random import uniform
 
+
 SpatialEventData = namedtuple('SpatialEventData',
                               'data, numAccelAxes, numGyroAxes, numCompassAxes dataRate')
 
@@ -108,12 +109,12 @@ class FakeSpatial(SpatialLike):
 
     def get_gravity_raw(self):
         # acceleration = (0.0, 0.0, -1.0)
-        print("gravity_raw: {}".format(self.acceleration))
+        # print("gravity_raw: {}".format(self.acceleration))
         return self.acceleration
 
     def get_compass_raw(self):
         # magneticFields = (0.6, 0.6, 0.0)
-        print("compas_raw: {}".format(self.magneticFields))
+        # print("compas_raw: {}".format(self.magneticFields))
         return self.magneticFields
 
     def get_accelerometer_fix(self):
@@ -121,7 +122,7 @@ class FakeSpatial(SpatialLike):
 
     def get_roll_pitch_yaw(self):
         rpy = RollPitchYaw.calculate_from(self.get_gravity_raw(), self.get_compass_raw())
-        print("get_roll_pitch_yaw -> {}".format(rpy))
+        # print("get_roll_pitch_yaw -> {}".format(rpy))
         return rpy
 
     def get_compass_fix(self):
@@ -139,42 +140,42 @@ class FakeSpatial(SpatialLike):
 
     def reset_gyro(self):
         self.gyro.reset()
-        print "Fakely resetting gyro"
+        # print "Fakely resetting gyro"
 
     def set_average_count(self, count):
         pass
 
     def on_spatial_data_handler(self, event):
-        print("got fake spatial event.")
+        mmo.logger.debug("got fake spatial event.")
         self.acceleration = event.data[0]
 
         gyro_data = event.data[1]
         gyro_data.append(event.dataRate)
         self.gyro.update_from(gyro_data)
 
-        print("Gyro roll avg pitch={}, roll={}, yaw={}".format(
+        mmo.logger.debug("Gyro roll avg pitch={}, roll={}, yaw={}".format(
             self.gyro.get_avg_pitch(),
             self.gyro.get_avg_roll(),
             self.gyro.get_avg_yaw()))
-        print("  gyro_data = {}".format(gyro_data))
+        mmo.logger.debug("  gyro_data = {}".format(gyro_data))
 
         self.magneticFields = event.data[2]
 
     def attach_handler(self, event):
         # super(FakeSpatial, self).attach_handler(event)
         mmo.status.spatial_connected = True
-        print("attach handler event")
+        mmo.logger.debug("attach handler event")
         self.spatial.setOnSpatialDataHandler(self.on_spatial_data_handler)
         self.reset_gyro()
 
     def detach_handler(self, event):
         # super(FakeSpatial, self).detach_handler(event)
         mmo.status.spatial_connected = False
-        print("detach handler event")
+        mmo.logger.debug("detach handler event")
 
     def stop(self):
         self.spatial.stop()
 
     def update_from_config(self):
-        print("Config update request")
+        mmo.logger.debug("Config update request")
 

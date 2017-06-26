@@ -5,10 +5,9 @@ from abc import abstractmethod
 
 from Phidgets.PhidgetException import PhidgetException
 
-
+import mmo
 from mmo.device.device import Device
 from mmo.device.output import GpsFix
-import mmo
 
 
 class GpsLike(Device):
@@ -28,11 +27,11 @@ class Gps(GpsLike):
         try:
             gps.waitForAttach(1000)
         except PhidgetException:
-            print "WARNING: No GPS connected"
+            mmo.logger.warn("WARNING: No GPS connected")
 
     def get_fix(self):
         if not self.gps.isAttached():
-            print "WARNING: No GPS Attached"
+            mmo.logger.warn("WARNING: No GPS Attached")
             return GpsFix()
 
         if not self.gps.getPositionFixStatus():
@@ -48,7 +47,7 @@ class Gps(GpsLike):
     def detach_handler(self, event):
         super(Gps, self).detach_handler(event)
         mmo.status.gps_connected = False
-        print "WARNING: GPS disconnected"
+        mmo.logger.warn("WARNING: GPS disconnected")
 
     # noinspection PyUnusedLocal
     # just to show that this parameter comes from the library anyway
