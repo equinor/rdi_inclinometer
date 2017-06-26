@@ -34,8 +34,18 @@
                     ws = new WebSocket(wsUrl);
                     ws.onmessage = function (event) {
                         var msg = JSON.parse(event.data);
-                        //console.log("msg: ", msg);
-                        addNewObservation(msg);
+
+                        if (msg.hasOwnProperty('type') && msg.type == 'comment') {
+                            console.log("Recevied a comment update event: ", msg);
+                            var old_value = document.getElementById(msg.id).value;
+                            if (msg.comment != old_value) {
+                                console.log("Comment has changed! - updating!");
+                                document.getElementById(msg.id).value = msg.comment;
+                            }
+                        } else {
+                            //console.log("msg: ", msg);
+                            addNewObservation(msg);
+                        }
                     };
 
                     ws.onopen = function(event) {

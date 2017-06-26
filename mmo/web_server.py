@@ -64,20 +64,25 @@ class ObservationBackend(object):
 
     def send(self, client, data):
         try:
-            for k, v in data.items():
-                if data[k] is None:
-                    data[k] = '-'
-                elif k in ('gm0', 'gm1', 'gm2'):
-                    continue
-                elif type(v) is float:
-                    data[k] = round(v, 2)
-                elif type(v) is datetime:
-                    time_zone = 0
-                    h, m = divmod(time_zone * 60, 60)
-                    data[k] = (v - timedelta(hours=h, minutes=m)).strftime("%Y-%m-%d %H:%M:%S")
-            fields = data.keys()
-            data['fields'] = fields
-            client.send(dump_as_json(data))
+            # First check if 'comment' update
+            if data.get('type', '') == 'comment':
+                app.logger.debug("Updating comment {}".format(data.get('id')))
+                client.send(dump_as_json(data))
+            else:
+                for k, v in data.items():
+                    if data[k] is None:
+                        data[k] = '-'
+                    elif k in ('gm0', 'gm1', 'gm2'):
+                        continue
+                    elif type(v) is float:
+                        data[k] = round(v, 2)
+                    elif type(v) is datetime:
+                        time_zone = 0
+                        h, m = divmod(time_zone * 60, 60)
+                        data[k] = (v - timedelta(hours=h, minutes=m)).strftime("%Y-%m-%d %H:%M:%S")
+                fields = data.keys()
+                data['fields'] = fields
+                client.send(dump_as_json(data))
         except Exception:
             app.logger.debug("ObservationBackend exception occured. Remove client: {}".format(client))
             self.clients.remove(client)
@@ -219,6 +224,9 @@ def save_comment():
     observation_id = request.form['id']
     comment = request.form['comment']
     Database.store_comment(observation_id, comment)
+    event_queue.put({"type": "comment",
+                     "id": "comment_" + str(observation_id),
+                     "comment": comment})
     return unicode("Stored comment for id {}: {}").format(observation_id, comment)
 
 
