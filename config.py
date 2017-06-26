@@ -10,5 +10,5 @@ class DevelopmentConfig(BaseConfig):
 
 
 class ProductionConfig(BaseConfig):
-    DEBUG = True
+    DEBUG = False
     LOG_FILE = "mmo_prod.log"
