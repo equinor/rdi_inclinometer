@@ -3,6 +3,7 @@ from __future__ import print_function
 
 from datetime import datetime, timedelta
 from os import system
+
 from mmo.axis_translator import *
 from mmo.database import Database
 
@@ -67,6 +68,10 @@ class StatusType(object):
         return_code = system("sudo date -s '{}'".format(gps_time_string))
         return return_code == 0
 
+
+logger = None
+
+# Config for typically default values
 config = ConfigType()
 
 status = StatusType()
