@@ -6,9 +6,9 @@ class BaseConfig(object):
 class DevelopmentConfig(BaseConfig):
     DEBUG = True
     TESTING = True
-    LOG_FILE = "mmo_dev.log"
+    LOG_FILE = "log_dev.log"
 
 
 class ProductionConfig(BaseConfig):
     DEBUG = False
-    LOG_FILE = "mmo_prod.log"
+    LOG_FILE = "log_prod.log"
