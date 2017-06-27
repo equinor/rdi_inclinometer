@@ -36,6 +36,19 @@ source venv/bin/activate
 python start_actual.py
 ```
 
+# System overview
+
+The architecture is like this:
+1. Nginx is the proxy / frontend web server. Functions as a reverse-proxy.
+2. Supervisor will start 2 "gunicorn" workers based on the script: `/home/pi/rdi_inclinometer/gunicorn_start`
+
+
+## Gotchas
+
+One would assume that the application will stop if running this: `$ sudo supervisorclt mmo stop`, and supervisor echo's to the prompt 
+that the service is indeed stopped. However, the python processes are still running. There is an issue for this bug here: https://github.com/Statoil/rdi_inclinometer/issues/33
+
+
 # Useful resources
 
 - Sensors Info & links to other docs http://www.phidgets.com/products.php?product_id=1044
