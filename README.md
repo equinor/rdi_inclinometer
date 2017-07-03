@@ -10,3 +10,6 @@ Read the [Introduction](docs/introduction.md) page.
 
 Read the [Developer](docs/for_developers.md) page.
 
+## Device in action
+
+<img src="imgs/durimeter.jpg" width="450px">

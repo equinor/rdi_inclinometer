@@ -8,6 +8,11 @@ There are both hardware and software requirements needed for the Durimeter to wo
 ### Hardware
 1. Raspberry Pi 3
 2. Phidget spatial sensor + GPS
+3. Something to mount the spatial sensor on (binocular for example?)
+
+Here is my test hardware setup..
+
+<img src="../imgs/img1.jpg" width="650px">
 
 ### Getting started
 
@@ -17,6 +22,7 @@ There are both hardware and software requirements needed for the Durimeter to wo
 * Within this virtualenv, run:
   * `pip install -r requirements.txt`
 * And you're golden
+
 
 # Dev environment
 
