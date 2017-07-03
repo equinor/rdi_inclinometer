@@ -13,3 +13,13 @@ Read the [Developer](docs/for_developers.md) page.
 ## Device in action
 
 <img src="imgs/durimeter.jpg" width="450px">
+
+# Credits
+
+_Project_:
+- Jürgen Weissenberger <jurw@statoil.com>
+- Tom McKeever <thmc@statoil.com>
+
+_Development:_
+- Arve Skogvold <arve@skogvold.org>
+- Asbjørn A. Fellinghaug <asbjorn@fellinghaug.com>
