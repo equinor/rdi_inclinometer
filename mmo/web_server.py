@@ -249,6 +249,13 @@ def set_time_from_gps():
         return redirect('/set_time')
 
 
+@app.route('/delete_observations', methods=['GET'])
+def delete_observations():
+    if request.method == 'GET':
+        Database.delete_observations()
+        return redirect('/data.html')
+
+
 @app.route('/click/<length>', methods=['POST'])
 def click(length):
     if length == 'short':
