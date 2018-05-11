@@ -7,8 +7,9 @@ There are both hardware and software requirements needed for the Durimeter to wo
 
 ### Hardware
 1. Raspberry Pi 3
-2. Phidget spatial sensor + GPS
+2. [Phidget](https://www.phidgets.com) spatial sensor + GPS (needs two USB 2.0 cables)
 3. Something to mount the spatial sensor on (binocular for example?)
+4. RTC clock: [DS3231 RTC bord](http://www.dx.com/no/p/ds3231-raspberry-pi-rtc-board-real-time-clock-module-for-arduino-black-277258#.WvVKTdOFPRY) or [DS3231 AT24C32 ZS042](https://www.aliexpress.com/item/DS3231-AT24C32-ZS042-IIC-Module-Precision-RTC-Real-time-Clock-Module-DS3231SN-for-Arduino-Memory-module/32830397657.html?aff_platform=aaf&cpt=1526024967489&sk=Y7bAZbY&aff_trace_key=fde1a24100a143e58db5f059f65f140e-1526024967489-02931-Y7bAZbY&terminal_id=9ffdbd4b8e7e4332824d56f94f47ec2e)
 
 Here is my test hardware setup..
 
@@ -42,6 +43,12 @@ source venv/bin/activate
 python start_actual.py
 ```
 
+# Access web application 
+
+The Rasberry Pi will automatically connect to a WIFI network called mmo with password xxx, see `etc/wpa_supplicant/wpa_supplicant.conf` for configuration settings. 
+
+When developing, it is useful to start a WIFI hot-spot called mmo using you mobile, and also connect your computer to it. The Rasberry Pi should be accessible from IP http://192.168.43.247/.  
+
 # System overview
 
 The architecture is like this:
@@ -51,8 +58,8 @@ The architecture is like this:
 
 ## Gotchas
 
-One would assume that the application will stop if running this: `$ sudo supervisorclt mmo stop`, and supervisor echo's to the prompt 
-that the service is indeed stopped. However, the python processes are still running. There is an issue for this bug here: https://github.com/Statoil/rdi_inclinometer/issues/33
+* One would assume that the application will stop if running this: `$ sudo supervisorclt mmo stop`, and supervisor echo's to the prompt that the service is indeed stopped. However, the python processes are still running. There is an issue for this bug here: https://github.com/Statoil/rdi_inclinometer/issues/33
+* Sometimes the nginx proxy is not capable of accessing the MMO server, so you need to restart nginx using `sudo service nginx restart`.
 
 
 # Useful resources
