@@ -6,10 +6,10 @@
 There are both hardware and software requirements needed for the Durimeter to work.
 
 ### Hardware
-1. Raspberry Pi 3
+1. Raspberry Pi 3 + SD Card (32/64 GB)
 2. [Phidget](https://www.phidgets.com) spatial sensor + GPS (needs two USB 2.0 cables)
 3. Something to mount the spatial sensor on (binocular for example?)
-4. RTC clock: [DS3231 RTC bord](http://www.dx.com/no/p/ds3231-raspberry-pi-rtc-board-real-time-clock-module-for-arduino-black-277258#.WvVKTdOFPRY) or [DS3231 AT24C32 ZS042](https://www.aliexpress.com/item/DS3231-AT24C32-ZS042-IIC-Module-Precision-RTC-Real-time-Clock-Module-DS3231SN-for-Arduino-Memory-module/32830397657.html?aff_platform=aaf&cpt=1526024967489&sk=Y7bAZbY&aff_trace_key=fde1a24100a143e58db5f059f65f140e-1526024967489-02931-Y7bAZbY&terminal_id=9ffdbd4b8e7e4332824d56f94f47ec2e)
+4. Real time clock module: [DS3231 RTC bord](http://www.dx.com/no/p/ds3231-raspberry-pi-rtc-board-real-time-clock-module-for-arduino-black-277258#.WvVKTdOFPRY) or [DS3231 AT24C32 ZS042](https://www.aliexpress.com/item/DS3231-AT24C32-ZS042-IIC-Module-Precision-RTC-Real-time-Clock-Module-DS3231SN-for-Arduino-Memory-module/32830397657.html?aff_platform=aaf&cpt=1526024967489&sk=Y7bAZbY&aff_trace_key=fde1a24100a143e58db5f059f65f140e-1526024967489-02931-Y7bAZbY&terminal_id=9ffdbd4b8e7e4332824d56f94f47ec2e)
 
 Here is my test hardware setup..
 
@@ -98,6 +98,7 @@ The architecture is like this:
     - https://blog.remibergsma.com/2013/05/12/how-accurately-can-the-raspberry-pi-keep-time/
     - https://sigmdel.ca/michel/ha/rpi/rtc_en.html
     - https://spellfoundry.com/sleepy-pi/setting-up-the-real-time-clock-on-raspbian-jessie/
+    - https://www.youtube.com/watch?v=4AmghIphVPw
 
 # Authors
 
