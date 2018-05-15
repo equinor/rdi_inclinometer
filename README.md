@@ -23,3 +23,4 @@ _Project_:
 _Development:_
 - Arve Skogvold <arve@skogvold.org>
 - Asbjørn A. Fellinghaug <asbjorn@fellinghaug.com>
+- Eirik O. aksnes <eoaksnes@gmail.com>
