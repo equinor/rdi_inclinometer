@@ -48,7 +48,7 @@ python start_actual.py
 
 The Rasberry Pi will automatically connect to a WIFI network called mmo with password xxx, see `etc/wpa_supplicant/wpa_supplicant.conf` for configuration settings. 
 
-When developing, it is useful to start a WIFI hot-spot called mmo using your mobile, and also connect your computer to it. The Rasberry Pi should be accessible from IP http://192.168.43.247.  
+When developing, it is useful to start a WIFI hot-spot called mmo using your mobile, and also connect your computer to it. Open the Hotspot window on the phone. After a few minutes, the SMART-SCOPE computer should appear as pi1. Note the IP address assigned to the pi1 (example 192.168.43.73)The Rasberry Pi should be accessible from IP http://192.168.43.73.  
 
 # Create .img files
 
