@@ -49,6 +49,20 @@ The Rasberry Pi will automatically connect to a WIFI network called mmo with pas
 
 When developing, it is useful to start a WIFI hot-spot called mmo using you mobile, and also connect your computer to it. The Rasberry Pi should be accessible from IP http://192.168.43.247/.  
 
+# Create .img files
+
+```
+diskutil list
+
+diskutil unmountDisk /dev/<DISK>
+
+sudo dd if=/dev/<DISK> of=SmartScope-0.0.1.img bs=1m
+
+./trim-img.sh SmartScope-0.0.1.img
+```
+
+An alternativ for shrinking .img files on Linux is [PiShrink](https://github.com/Drewsif/PiShrink).
+
 # System overview
 
 The architecture is like this:
@@ -79,7 +93,14 @@ The architecture is like this:
 
 - Pull-Ups Resistor (Explained) https://learn.sparkfun.com/tutorials/pull-up-resistors
 
+- RTC 
+    - http://www.linuxwolfpack.com/raspberrypi-rtc.php
+    - https://blog.remibergsma.com/2013/05/12/how-accurately-can-the-raspberry-pi-keep-time/
+    - https://sigmdel.ca/michel/ha/rpi/rtc_en.html
+    - https://spellfoundry.com/sleepy-pi/setting-up-the-real-time-clock-on-raspbian-jessie/
+
 # Authors
 
 - Arve Skogvold <arve@skogvold.org>
 - Asbjørn A. Fellinghaug <asbjorn@fellinghaug.com>
+- Eirik O. Aksnes <eoaksnes@gmail.com>
