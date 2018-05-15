@@ -47,7 +47,7 @@ python start_actual.py
 
 The Rasberry Pi will automatically connect to a WIFI network called mmo with password xxx, see `etc/wpa_supplicant/wpa_supplicant.conf` for configuration settings. 
 
-When developing, it is useful to start a WIFI hot-spot called mmo using you mobile, and also connect your computer to it. The Rasberry Pi should be accessible from IP http://192.168.43.247/.  
+When developing, it is useful to start a WIFI hot-spot called mmo using your mobile, and also connect your computer to it. The Rasberry Pi should be accessible from IP http://192.168.43.247.  
 
 # Create .img files
 
@@ -62,6 +62,12 @@ sudo dd if=/dev/<DISK> of=SmartScope-0.0.1.img bs=1m
 ```
 
 An alternativ for shrinking .img files on Linux is [PiShrink](https://github.com/Drewsif/PiShrink).
+
+You can create compressed disk images as follows:
+
+```
+sudo dd if=/dev/<DISK> bs=64K | gzip -c > SmartScope-0.0.1.img.gz
+```
 
 # System overview
 
