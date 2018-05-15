@@ -27,6 +27,15 @@ You have basically two ways of installing the software after the hardware setup 
 
 2. Simply checkout the latest source code and follow the instructions mentioned in the [Developer](for_developers.md) documentation.
 
+### Available .img files
+
+* `smartscope-0.1.0.img`
+  - Real time clock functionality
+  - Delete observations
+
+* `durometer.img`
+  - Initial version
+  
 # User Manual
 
 The user manual can be found [here](http://team.statoil.com/sites/ts-98403/_layouts/DocIdRedir.aspx?ID=5eecd070-807a-4317-a27a-3d111e1f0898&HintUrl=Shared+Documents%2fSMART-SCOPE+Assembly+and+User+Guide+April+2018+Version.docx).
