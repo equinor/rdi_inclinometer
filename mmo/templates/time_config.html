@@ -10,9 +10,14 @@
             <th>Current GPS time</th>
             <td>{{ gps_time }}</td>
         </tr>
-        </tbody>
+        <tr>
+            <th>Current hardware clock time</th>
+            <td>{{ hardware_clock_time }}</td>
+        </tr>
     </table>
-
+    <p>
+       The hardware clock is used to keep time even when the power is off.
+    </p>
     <form action="" method="post">
         <button type="submit">Set system time from GPS</button>
     </form>

@@ -4,8 +4,6 @@
     <h2><a href="{{ url_for('set_time_from_gps') }}">Time settings</a></h2>
     <h1>Configuration</h1>
 
-
-
     <div>
         <form action="" method="POST" class="form-horizontal">
             <div class="form-group">
@@ -73,8 +71,14 @@
                 </div>
             </div>
             <button class="btn btn-default" type="submit">Save</button>
-
         </form>
+
+    </div>
+    <div>
+
+        <h1>Danger Zone</h1>
+        <a href="{{ url_for('delete_observations') }}" onclick="return confirm('Are you sure?')">Delete observations</a>
+        <p>Once you delete the observations, there is no going back. Please be certain</p>
 
     </div>
 {% endblock %}

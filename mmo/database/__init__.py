@@ -270,3 +270,10 @@ class Database(object):
         result = session.query(Observation).count()
         session.close()
         return result
+
+    @staticmethod
+    def delete_observations():
+        session = Session()
+        session.query(Observation).delete()
+        session.commit()
+        session.close()

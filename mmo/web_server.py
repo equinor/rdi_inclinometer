@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 import socket
 import random
 import string
+from subprocess import check_output, PIPE
 
 from flask import Flask, make_response, request, render_template, \
     send_file, redirect, flash
@@ -239,7 +240,8 @@ def set_time_from_gps():
             return "GPS has not received any time signal yet"
         return render_template('time_config.html',
                                system_time=mmo.status.get_system_time(),
-                               gps_time=mmo.status.last_gps_fix.timestamp)
+                               gps_time=mmo.status.last_gps_fix.timestamp,
+                               hardware_clock_time=check_output(["sudo", "hwclock", "-r"]))
     elif request.method == 'POST':
         date_updated_ok = mmo.status.update_system_time_from_gps()
         if date_updated_ok:
@@ -247,6 +249,13 @@ def set_time_from_gps():
         else:
             flash("Could not set time", "error")
         return redirect('/set_time')
+
+
+@app.route('/delete_observations', methods=['GET'])
+def delete_observations():
+    if request.method == 'GET':
+        Database.delete_observations()
+        return redirect('/data.html')
 
 
 @app.route('/click/<length>', methods=['POST'])

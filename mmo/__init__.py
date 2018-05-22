@@ -3,6 +3,7 @@ from __future__ import print_function
 
 from datetime import datetime, timedelta
 from os import system
+from subprocess import call
 
 from mmo.axis_translator import *
 from mmo.database import Database
@@ -65,7 +66,10 @@ class StatusType(object):
 
     def update_system_time_from_gps(self):
         gps_time_string = self.last_gps_fix.timestamp.isoformat()
-        return_code = system("sudo date -s '{}'".format(gps_time_string))
+        return_code = call(["sudo", "date", "-s", "{}".format(gps_time_string)])        
+        if return_code == 1:
+            return False
+        return_code == call(["sudo", "hwclock", "--set", "--date", "{}".format(gps_time_string)])        
         return return_code == 0
 
 
