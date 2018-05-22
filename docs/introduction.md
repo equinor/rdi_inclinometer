@@ -29,7 +29,7 @@ You have basically two ways of installing the software after the hardware setup 
 
 ### Available .img files
 
-* `smartscope-0.1.0.img`
+* `smartscope-0.1.1.img`
   - Fix "Bad gateway" error
 
 * `smartscope-0.1.0.img`
