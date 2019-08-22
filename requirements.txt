@@ -1,6 +1,6 @@
 docutils==0.12
 enum34==1.0.4
-Flask==0.12.3
+Flask==1.0.4
 Flask-Sockets==0.2.1
 gevent==1.1.2
 gevent-websocket==0.9.5
