@@ -8,7 +8,7 @@ greenlet==0.4.10
 gunicorn==19.5.0
 itsdangerous==0.24
 jdcal==1.2
-Jinja2==2.10.1
+Jinja2==2.11.3
 MarkupSafe==0.23
 openpyxl==2.1.4
 Phidgets==2.1.8
