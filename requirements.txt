@@ -10,7 +10,7 @@ itsdangerous==0.24
 jdcal==1.2
 Jinja2==2.11.3
 MarkupSafe==0.23
-openpyxl==2.1.4
+openpyxl==2.4.2
 Phidgets==2.1.8
 pykalman==0.9.5
 pyttsx==1.1
